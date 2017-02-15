@@ -1,0 +1,52 @@
+\contentsline {section}{\numberline {1}莫队算法}{3}
+\contentsline {subsection}{\numberline {1.1}普通莫队}{3}
+\contentsline {subsection}{\numberline {1.2}树上莫队}{3}
+\contentsline {section}{\numberline {2}字符串}{5}
+\contentsline {subsection}{\numberline {2.1}哈希}{5}
+\contentsline {subsection}{\numberline {2.2}KMP}{5}
+\contentsline {subsection}{\numberline {2.3}扩展KMP}{6}
+\contentsline {subsection}{\numberline {2.4}Manacher}{7}
+\contentsline {subsection}{\numberline {2.5}最小表示法}{7}
+\contentsline {subsection}{\numberline {2.6}AC自动机}{8}
+\contentsline {subsection}{\numberline {2.7}后缀数组}{9}
+\contentsline {subsection}{\numberline {2.8}后缀自动机}{10}
+\contentsline {section}{\numberline {3}数据结构}{11}
+\contentsline {subsection}{\numberline {3.1}ST表}{11}
+\contentsline {subsection}{\numberline {3.2}线段树小技巧}{11}
+\contentsline {subsection}{\numberline {3.3}Splay}{12}
+\contentsline {subsection}{\numberline {3.4}可持久化Treap}{15}
+\contentsline {section}{\numberline {4}树}{17}
+\contentsline {subsection}{\numberline {4.1}动态树}{17}
+\contentsline {section}{\numberline {5}图}{19}
+\contentsline {subsection}{\numberline {5.1}欧拉回路}{19}
+\contentsline {subsection}{\numberline {5.2}最短路径}{20}
+\contentsline {subsubsection}{\numberline {5.2.1}Dijkstra}{20}
+\contentsline {subsubsection}{\numberline {5.2.2}SPFA}{20}
+\contentsline {subsection}{\numberline {5.3}K 短路}{21}
+\contentsline {subsection}{\numberline {5.4}Tarjan}{24}
+\contentsline {subsection}{\numberline {5.5}统治者树（Dominator Tree）}{24}
+\contentsline {subsection}{\numberline {5.6}网络流}{25}
+\contentsline {subsubsection}{\numberline {5.6.1}最大流}{25}
+\contentsline {subsubsection}{\numberline {5.6.2}上下界有源汇网络流}{26}
+\contentsline {subsubsection}{\numberline {5.6.3}上下界无源汇网络流}{27}
+\contentsline {subsubsection}{\numberline {5.6.4}费用流}{27}
+\contentsline {subsubsection}{\numberline {5.6.5}zkw费用流}{28}
+\contentsline {section}{\numberline {6}数学}{30}
+\contentsline {subsection}{\numberline {6.1}扩展欧几里得解同余方程}{30}
+\contentsline {subsection}{\numberline {6.2}同余方程组}{30}
+\contentsline {subsection}{\numberline {6.3}卡特兰数}{30}
+\contentsline {subsection}{\numberline {6.4}Lucas定理}{30}
+\contentsline {subsection}{\numberline {6.5}高斯消元}{31}
+\contentsline {subsubsection}{\numberline {6.5.1}行列式}{31}
+\contentsline {subsubsection}{\numberline {6.5.2}Matrix-Tree定理}{32}
+\contentsline {subsection}{\numberline {6.6}调和级数}{32}
+\contentsline {subsection}{\numberline {6.7}曼哈顿距离的变换}{32}
+\contentsline {subsection}{\numberline {6.8}线性筛素数}{32}
+\contentsline {subsection}{\numberline {6.9}FFT}{32}
+\contentsline {subsection}{\numberline {6.10}NTT}{33}
+\contentsline {subsection}{\numberline {6.11}组合数 lcm}{34}
+\contentsline {subsection}{\numberline {6.12}区间 lcm 的维护}{34}
+\contentsline {section}{\numberline {7}几何}{35}
+\contentsline {subsection}{\numberline {7.1}凸包}{35}
+\contentsline {section}{\numberline {8}黑科技和杂项}{35}
+\contentsline {subsection}{\numberline {8.1}高精度计算}{35}
