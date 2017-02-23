@@ -1558,6 +1558,56 @@ namespace FFT {
 	}
 };
 \end{lstlisting}
+\subsection{求原根}
+接口： LL p\_root(LL p); \\
+输入： 一个素数 $p$  \\
+输出： $p$ 的原根
+\begin{lstlisting}[language=C++]
+#include <bits/stdc++.h>
+#define LL long long
+
+using namespace std;
+
+vector <LL> a;
+
+LL pow_mod(LL base, LL times, LL mod) {
+	LL ret = 1;
+	while (times) {
+		if (times&1) ret = ret * base % mod;
+		base = base * base % mod;
+		times>>=1;
+	}
+	return ret;
+}
+
+bool g_test(LL g, LL p) {
+	for (LL i = 0; i < a.size(); ++i)
+		if (pow_mod(g, (p-1)/a[i], p) == 1) return 0;
+	return 1;
+}
+
+LL p_root(LL p) {
+	LL tmp = p - 1;
+	for (LL i = 2; i <= tmp / i; ++i)
+		if (tmp % i == 0) {
+			a.push_back(i);
+			while (tmp % i == 0)
+				tmp /= i;
+		}
+	if (tmp != 1) a.push_back(tmp);
+	LL g = 1;
+	while (1) {
+		if (g_test(g, p)) return g;
+		++g;
+	}
+}
+
+int main() {
+	LL p;
+	cin >> p;
+	cout << p_root(p) << endl;
+}
+\end{lstlisting}
 \subsection{NTT}
 998244353 原根为 3 ， 1004535809 原根为 3 ，786433 原根为 10 ， 880803841 原根为 26 。
 \begin{lstlisting}[language=C++]

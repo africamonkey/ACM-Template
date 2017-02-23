@@ -43,10 +43,11 @@
 \contentsline {subsection}{\numberline {6.7}曼哈顿距离的变换}{32}
 \contentsline {subsection}{\numberline {6.8}线性筛素数}{32}
 \contentsline {subsection}{\numberline {6.9}FFT}{32}
-\contentsline {subsection}{\numberline {6.10}NTT}{33}
-\contentsline {subsection}{\numberline {6.11}组合数 lcm}{34}
-\contentsline {subsection}{\numberline {6.12}区间 lcm 的维护}{34}
-\contentsline {section}{\numberline {7}几何}{35}
-\contentsline {subsection}{\numberline {7.1}凸包}{35}
-\contentsline {section}{\numberline {8}黑科技和杂项}{35}
-\contentsline {subsection}{\numberline {8.1}高精度计算}{35}
+\contentsline {subsection}{\numberline {6.10}求原根}{33}
+\contentsline {subsection}{\numberline {6.11}NTT}{34}
+\contentsline {subsection}{\numberline {6.12}组合数 lcm}{35}
+\contentsline {subsection}{\numberline {6.13}区间 lcm 的维护}{35}
+\contentsline {section}{\numberline {7}几何}{36}
+\contentsline {subsection}{\numberline {7.1}凸包}{36}
+\contentsline {section}{\numberline {8}黑科技和杂项}{36}
+\contentsline {subsection}{\numberline {8.1}高精度计算}{36}
