@@ -1419,6 +1419,17 @@ int main(){
 $h_1 = 1, h_n = \frac{h_{n-1}(4n-2)}{n+1} = \frac{C(2n, n)}{n+1} = C(2n, n) - C(2n, n-1)$ \\
 在一个格点阵列中，从 $(0, 0)$ 点走到 $(n, m)$ 点且不经过对角线 $x = y$ 的方案数 $(x > y)$ ： \\  $C(n+m-1, m) - C(n+m-1, m-1)$ \\
 在一个格点阵列中，从 $(0, 0)$ 点走到 $(n, m)$ 点且不穿过对角线 $x = y$ 的方案数 $(x \geq y)$ ： \\ $C(n+m, m) - C(n+m, m-1)$ 
+\subsection{斯特林数}
+\subsubsection{第一类斯特林数}
+第一类 Stirling 数 $S(p, k)$ 的一个组合学解释是：将 $p$ 个物体排成 $k$ 个非空循环排列的方法数。 \\
+$S(p, k)$ 的递推公式： $S(p, k) = (p-1) S(p-1, k) + S(p-1, k-1), 1 \leq k \leq p-1$ \\
+边界条件： $S(p, 0) = 0, p \geq 1 \text{    } S(p, p) = 1, p \geq 0$
+\subsubsection{第二类斯特林数}
+第二类 Stirling 数 $S(p, k)$ 的一个组合学解释是：将 $p$ 个物体划分成 $k$ 个非空的不可辨别（可以理解为盒子没有编号）集合的方法数。\\
+$S(p, k)$ 的递推公式： $S(p, k) = k S(p-1, k) + S(p-1, k-1), 1 \leq k \leq p-1$ \\
+边界条件： $S(p, 0) = 0, p \geq 1 \text{    } S(p, p) = 1, p \geq 0$\\
+也有卷积形式： \\
+$$S(n, m) = \frac{1}{m!} \sum\limits_{k=0}^{m}(-1)^kC(m,k)(m-k)^n = \sum\limits_{k=0}^{m} \frac{(-1)^k(m-k)^n}{k!(m-k)!} = \sum\limits_{k=0}^{m}\frac{(-1)^k}{k!} \times \frac{(m-k)^n}{(m-k)!}$$
 \subsection{Lucas定理}
 接口：  \\
 初始化： void lucas::init(); \\
