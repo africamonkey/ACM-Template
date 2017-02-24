@@ -1430,6 +1430,8 @@ $S(p, k)$ 的递推公式： $S(p, k) = k S(p-1, k) + S(p-1, k-1), 1 \leq k \leq
 边界条件： $S(p, 0) = 0, p \geq 1 \text{    } S(p, p) = 1, p \geq 0$\\
 也有卷积形式： \\
 $$S(n, m) = \frac{1}{m!} \sum\limits_{k=0}^{m}(-1)^kC(m,k)(m-k)^n = \sum\limits_{k=0}^{m} \frac{(-1)^k(m-k)^n}{k!(m-k)!} = \sum\limits_{k=0}^{m}\frac{(-1)^k}{k!} \times \frac{(m-k)^n}{(m-k)!}$$
+\subsection{错排公式}
+$$D_1 = 0, D_2 = 1, D_n = (n-1)(D_{n-2} + D_{n-1})$$
 \subsection{Lucas定理}
 接口：  \\
 初始化： void lucas::init(); \\
