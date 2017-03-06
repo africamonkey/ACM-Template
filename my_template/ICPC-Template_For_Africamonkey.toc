@@ -24,34 +24,35 @@
 \contentsline {subsubsection}{\numberline {5.2.2}SPFA}{20}
 \contentsline {subsection}{\numberline {5.3}K 短路}{21}
 \contentsline {subsection}{\numberline {5.4}Tarjan}{24}
-\contentsline {subsection}{\numberline {5.5}统治者树（Dominator Tree）}{24}
-\contentsline {subsection}{\numberline {5.6}网络流}{25}
-\contentsline {subsubsection}{\numberline {5.6.1}最大流}{25}
-\contentsline {subsubsection}{\numberline {5.6.2}上下界有源汇网络流}{26}
-\contentsline {subsubsection}{\numberline {5.6.3}上下界无源汇网络流}{27}
-\contentsline {subsubsection}{\numberline {5.6.4}费用流}{27}
-\contentsline {subsubsection}{\numberline {5.6.5}zkw费用流}{28}
-\contentsline {section}{\numberline {6}数学}{30}
-\contentsline {subsection}{\numberline {6.1}扩展欧几里得解同余方程}{30}
-\contentsline {subsection}{\numberline {6.2}同余方程组}{30}
-\contentsline {subsection}{\numberline {6.3}卡特兰数}{30}
-\contentsline {subsection}{\numberline {6.4}斯特林数}{30}
-\contentsline {subsubsection}{\numberline {6.4.1}第一类斯特林数}{30}
-\contentsline {subsubsection}{\numberline {6.4.2}第二类斯特林数}{31}
-\contentsline {subsection}{\numberline {6.5}错排公式}{31}
-\contentsline {subsection}{\numberline {6.6}Lucas定理}{31}
-\contentsline {subsection}{\numberline {6.7}高斯消元}{31}
-\contentsline {subsubsection}{\numberline {6.7.1}行列式}{31}
-\contentsline {subsubsection}{\numberline {6.7.2}Matrix-Tree定理}{32}
-\contentsline {subsection}{\numberline {6.8}调和级数}{32}
-\contentsline {subsection}{\numberline {6.9}曼哈顿距离的变换}{32}
-\contentsline {subsection}{\numberline {6.10}线性筛素数}{32}
-\contentsline {subsection}{\numberline {6.11}FFT}{33}
-\contentsline {subsection}{\numberline {6.12}求原根}{34}
-\contentsline {subsection}{\numberline {6.13}NTT}{35}
-\contentsline {subsection}{\numberline {6.14}组合数 lcm}{36}
-\contentsline {subsection}{\numberline {6.15}区间 lcm 的维护}{36}
-\contentsline {section}{\numberline {7}几何}{37}
-\contentsline {subsection}{\numberline {7.1}凸包}{37}
-\contentsline {section}{\numberline {8}黑科技和杂项}{37}
-\contentsline {subsection}{\numberline {8.1}高精度计算}{37}
+\contentsline {subsection}{\numberline {5.5}2-SAT}{24}
+\contentsline {subsection}{\numberline {5.6}统治者树（Dominator Tree）}{26}
+\contentsline {subsection}{\numberline {5.7}网络流}{27}
+\contentsline {subsubsection}{\numberline {5.7.1}最大流}{27}
+\contentsline {subsubsection}{\numberline {5.7.2}上下界有源汇网络流}{28}
+\contentsline {subsubsection}{\numberline {5.7.3}上下界无源汇网络流}{29}
+\contentsline {subsubsection}{\numberline {5.7.4}费用流}{29}
+\contentsline {subsubsection}{\numberline {5.7.5}zkw费用流}{30}
+\contentsline {section}{\numberline {6}数学}{32}
+\contentsline {subsection}{\numberline {6.1}扩展欧几里得解同余方程}{32}
+\contentsline {subsection}{\numberline {6.2}同余方程组}{32}
+\contentsline {subsection}{\numberline {6.3}卡特兰数}{32}
+\contentsline {subsection}{\numberline {6.4}斯特林数}{32}
+\contentsline {subsubsection}{\numberline {6.4.1}第一类斯特林数}{32}
+\contentsline {subsubsection}{\numberline {6.4.2}第二类斯特林数}{33}
+\contentsline {subsection}{\numberline {6.5}错排公式}{33}
+\contentsline {subsection}{\numberline {6.6}Lucas定理}{33}
+\contentsline {subsection}{\numberline {6.7}高斯消元}{33}
+\contentsline {subsubsection}{\numberline {6.7.1}行列式}{33}
+\contentsline {subsubsection}{\numberline {6.7.2}Matrix-Tree定理}{34}
+\contentsline {subsection}{\numberline {6.8}调和级数}{34}
+\contentsline {subsection}{\numberline {6.9}曼哈顿距离的变换}{34}
+\contentsline {subsection}{\numberline {6.10}线性筛素数}{34}
+\contentsline {subsection}{\numberline {6.11}FFT}{35}
+\contentsline {subsection}{\numberline {6.12}求原根}{36}
+\contentsline {subsection}{\numberline {6.13}NTT}{37}
+\contentsline {subsection}{\numberline {6.14}组合数 lcm}{38}
+\contentsline {subsection}{\numberline {6.15}区间 lcm 的维护}{38}
+\contentsline {section}{\numberline {7}几何}{39}
+\contentsline {subsection}{\numberline {7.1}凸包}{39}
+\contentsline {section}{\numberline {8}黑科技和杂项}{39}
+\contentsline {subsection}{\numberline {8.1}高精度计算}{39}

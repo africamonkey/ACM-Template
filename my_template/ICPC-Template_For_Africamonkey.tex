@@ -1100,6 +1100,119 @@ void tarjan(int x) {
 	}
 }
 \end{lstlisting}
+\subsection{2-SAT}
+
+\begin{lstlisting}[language=C++]
+#define N number_of_vertex
+#define M number_of_edges
+
+struct MergePoint {
+	struct EDGE {
+		int adj, next;
+	} edge[M];
+	int ex[M], ey[M];
+	bool instack[N];
+	int gh[N], top, dfn[N], low[N], cnt, ind, stop, stack[N], belong[N];
+	void init() {
+		cnt = ind = stop = top = 0;
+		memset(dfn, 0, sizeof(dfn));
+		memset(instack, 0, sizeof(instack));
+		memset(gh, 0, sizeof(gh));
+	}
+	void addedge(int x, int y) { //reverse
+		std::swap(x, y);
+		edge[++top].adj = y;
+		edge[top].next = gh[x];
+		gh[x] = top;
+		ex[top] = x;
+		ey[top] = y;
+	}
+	void tarjan(int x) {
+		dfn[x] = low[x] = ++ind;
+		instack[x] = 1; stack[++stop] = x;
+		for (int p=gh[x]; p; p=edge[p].next)
+			if (!dfn[edge[p].adj]) {
+				tarjan(edge[p].adj);
+				low[x] = std::min(low[x], low[edge[p].adj]);
+			} else if (instack[edge[p].adj]) {
+				low[x] = std::min(low[x], dfn[edge[p].adj]);
+			}
+		if (dfn[x] == low[x]) {
+			++cnt; int tmp = 0;
+			while (tmp!=x) {
+				tmp = stack[stop--];
+				belong[tmp] = cnt;
+				instack[tmp] = 0;
+			}
+		}
+	}
+	void work() {
+		for (int i = (__first__); i <= (__last__); ++i)
+			if (!dfn[i])
+				tarjan(i);
+	}
+} merge;
+ 
+struct Topsort {
+	struct EDGE {
+		int adj, next;
+	} edge[M];
+	int n, top, gh[N], ops[N], deg[N], ans[N];
+	std::queue<int> q;
+	void init() {
+		n = merge.cnt; top = 0;
+		memset(gh, 0, sizeof(gh));
+		memset(deg, 0, sizeof(deg));
+	}
+	void addedge(int x, int y) {
+		if (x == y) return;
+		edge[++top].adj = y;
+		edge[top].next = gh[x];
+		gh[x] = top;
+		++deg[y];
+	}
+	void work() {
+		for (int i = 1; i <= n; ++i)
+			if (!deg[i])
+				q.push(i);
+		while (!q.empty()) {
+			int x = q.front();
+			q.pop();
+			for (int p = gh[x]; p; p = edge[p].next)
+				if (!--deg[edge[p].adj])
+					q.push(edge[p].adj);
+			if (ans[x]) continue;
+			ans[x] = -1; //not selected
+			ans[ops[x]] = 1; //selected
+		}
+	}
+} ts;
+\end{lstlisting}
+调用示例：
+\begin{lstlisting}[language=C++]
+	merge.init();
+	merge.addedge();
+	merge.work();
+	for (int i = 1; i <= n; ++i) {
+		if (merge.belong[U(i, 0)] == merge.belong[U(i, 1)]) {
+			puts("NO");
+			return 0;
+		}
+		ts.ops[merge.belong[U(i, 0)]] = merge.belong[U(i, 1)];
+		ts.ops[merge.belong[U(i, 1)]] = merge.belong[U(i, 0)];
+	}
+	ts.init();
+	ts.work();
+	puts("YES");
+	for (int i = 1; i <= n; ++i) {
+		int x = U(i, 0), y = U(i, 1);
+		x = merge.belong[x], y = merge.belong[y];
+		x = ts.ans[x], y = ts.ans[y];
+		if (x == 1) puts("0 is selected");
+		if (y == 1) puts("1 is selected");
+	}
+\end{lstlisting}
+
 \subsection{统治者树（Dominator Tree）}
 Dominator Tree 可以解决判断一类有向图必经点的问题。
 \\
@@ -1731,6 +1844,12 @@ struct huge{
 	huge operator =(huge b){
 		len=b.len;for (int i=1;i<=len;++i)a[i]=b.a[i]; return *this;
 	}
+	huge operator =(value x){
+		len=0;
+		while (x)a[++len]=x%base,x/=base;
+		if (!len)a[++len]=0;
+		return *this;
+	}
 	huge operator +(huge b){
 		int L=len>b.len?len:b.len;huge tmp;
 		for (int i=1;i<=L+1;++i)tmp.a[i]=0;
@@ -1830,12 +1949,6 @@ struct huge{
 	bool operator >=(value x){huge T;T=x;return *this>=T;}
 	bool operator <(value x){huge T;T=x;return *this<T;}
 	bool operator >(value x){huge T;T=x;return *this>T;}
-	huge operator =(value x){
-		len=0;
-		while (x)a[++len]=x%base,x/=base;
-		if (!len)a[++len]=0;
-		return *this;
-	}
 	bool operator <(huge b){
 		if (len<b.len)return 1;
 		if (len>b.len)return 0;
