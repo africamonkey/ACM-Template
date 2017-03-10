@@ -185,6 +185,23 @@ int find_substring(char *pattern, char *text, int *next, int *ret) {
 	return k;
 }
 \end{lstlisting}
+\subsection{可动态修改的KMP}
+支持：加入一个字符，删除一个字符。\\
+时间复杂度： $O(n \alpha)$ ， $\alpha$ 为字符集大小。\\
+代码中的字符为 $'0' - '9'$ ，可自行修改为 $'a' - 'z'$
+\begin{lstlisting}[language=C++]
+char t[N];
+int top, nxt[N], nxt_l[N][10];
+inline void del_letter() { --top; }
+inline void add_letter(char x) {
+	t[top++] = x;
+	int j = top-1;
+	memset(nxt_l[top], 0, sizeof(nxt_l[top]));
+	nxt[top] = nxt_l[top-1][x-'0'];
+	memcpy(nxt_l[top], nxt_l[nxt[top]], sizeof(nxt_l[nxt[top]]));
+	nxt_l[top][t[nxt[top]]-'0'] = nxt[top]+1;
+}
+\end{lstlisting}
 \subsection{扩展KMP}
 接口： void ExtendedKMP(char *a, char *b, int *next, int *ret); \\
 输出： \\ next:  a 关于自己每个后缀的最长公共前缀 \\ ret: a 关于 b 的每个后缀的最长公共前缀\\
@@ -226,7 +243,7 @@ void ExtendedKMP(char *a, char *b, int *next, int *ret) {
 	}
 }
 \end{lstlisting}
-\newpage
+
 \subsection{Manacher}
 p[i] 表示以 i 为对称轴的最长回文串长度
 \begin{lstlisting}[language=C++]
