@@ -1305,6 +1305,7 @@ namespace dominator {
 \end{lstlisting}
 \subsection{网络流}
 \subsubsection{最大流}
+注意： \emph{top 要初始化为 1}
 \begin{lstlisting}[language=C++]
 struct EDGE { int adj, w, next; } edge[M];
 int n, top, gh[N], nrl[N];
@@ -1369,6 +1370,7 @@ $T$ 向 $S$ 连容量为正无穷的边，将有源汇转化为无源汇。 \\
   \includegraphics[scale=0.7]{nwf-1.jpg}
 \end{figure}
 \subsubsection{费用流}
+注意： \emph{top 要初始化为 1}
 \begin{lstlisting}[language=C++]
 #define inf 0x3f3f3f3f
 struct NetWorkFlow {
@@ -1433,6 +1435,7 @@ struct NetWorkFlow {
 } nwf;
 \end{lstlisting}
 \subsubsection{zkw费用流}
+注意： \emph{top 要初始化为 1，不得用于有负权的图}
 \begin{lstlisting}[language=C++]
 #define inf 0x3f3f3f3f
 struct NetWorkFlow {
@@ -1846,6 +1849,185 @@ int convexHull(point p[],int n,point ch[]) {
 }
 \end{lstlisting}
 \section{黑科技和杂项}
+\subsection{找规律}
+有些题目，只给一个正整数 $n$ ，然后要求输出一个答案。这时，我们可以暴力得到小数据的解，用高斯消元得到递推式，然后用矩阵快速幂求解。\\
+使用方法： \\
+首先在 gauss.in 中输入小数据的解（ $n = 1$ 时， $n = 2$ 时， $\cdots$ ） ，以 $EOF$ 结束。 \\
+依次运行 gauss.cpp , matrix.cpp ，得到 matrix.out \\
+将 matrix.out 中的文件粘贴在 main.cpp 中相应的位置中。注意模数一定要是质数。\\
+
+\begin{lstlisting}[language=C++]
+//guass.cpp
+#include <bits/stdc++.h>
+#define N 102
+#define mod 1000000007
+//caution: you can use this program iff mod is a prime.
+
+using namespace std;
+
+int n, m, k, a[N], g[N][N];
+
+int power(int base, int times) {
+	int ret = 1;
+	while (times) {
+		if (times & 1) ret = 1ll * ret * base % mod;
+		base = 1ll * base * base % mod;
+		times >>= 1;
+	}
+	return ret;
+}
+
+int test() {
+	for (int i=0;i<m;i++) {
+		for (int j=i;j<=m;j++)
+			if (g[j][i]) {
+				for (int k=i;k<=m;k++)
+					swap(g[i][k], g[j][k]);
+				break;
+			}
+		if (g[i][i] == 0)
+			return 0;
+		for (int j=i+1;j<n;j++) {
+			while (g[j][i]) {
+				int t = 1ll * g[i][i] * power(g[j][i], mod - 2) % mod;
+				for (int k=i;k<n;k++)
+					g[i][k] = (g[i][k] + mod - (1ll * t * g[j][k] % mod)) % mod;
+				for (int k=i;k<=m;k++)
+					swap(g[i][k], g[j][k]);
+			}
+		}
+		int t = power(g[i][i], mod - 2);
+		for (int j = 0; j <= m; ++j)
+			g[i][j] = 1ll * g[i][j] * t % mod;
+	}
+	for (int i = m; i < n; ++i)
+		if (g[i][m]) return 0;
+	for (int i = m - 1; i >= 0; --i) {
+		int t = power(g[i][i], mod - 2);
+		g[i][i] = 1;
+		g[i][m] = 1ll * g[i][m] * t % mod;
+		for (int j = 0; j < i; ++j)
+			g[j][m] = (g[j][m] + mod - 1ll * g[i][m] * g[j][i] % mod) % mod;
+	}
+	printf("%d\n", m);
+	for (int i = 0; i < m; ++i)
+		printf("%d ", g[i][m]);
+	puts("");
+	for (int i = 0; i < m - 1; ++i)
+		printf("%d ", a[i]);
+	puts("1");
+	return 1;
+}
+
+int main() {
+	freopen("gauss.in", "r", stdin);
+	freopen("gauss.out", "w", stdout);
+	k = 0;
+	while (~scanf("%d", &a[k++])) ;
+	for (int sm = 1; sm <= k - sm; ++sm) {
+		n = k - sm - 1;
+		m = sm + 1;
+		for (int i = 0; i < n; ++i) {
+			for (int j = 0; j <= sm; ++j)
+				g[i][j] = a[i + j];
+			g[i][m] = 1;
+			swap(g[i][m - 1], g[i][m]);
+		}
+		if (test()) return 0;
+	}
+	puts("no solution");
+	return 0;
+}
+\end{lstlisting}
+
+\begin{lstlisting}[language=C++]
+//matrix.cpp
+#include <bits/stdc++.h>
+#define N 102
+using namespace std;
+
+int n, a[N];
+
+int main() {
+    freopen("gauss.out", "r", stdin);
+    freopen("matrix.out", "w", stdout);
+    scanf("%d", &n);
+    for (int i = 0; i < n; ++i) scanf("%d", &a[i]);
+    printf("#define M %d\n", n);
+    printf("const int trans[M][M] = {\n");
+    for (int i = 0; i < n; ++i) {
+        printf("\t{");
+        for (int j = 0; j < n; ++j) {
+            int t;
+            if (j < n - 2) t = i == j + 1;
+            else if (j == n - 2) t = a[i];
+            else t = i == n - 1;
+            printf("%s%d", j == 0 ? "" : ", ", t);
+        }
+        printf("}%s\n", i == n - 1 ? "" : ",");
+    }
+    printf("};\n");
+    printf("const int pref[M] = {");
+    for (int i = 0; i < n; ++i) {
+        int x;
+        scanf("%d", &x);
+        printf("%d%s", x, i == n - 1 ? "};\n" : ", ");
+    }
+    return 0;
+}
+\end{lstlisting}
+
+\begin{lstlisting}[language=C++]
+//main.cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+/* paste matrix.out here. */
+
+#define mod 1000000007
+
+struct Matrix {
+    int c[M][M];
+    void clear() { memset(c, 0, sizeof(c)); }
+    void identity() { clear(); for (int i = 0; i < M; ++i) c[i][i] = 1; }
+    void base() { memcpy(c, trans, sizeof(trans)); }
+    friend Matrix operator * (const Matrix &a, const Matrix &b) {
+        Matrix c; c.clear();
+        for (int i = 0; i < M; ++i)
+            for (int j = 0; j < M; ++j)
+                for (int k = 0; k < M; ++k)
+                    c.c[i][j] = (c.c[i][j] + 1ll * a.c[i][k] * b.c[k][j] % mod) % mod;
+        return c;
+    }
+} start, base;
+
+Matrix power(Matrix base, int times) {
+    Matrix ret; ret.identity();
+    while (times) {
+        if (times & 1) ret = ret * base;
+        base = base * base;
+        times >>= 1;
+    }
+    return ret;
+}
+
+int main() {
+    int tot;
+    scanf("%d", &tot);
+    while (tot--) {
+        int n;
+        scanf("%d", &n);
+        start.clear();
+        for (int i = 0; i < M; ++i) start.c[0][i] = pref[i];
+        base.base();
+        base = power(base, n - 1);
+        start = start * base;
+        printf("%d\n", start.c[0][0]);
+    }
+    return 0;
+}
+\end{lstlisting}
+
 \subsection{高精度计算}
 \begin{lstlisting}[language=C++]
 #include<algorithm>
