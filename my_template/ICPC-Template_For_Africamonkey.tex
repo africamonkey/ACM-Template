@@ -694,6 +694,7 @@ struct Treap {
 \newpage
 \section{树}
 \subsection{点分治}
+初始化时须设置 $top = 1$ 。
 \begin{lstlisting}[language=C++]
 void addedge(int x, int y) {
 	edge[++top].adj = y;
