@@ -693,6 +693,60 @@ struct Treap {
 \end{lstlisting}
 \newpage
 \section{树}
+\subsection{点分治}
+\begin{lstlisting}[language=C++]
+void addedge(int x, int y) {
+	edge[++top].adj = y;
+	edge[top].valid = 1;
+	edge[top].next = gh[x];
+	gh[x] = top;
+}
+void get_size(int x, int root=0) {
+	size[x] = 1; son[x] = 0;
+	int dd = 0;
+	for (int p=gh[x]; p; p=edge[p].next)
+		if (edge[p].adj != root && edge[p].valid) {
+			get_size(edge[p].adj, x);
+			size[x] += size[edge[p].adj];
+			if (size[edge[p].adj] > dd) {
+				dd = size[edge[p].adj];
+				son[x] = edge[p].adj;
+			}
+		}
+}
+int getroot(int x) {
+	get_size(x);
+	int sz = size[x];
+	while (size[son[x]] > sz/2)
+		x = son[x];
+	return x;
+}
+void dc(int x) {
+	x = getroot(x);
+	static int list[N], ltop;
+	ltop = 0;
+	for (int p=gh[x]; p; p=edge[p].next)
+		if (edge[p].valid)
+			list[++ltop] = p;
+	clear();
+	for (int i=1;i<=ltop;i++) {
+		update();
+		modify();
+	}
+	clear();
+	for (int i=ltop;i>=1;i--) {
+		update();
+		modify();
+	}
+	//be careful about the root
+	for (int p=gh[x]; p; p=edge[p].next)
+		if (edge[p].valid) {
+			edge[p].valid = 0;
+			edge[p^1].valid = 0;
+			dc(edge[p].adj);
+		}
+}
+\end{lstlisting}
 \subsection{动态树}
 接口： \\ command(x, y) ： 将 x 到 y 路径的 Splay Tree 分离出来。 \\
 linkcut(u1, v1, u2, v2) ： 将树中原有的边 (u1, v1) 删除，加入一条新边 (u2, v2) 
@@ -1586,6 +1640,7 @@ namespace lucas {
 	void init() {
 		fac[0] = 1; for (int i=1;i<mod;i++) fac[i] = (fac[i-1] * i) % mod;
 		facv[mod-1] = power(fac[mod-1], mod-2);
+		for (int i=mod-2;i>=0;--i) facv[i] = (facv[i+1] * (i+1)) % mod;
 	}
 	LL C(unsigned LL n, unsigned LL m) {
 		if (n < m) return 0;
