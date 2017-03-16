@@ -1,22 +1,32 @@
 \documentclass{article}
-\usepackage{CJK}
+\usepackage{ctex}
 \usepackage{xypic}
 \usepackage{amsfonts,amssymb}
 \usepackage{multirow}
 \usepackage{geometry}
 \usepackage{graphicx}
 \usepackage{listings}
-\usepackage{listings}
 \usepackage{lipsum}
 \usepackage{courier}
+\usepackage{fancyvrb}
+\usepackage{etoolbox}
 
 
 \linespread{1.2}
 \geometry{left=3cm,right=2.5cm,top=2.5cm,bottom=2.5cm}
-\lstset{basicstyle=\footnotesize\ttfamily,breaklines=true}
+
+\makeatletter
+\patchcmd{\FV@SetupFont}
+  {\FV@BaseLineStretch}
+  {\fontencoding{T1}\FV@BaseLineStretch}
+  {}{}
+\makeatother
+
+\lstset{basicstyle=\fontencoding{T1}\ttfamily,breaklines=true}
 \lstset{numbers=left,frame=shadowbox,tabsize=4}
+%\lstset{extendedchars=false}
 \begin{document}
-\begin{CJK}{UTF8}{song}
+
 \title{ICPC Templates For Africamonkey}
 \author {Africamonkey}
 \maketitle
@@ -49,6 +59,7 @@ int main() {
 }
 \end{lstlisting}
 \subsection{树上莫队}
+
 \begin{lstlisting}[language=C++]
 struct Query { int l, r, id, l_group; } query[N];
 struct EDGE { int adj, next; } edge[N*2];
@@ -2251,7 +2262,6 @@ int main(){
 	for(int i=3;i<=1000;i++)f[i]=f[i-1]+f[i-2];
 }
 \end{lstlisting}
-\end{CJK}
 \end{document}
 
 
