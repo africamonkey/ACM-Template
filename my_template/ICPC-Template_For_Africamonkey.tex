@@ -1,3 +1,5 @@
+% XeLaTeX
+
 \documentclass{article}
 \usepackage{ctex}
 \usepackage{xypic}
@@ -22,7 +24,7 @@
   {}{}
 \makeatother
 
-\lstset{basicstyle=\fontencoding{T1}\ttfamily,breaklines=true}
+\lstset{basicstyle=\small\fontencoding{T1}\ttfamily,breaklines=true}
 \lstset{numbers=left,frame=shadowbox,tabsize=4}
 %\lstset{extendedchars=false}
 \begin{document}
@@ -140,7 +142,7 @@ int main() {
 	......
 }
 \end{lstlisting}
-\newpage
+
 \section{字符串}
 \subsection{哈希}
 \begin{lstlisting}[language=C++]
@@ -155,9 +157,12 @@ int main() {
 }
 \end{lstlisting}
 \subsection{KMP}
-接口： int find\_substring(char *pattern, char *text, int *next, int *ret); \\
-输入： 模式串，匹配串 \\
-输出： 返回值表示模式串在匹配串中出现的次数 \\
+接口： int find\_substring(char *pattern, char *text, int *next, int *ret); 
+
+输入： 模式串，匹配串 
+
+输出： 返回值表示模式串在匹配串中出现的次数 
+
 KMP的next[i]表示从0到i的字符串s，前缀和后缀的最长重叠长度。
 \begin{lstlisting}[language=C++]
 void find_next(char *pattern, int *next) {
@@ -197,8 +202,10 @@ int find_substring(char *pattern, char *text, int *next, int *ret) {
 }
 \end{lstlisting}
 \subsection{可动态修改的KMP}
-支持：加入一个字符，删除一个字符。\\
-时间复杂度： $O(n \alpha)$ ， $\alpha$ 为字符集大小。\\
+支持：加入一个字符，删除一个字符。
+
+时间复杂度： $O(n \alpha)$ ， $\alpha$ 为字符集大小。
+
 代码中的字符为 $'0' - '9'$ ，可自行修改为 $'a' - 'z'$
 \begin{lstlisting}[language=C++]
 char t[N];
@@ -214,9 +221,17 @@ inline void add_letter(char x) {
 }
 \end{lstlisting}
 \subsection{扩展KMP}
-接口： void ExtendedKMP(char *a, char *b, int *next, int *ret); \\
-输出： \\ next:  a 关于自己每个后缀的最长公共前缀 \\ ret: a 关于 b 的每个后缀的最长公共前缀\\
-EXKMP的next[i]表示：从i到n-1的字符串st前缀和原串前缀的最长重叠长度。\\
+接口： void ExtendedKMP(char *a, char *b, int *next, int *ret); 
+
+输出： 
+
+next:  a 关于自己每个后缀的最长公共前缀 
+
+ret: a 关于 b 的每个后缀的最长公共前缀
+
+
+EXKMP的next[i]表示：从i到n-1的字符串st前缀和原串前缀的最长重叠长度。
+
 \begin{lstlisting}[language=C++]
 void get_next(char *a, int *next) {
 	int i, j, k;
@@ -297,7 +312,7 @@ string smallestRepresation(string s) {
 	return s.substr(i, n);
 }
 \end{lstlisting}
-\newpage
+
 \subsection{AC自动机}
 \begin{lstlisting}[language=C++]
 struct Node {
@@ -340,7 +355,7 @@ void build() {
 	}
 }
 \end{lstlisting}
-\newpage
+
 \subsection{后缀数组}
 参数 m 表示字符集的大小，即 $0 \leq r_i < m$ 
 \begin{lstlisting}[language=C++]
@@ -387,7 +402,7 @@ void calc_height()
 		}
 }
 \end{lstlisting}
-\newpage
+
 \subsection{后缀自动机}
 下面的代码是求两个串的LCS（最长公共子串）。
 \begin{lstlisting}[language=C++]
@@ -489,10 +504,14 @@ int queryr(int p, int left, int right, int y, int w) {
 }
 \end{lstlisting}
 \subsection{Splay}
-接口： \\
-$\text{ADD x y d}$ ： 将 $[x, y]$ 的所有数加上 $d$ \\
-$\text{REVERSE x y}$ ： 将 $[x, y]$ 翻转 \\
-$\text{INSERT x p}$ ： 将 $p$ 插入到第 $x$ 个数的后面 \\
+接口： 
+
+$\text{ADD x y d}$ ： 将 $[x, y]$ 的所有数加上 $d$ 
+
+$\text{REVERSE x y}$ ： 将 $[x, y]$ 翻转 
+
+$\text{INSERT x p}$ ： 将 $p$ 插入到第 $x$ 个数的后面 
+
 $\text{DEL x}$ ： 将第 $x$ 个数删除
 \begin{lstlisting}[language=C++]
 struct SPLAY {
@@ -614,13 +633,18 @@ struct SPLAY {
 	}
 } tree;
 \end{lstlisting}
-\newpage
+
 \subsection{可持久化Treap}
-接口： \\
-void insert(int x, char c); 在当前第 $x$ 个字符后插入 $c$ \\
-void del(int x, int y); 删除第 $x$ 个字符到第 $y$ 个字符 \\
-void copy(int l, int r, int x); 复制第 $l$ 个字符到第 $r$ 个字符，然后粘贴到第 $x$ 个字符后 \\
-void reverse(int x, int y); 翻转第 $x$ 个到第 $y$ 个字符 \\
+接口： 
+
+void insert(int x, char c); 在当前第 $x$ 个字符后插入 $c$ 
+
+void del(int x, int y); 删除第 $x$ 个字符到第 $y$ 个字符 
+
+void copy(int l, int r, int x); 复制第 $l$ 个字符到第 $r$ 个字符，然后粘贴到第 $x$ 个字符后 
+
+void reverse(int x, int y); 翻转第 $x$ 个到第 $y$ 个字符 
+
 char query(int k); 表示询问当前第 $x$ 个字符是什么
 \begin{lstlisting}[language=C++]
 #define mod 1000000007
@@ -702,7 +726,48 @@ struct Treap {
 	}
 } treap;
 \end{lstlisting}
-\newpage
+\subsection{可持久化并查集}
+接口：
+
+void init() 初始化
+
+void merge(int x, int y, int time) 在 time 时刻将 x 和 y 连一条边，注意加边顺序必须按 time 从小到大加边
+
+void GetFather(int x, int time) 询问 time 时刻及以前的连边状态中，x所属的集合
+\begin{lstlisting}[language=C++]
+namespace pers_union {
+	const int inf = 0x3f3f3f3f;
+	int father[N], Father[N], Time[N];
+	vector<int> e[N];
+	void init() {
+		for (int i=1;i<=n;i++) {
+			father[i] = i;
+			Father[i] = i;
+			Time[i] = inf;
+			e[i].clear();
+			e[i].push_back(i);
+		}
+	}
+	int getfather(int x) {
+		return (father[x] == x) ? x : father[x] = getfather(father[x]);
+	}
+	int GetFather(int x, int time) {
+		return (Time[x] <= time) ? GetFather(Father[x], time) : x;
+	}
+	void merge(int x, int y, int time) {
+		int fx = getfather(x), fy = getfather(y);
+		if (fx == fy) return;
+		if (e[fx].size() > e[fy].size()) swap(fx, fy);
+		father[fx] = fy;
+		Father[fx] = fy;
+		Time[fx] = time;
+		for (int i=0;i<e[fx].size();i++) {
+			e[fy].push_back(e[fx][i]);
+		}
+	}
+};
+\end{lstlisting}
+
 \section{树}
 \subsection{点分治}
 初始化时须设置 $top = 1$ 。
@@ -760,7 +825,10 @@ void dc(int x) {
 }
 \end{lstlisting}
 \subsection{动态树}
-接口： \\ command(x, y) ： 将 x 到 y 路径的 Splay Tree 分离出来。 \\
+接口： 
+
+command(x, y) ： 将 x 到 y 路径的 Splay Tree 分离出来。 
+
 linkcut(u1, v1, u2, v2) ： 将树中原有的边 (u1, v1) 删除，加入一条新边 (u2, v2) 
 \begin{lstlisting}[language=C++]
 struct DynamicTREE{
@@ -870,16 +938,21 @@ struct DynamicTREE{
 \end{lstlisting}
 \section{图}
 \subsection{欧拉回路}
-欧拉回路： \\
-无向图：每个顶点的度数都是偶数，则存在欧拉回路。 \\
-有向图：每个顶点的入度 = 出度，则存在欧拉回路。 \\
-欧拉路径: \\
+欧拉回路： 
+
+无向图：每个顶点的度数都是偶数，则存在欧拉回路。 
+
+有向图：每个顶点的入度 = 出度，则存在欧拉回路。 
+
+欧拉路径: 
+
 无向图：当且仅当该图所有顶点的度数为偶数，或者除了两个度数为奇数外其余的全是偶
-数。 \\
+数。 
+
 有向图：当且仅当该图所有顶点出度 = 入度或者一个顶点出度 = 入度 + 1，另一个顶点入
 度 = 出度 + 1，其他顶点出度 = 入度。
-下面 $O(n + m)$ 求欧拉回路的代码中， $n$ 为点数， $m$ 为边数，若有解则依次输出经过的边
-的编号,若是无向图,则正数表示 $x$ 到 $y$ ，负数表示 $y$ 到 $x$ 。
+
+下面 $O(n + m)$ 求欧拉回路的代码中， $n$ 为点数， $m$ 为边数，若有解则依次输出经过的边的编号,若是无向图,则正数表示 $x$ 到 $y$ ，负数表示 $y$ 到 $x$ 。
 \begin{lstlisting}[language=C++]
 namespace UndirectedGraph{
 	int n,m,i,x,y,d[N],g[N],v[M<<1],w[M<<1],vis[M<<1],nxt[M<<1],ed;
@@ -1298,19 +1371,19 @@ struct Topsort {
 
 \subsection{统治者树（Dominator Tree）}
 Dominator Tree 可以解决判断一类有向图必经点的问题。
-\\
+
 idom[x] 表示离 x 最近的必经点（重编号后）。将 idom[x] 作为 x 的父亲，构成一棵 Dominator Tree
-\\
+
 接口：
-\\
+
 void dominator::init(int n); 初始化，有向图节点数为 $n$ 
-\\
+
 void dominator::addedge(int u, int v); 添加一条有向边 (u, v)
-\\
+
 void dominator::work(int root); 以 root 为根，建立一棵 Dominator Tree 
-\\
+
 结果的返回：
-\\
+
 在执行 dominator::work(int root); 后，树边保存在 vector <int> tree[N] 中
 \begin{lstlisting}[language=C++]
 namespace dominator {
@@ -1421,16 +1494,24 @@ int work() {
 }
 \end{lstlisting}
 \subsubsection{上下界有源汇网络流}
-$T$ 向 $S$ 连容量为正无穷的边，将有源汇转化为无源汇。 \\
-每条边容量减去下界，设 $in[i]$ 表示流入 $i$ 的下界之和减去流出 $i$ 的下界之和。  \\
-新建超级源汇 $SS, TT$ ，对于 $in[i] > 0$ 的点， $SS$ 向 $i$ 连容量为 $in[i]$ 的边。对于 $in[i] < 0$ 的点， $i$ 向 $TT$ 连容量为 $-in[i]$ 的边。 \\
-求出以 $SS, TT$ 为源汇的最大流，如果等于 $\Sigma in[i] (in[i]>0)$ ，则存在可行流。再求出 $S, T$ 为源汇的最大流即为最大流。 \\
+$T$ 向 $S$ 连容量为正无穷的边，将有源汇转化为无源汇。 
+
+每条边容量减去下界，设 $in[i]$ 表示流入 $i$ 的下界之和减去流出 $i$ 的下界之和。  
+
+新建超级源汇 $SS, TT$ ，对于 $in[i] > 0$ 的点， $SS$ 向 $i$ 连容量为 $in[i]$ 的边。对于 $in[i] < 0$ 的点， $i$ 向 $TT$ 连容量为 $-in[i]$ 的边。 
+
+求出以 $SS, TT$ 为源汇的最大流，如果等于 $\Sigma in[i] (in[i]>0)$ ，则存在可行流。再求出 $S, T$ 为源汇的最大流即为最大流。 
+
 费用流：建完图后等价于求以 $SS, TT$ 为源汇的费用流。
 \subsubsection{上下界无源汇网络流}
-1. 怎样求无源汇有上下界网络的可行流？ \\
-由于有源汇的网络我们先要转化成无源汇，所以本来就无源汇的网络不用再作特殊处理。 \\
-2. 怎样求无源汇有上下界网络的最大流、最小流？ \\
-一种简易的方法是采用二分的思想，不断通过可行流的存在与否对 $(t, s)$ 边的上下界 $U, L$ 进行调整。求最大流时令 $U = \infty$ 并二分 $L$ ；求最小流时令 $L = 0$ 并二分 $U$ 。道理很简单，因为可行流的取值范围是一段连续的区间，我们只要通过二分找到有解和无解的分界线即可。\\
+1. 怎样求无源汇有上下界网络的可行流？ 
+
+由于有源汇的网络我们先要转化成无源汇，所以本来就无源汇的网络不用再作特殊处理。 
+
+2. 怎样求无源汇有上下界网络的最大流、最小流？ 
+
+一种简易的方法是采用二分的思想，不断通过可行流的存在与否对 $(t, s)$ 边的上下界 $U, L$ 进行调整。求最大流时令 $U = \infty$ 并二分 $L$ ；求最小流时令 $L = 0$ 并二分 $U$ 。道理很简单，因为可行流的取值范围是一段连续的区间，我们只要通过二分找到有解和无解的分界线即可。
+
 \begin{figure}[htbp]
   \centering
   \includegraphics[scale=0.7]{nwf-1.jpg}
@@ -1577,7 +1658,7 @@ struct NetWorkFlow {
 	}
 } nwf;
 \end{lstlisting}
-\newpage
+
 \section{数学}
 \subsection{扩展欧几里得解同余方程}
 ans[] 保存的是循环节内所有的解
@@ -1615,25 +1696,39 @@ int main(){
 }
 \end{lstlisting}
 \subsection{卡特兰数}
-$h_1 = 1, h_n = \frac{h_{n-1}(4n-2)}{n+1} = \frac{C(2n, n)}{n+1} = C(2n, n) - C(2n, n-1)$ \\
-在一个格点阵列中，从 $(0, 0)$ 点走到 $(n, m)$ 点且不经过对角线 $x = y$ 的方案数 $(x > y)$ ： \\  $C(n+m-1, m) - C(n+m-1, m-1)$ \\
-在一个格点阵列中，从 $(0, 0)$ 点走到 $(n, m)$ 点且不穿过对角线 $x = y$ 的方案数 $(x \geq y)$ ： \\ $C(n+m, m) - C(n+m, m-1)$ 
+$h_1 = 1, h_n = \frac{h_{n-1}(4n-2)}{n+1} = \frac{C(2n, n)}{n+1} = C(2n, n) - C(2n, n-1)$ 
+
+在一个格点阵列中，从 $(0, 0)$ 点走到 $(n, m)$ 点且不经过对角线 $x = y$ 的方案数 $(x > y)$ ： 
+
+$C(n+m-1, m) - C(n+m-1, m-1)$ 
+
+在一个格点阵列中，从 $(0, 0)$ 点走到 $(n, m)$ 点且不穿过对角线 $x = y$ 的方案数 $(x \geq y)$ ： 
+
+ $C(n+m, m) - C(n+m, m-1)$ 
 \subsection{斯特林数}
 \subsubsection{第一类斯特林数}
-第一类 Stirling 数 $S(p, k)$ 的一个组合学解释是：将 $p$ 个物体排成 $k$ 个非空循环排列的方法数。 \\
-$S(p, k)$ 的递推公式： $S(p, k) = (p-1) S(p-1, k) + S(p-1, k-1), 1 \leq k \leq p-1$ \\
+第一类 Stirling 数 $S(p, k)$ 的一个组合学解释是：将 $p$ 个物体排成 $k$ 个非空循环排列的方法数。 
+
+$S(p, k)$ 的递推公式： $S(p, k) = (p-1) S(p-1, k) + S(p-1, k-1), 1 \leq k \leq p-1$ 
+
 边界条件： $S(p, 0) = 0, p \geq 1 \text{    } S(p, p) = 1, p \geq 0$
 \subsubsection{第二类斯特林数}
-第二类 Stirling 数 $S(p, k)$ 的一个组合学解释是：将 $p$ 个物体划分成 $k$ 个非空的不可辨别（可以理解为盒子没有编号）集合的方法数。\\
-$S(p, k)$ 的递推公式： $S(p, k) = k S(p-1, k) + S(p-1, k-1), 1 \leq k \leq p-1$ \\
-边界条件： $S(p, 0) = 0, p \geq 1 \text{    } S(p, p) = 1, p \geq 0$\\
-也有卷积形式： \\
+第二类 Stirling 数 $S(p, k)$ 的一个组合学解释是：将 $p$ 个物体划分成 $k$ 个非空的不可辨别（可以理解为盒子没有编号）集合的方法数。
+
+$S(p, k)$ 的递推公式： $S(p, k) = k S(p-1, k) + S(p-1, k-1), 1 \leq k \leq p-1$ 
+
+边界条件： $S(p, 0) = 0, p \geq 1 \text{    } S(p, p) = 1, p \geq 0$
+
+也有卷积形式： 
+
 $$S(n, m) = \frac{1}{m!} \sum\limits_{k=0}^{m}(-1)^kC(m,k)(m-k)^n = \sum\limits_{k=0}^{m} \frac{(-1)^k(m-k)^n}{k!(m-k)!} = \sum\limits_{k=0}^{m}\frac{(-1)^k}{k!} \times \frac{(m-k)^n}{(m-k)!}$$
 \subsection{错排公式}
 $$D_1 = 0, D_2 = 1, D_n = (n-1)(D_{n-2} + D_{n-1})$$
 \subsection{Lucas定理}
-接口：  \\
-初始化： void lucas::init(); \\
+接口：  
+
+初始化： void lucas::init(); 
+
 计算 $C(n, m) \% mod$ 的值： LL lucas::Lucas(LL n, LL m);
 \begin{lstlisting}[language=C++]
 #define mod 110119
@@ -1772,8 +1867,10 @@ namespace FFT {
 };
 \end{lstlisting}
 \subsection{求原根}
-接口： LL p\_root(LL p); \\
-输入： 一个素数 $p$  \\
+接口： LL p\_root(LL p); 
+
+输入： 一个素数 $p$  
+
 输出： $p$ 的原根
 \begin{lstlisting}[language=C++]
 #include <bits/stdc++.h>
@@ -1885,7 +1982,7 @@ int main() {
 $(n+1) lcm(C(n, 0), C(n,1),...,C(n,k)) = lcm(n+1, n, n-1, ..., n-k+1)$
 \subsection{区间 lcm 的维护}
 对于一个数，将其分解质因数，若有因子 $p^k$ ，那么拆分出 $k$ 个数 $p, p^2, ..., p^k$ ，权值都为 $p$ ，那么查询区间 $[l, r]$ 内所有数的 lcm 的答案 = 所有在该区间中出现过的数的权值之积，可持久化线段树维护即可。
-\newpage
+
 \section{几何}
 \subsection{凸包}
 \begin{lstlisting}[language=C++]
@@ -1917,11 +2014,16 @@ int convexHull(point p[],int n,point ch[]) {
 \end{lstlisting}
 \section{黑科技和杂项}
 \subsection{找规律}
-有些题目，只给一个正整数 $n$ ，然后要求输出一个答案。这时，我们可以暴力得到小数据的解，用高斯消元得到递推式，然后用矩阵快速幂求解。\\
-使用方法： \\
-首先在 gauss.in 中输入小数据的解（ $n = 1$ 时， $n = 2$ 时， $\cdots$ ） ，以 $EOF$ 结束。 \\
-依次运行 gauss.cpp , matrix.cpp ，得到 matrix.out \\
-将 matrix.out 中的文件粘贴在 main.cpp 中相应的位置中。注意模数一定要是质数。\\
+有些题目，只给一个正整数 $n$ ，然后要求输出一个答案。这时，我们可以暴力得到小数据的解，用高斯消元得到递推式，然后用矩阵快速幂求解。
+
+使用方法： 
+
+首先在 gauss.in 中输入小数据的解（ $n = 1$ 时， $n = 2$ 时， $\cdots$ ） ，以 $EOF$ 结束。 
+
+依次运行 gauss.cpp , matrix.cpp ，得到 matrix.out 
+
+将 matrix.out 中的文件粘贴在 main.cpp 中相应的位置中。注意模数一定要是质数。
+
 
 \begin{lstlisting}[language=C++]
 //guass.cpp
