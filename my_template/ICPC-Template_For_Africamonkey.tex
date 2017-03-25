@@ -1816,6 +1816,102 @@ for (int i=2;i<N;i++) {
 	}
 }
 \end{lstlisting}
+\subsection{杜教筛}
+getphi(t, x) 表示求 $\sum\limits_{i = 1}^{x} i^t \phi(i)$ 。
+
+推导过程：
+
+记 $S(n) = \sum\limits_{i = 1}^{n} f(i)$ ，取任意函数 $g$ 有恒等式
+$$S(n) = \sum\limits_{i = 1}^{n} (f \cdot g) (i) - \sum\limits_{i = 2}^{n} g(i) S(\lfloor \frac{n}{i} \rfloor)$$
+
+其中， $(f \cdot g)$ 表示 $f$ 和 $g$ 的狄利克雷卷积：即： $(f \cdot g) (n) = \sum\limits_{d | n} f(d)g(\frac{n}{d})$
+
+关于恒等式的证明：
+
+将 $\sum\limits_{i = 2}^{n} g(i)S(\lfloor \frac{n}{i} \rfloor)$ 移到左边去，即只需证
+
+$$\sum\limits_{i = 1}^{n} (f \cdot g) (i) = \sum\limits_{i = 1}^{n} g(i) S(\lfloor \frac{n}{i} \rfloor)$$
+
+将狄利克雷卷积展开，得：
+
+$$\sum\limits_{i = 1}^{n} \sum\limits_{d | i} g(d) f(\frac{i}{d}) = \sum\limits_{i = 1}^{n} g(i) S(\lfloor \frac{n}{i} \rfloor)$$
+
+即：
+
+$$\sum\limits_{d = 1}^{n} g(d) \sum\limits_{i = 1}^{\lfloor \frac{n}{d} \rfloor} f(i) = \sum\limits_{i = 1}^{n} g(i) S(\lfloor \frac{n}{i} \rfloor)$$
+
+显然相等，恒等式证完。
+
+取 $f(i) = i^p \phi(i), g(i) = i^p$ ，则有：
+
+$$S(n) = \sum\limits_{i = 1}^{n} i^p \phi(i) = \sum\limits_{i = 1}^{n} i^{p+1} - \sum\limits_{i = 2}^{n}i^pS(\lfloor \frac{n}{i} \rfloor)$$
+
+其中有用到等式 $\sum\limits_{d | n} \phi(d) = n$
+\begin{lstlisting}
+#include <bits/stdc++.h>
+ 
+#define N 5000020
+#define LL long long
+#define mod 1000000007
+#define div2 ((mod+1)/2)
+#define div6 ((mod+1)/6)
+ 
+using namespace std;
+ 
+int n, prime[N], v[N];
+LL phi[3][N];
+ 
+map<int, int> mp[3];
+ 
+int sum(int t, int x) { //calculate 1^t + 2^t + ... + x^t
+	if (t == 0) return x;
+	if (t == 1) return 1ll * x * (x + 1) % mod * div2 % mod;
+	if (t == 2) return 1ll * x * (x + 1) % mod * (2ll * x % mod + 1) % mod * div6 % mod;
+	if (t == 3) return 1ll * x * x % mod * (x + 1) % mod * (x + 1) % mod * div2 % mod * div2 % mod;
+}
+ 
+int getphi(int t, int x) {
+	if (x < N) return phi[t][x];
+	if (mp[t].find(x) != mp[t].end()) return mp[t][x];
+	LL ans = 0; int r = 0;
+	for (int l = 2; l <= x; l = r + 1) {
+		r = x / (x / l);
+		ans += 1ll * getphi(t, x / l) * (((LL)sum(t, r) - sum(t, l - 1) + mod) % mod) % mod;
+		ans %= mod;
+	}
+	ans = (LL)sum(t + 1, x) - ans + mod;
+	ans %= mod;
+	mp[t][x] = ans;
+	return (int)ans;
+}
+ 
+int main() {
+	memset(v, 0, sizeof(v));
+	int top = 0;
+	phi[0][1] = 1, phi[1][1] = 1, phi[2][1] = 1;
+	for (int i = 2; i < N; ++i) {
+		if (!v[i]) prime[++top] = i, phi[0][i] = i - 1, phi[1][i] = 1ll * i * phi[0][i] % mod, phi[2][i] = 1ll * i * phi[1][i] % mod;
+		for (int j = 1; j <= top && prime[j] * i < N; ++j) {
+			v[i * prime[j]] = 1;
+			if (i % prime[j] == 0) {
+				phi[0][i * prime[j]] = phi[0][i] * prime[j];
+				phi[1][i * prime[j]] = 1ll * phi[1][i] * prime[j] % mod * prime[j] % mod;
+				phi[2][i * prime[j]] = 1ll * phi[2][i] * prime[j] % mod * prime[j] % mod * prime[j] % mod;
+				break;
+			} else {
+				phi[0][i * prime[j]] = phi[0][i] * (prime[j] - 1);
+				phi[1][i * prime[j]] = 1ll * phi[1][i] * (prime[j] - 1) % mod * prime[j] % mod;
+				phi[2][i * prime[j]] = 1ll * phi[2][i] * (prime[j] - 1) % mod * prime[j] % mod * prime[j] % mod;
+			}
+		}
+	}
+	for (int i = 2; i < N; ++i) {
+		phi[0][i] = (phi[0][i] + phi[0][i - 1]) % mod;
+		phi[1][i] = (phi[1][i] + phi[1][i - 1]) % mod;
+		phi[2][i] = (phi[2][i] + phi[2][i - 1]) % mod;
+	}
+}
+\end{lstlisting}
 \subsection{FFT}
 \begin{lstlisting}[language=C++]
 typedef complex<double> comp;
@@ -2026,7 +2122,7 @@ int convexHull(point p[],int n,point ch[]) {
 
 
 \begin{lstlisting}[language=C++]
-//guass.cpp
+//gauss.cpp
 #include <bits/stdc++.h>
 #define N 102
 #define mod 1000000007
