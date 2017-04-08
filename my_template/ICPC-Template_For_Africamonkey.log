@@ -1,4 +1,4 @@
-This is XeTeX, Version 3.14159265-2.6-0.99996 (TeX Live 2016) (preloaded format=xelatex 2017.3.23)  26 MAR 2017 00:28
+This is XeTeX, Version 3.14159265-2.6-0.99996 (TeX Live 2016) (preloaded format=xelatex 2017.3.28)  8 APR 2017 21:04
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -1471,31 +1471,31 @@ LaTeX Font Info:    Font shape `T1/pcr/bx/n' in size <9.03374> not available
 [6] [7]
 LaTeX Font Info:    Font shape `T1/pcr/m/it' in size <9.03374> not available
 (Font)              Font shape `T1/pcr/m/sl' tried instead on input line 338.
- [8] [9] [10]
+ [8] [9] [10] [11]
 File: suffix_auto.jpg Graphic file (type QTm)
- <use  "suffix_auto.jpg" > [11] [12] [13] [14] [15]
+ <use  "suffix_auto.jpg" > [12] [13] [14] [15]
 [16] [17] [18] [19] [20] [21] [22] [23] [24] [25] [26] [27] [28] [29] [30]
-[31] [32]
+[31] [32] [33]
 File: nwf-1.jpg Graphic file (type QTm)
- <use  "nwf-1.jpg" > [33] [34] [35]
+ <use  "nwf-1.jpg" > [34] [35] [36]
 
 LaTeX Font Warning: Font shape `EU1/FandolFang-Regular(0)/m/it' undefined
 (Font)              using `EU1/FandolFang-Regular(0)/m/n' instead on input line
- 1695.
+ 1741.
 
-[36] [37] [38] [39] [40] [41] [42] [43] [44] [45] [46] [47] [48] [49] [50]
-[51] [52] (./ICPC-Template_For_Africamonkey.aux)
+[37] [38] [39] [40] [41] [42] [43] [44] [45] [46] [47] [48] [49] [50] [51]
+[52] [53] (./ICPC-Template_For_Africamonkey.aux)
 
 LaTeX Font Warning: Some font shapes were not available, defaults substituted.
 
  ) 
 Here is how much of TeX's memory you used:
- 25087 strings out of 493591
- 480675 string characters out of 6143546
+ 25109 strings out of 493591
+ 480833 string characters out of 6143546
  813098 words of memory out of 5000000
- 28220 multiletter control sequences out of 15000+600000
+ 28242 multiletter control sequences out of 15000+600000
  13684 words of font info for 84 fonts, out of 8000000 for 9000
  1347 hyphenation exceptions out of 8191
  65i,6n,77p,10454b,1680s stack positions out of 5000i,500n,10000p,200000b,80000s
 
-Output written on ICPC-Template_For_Africamonkey.pdf (52 pages).
+Output written on ICPC-Template_For_Africamonkey.pdf (53 pages).

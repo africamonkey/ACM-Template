@@ -357,28 +357,25 @@ void build() {
 \end{lstlisting}
 
 \subsection{后缀数组}
+\subsubsection{倍增算法}
 参数 m 表示字符集的大小，即 $0 \leq r_i < m$ 
 \begin{lstlisting}[language=C++]
 #define rank rank2
 int n, r[N], wa[N], wb[N], ws[N], sa[N], rank[N], height[N];
-int cmp(int *r, int a, int b, int l, int n)
-{
-	if (r[a]==r[b])
-	{
+int cmp(int *r, int a, int b, int l, int n) {
+	if (r[a]==r[b]) {
 		if (a+l<n && b+l<n && r[a+l]==r[b+l])
 			return 1;
 	}
 	return 0;
 }
-void suffix_array(int m)
-{
+void suffix_array(int m) {
 	int i, j, p, *x=wa, *y=wb, *t;
 	for (i=0;i<m;i++) ws[i]=0;
 	for (i=0;i<n;i++) ws[x[i]=r[i]]++;
 	for (i=1;i<m;i++) ws[i]+=ws[i-1];
 	for (i=n-1;i>=0;i--) sa[--ws[x[i]]]=i;
-	for (j=1,p=1;p<n;m=p,j<<=1)
-	{
+	for (j=1,p=1;p<n;m=p,j<<=1) {
 		for (p=0,i=n-j;i<n;i++) y[p++]=i;
 		for (i=0;i<n;i++) if (sa[i]>=j) y[p++]=sa[i]-j;
 		for (i=0;i<m;i++) ws[i]=0;
@@ -390,8 +387,7 @@ void suffix_array(int m)
 	}
 	for (i=0;i<n;i++) rank[sa[i]]=i;
 }
-void calc_height()
-{
+void calc_height() {
 	int j=0;
 	for (int i=0;i<n;i++)
 		if (rank[i])
@@ -402,7 +398,57 @@ void calc_height()
 		}
 }
 \end{lstlisting}
+\subsubsection{DC3算法}
+注意：
 
+$N$ 至少为字符串长度的 $3$ 倍
+
+$n$ 表示字符串长度，下标从 $0$ 开始。$m$ 为字符集大小。
+\begin{lstlisting}[language=C++]
+#define F(x) ((x)/3 + ((x)%3 == 1 ? 0:tb))
+#define G(x) ((x) < tb ? (x)*3+1 : ((x)-tb)*3 + 2)
+#define rank rank2
+
+int r[N], wa[N], wb[N], ws[N], wv[N], sa[N], rank[N];
+
+int c0(int *r,int a,int b) {
+	return r[a]==r[b]&&r[a+1]==r[b+1]&&r[a+2]==r[b+2];
+}
+int c12(int k,int *r,int a,int b) {
+	if(k==2) return r[a]<r[b]||r[a]==r[b]&&c12(1,r,a+1,b+1);
+	else return r[a]<r[b]||r[a]==r[b]&&wv[a+1]<wv[b+1];
+}
+void sort(int *r,int *a,int *b,int n,int m) {
+    int i;
+    for(i=0;i<n;i++) wv[i]=r[a[i]];
+	for(i=0;i<m;i++) ws[i]=0;
+    for(i=0;i<n;i++) ws[wv[i]]++;
+    for(i=1;i<m;i++) ws[i]+=ws[i-1];
+    for(i=n-1;i>=0;i--) b[--ws[wv[i]]]=a[i];
+}
+void dc3(int *r,int *sa,int n,int m) {
+	++n;
+    int i,j,*rn=r+n,*san=sa+n,ta=0,tb=(n+1)/3,tbc=0,p;
+    r[n]=r[n+1]=0;
+    for(i=0;i<n;i++) if(i%3!=0) wa[tbc++]=i;
+    sort(r+2,wa,wb,tbc,m);
+    sort(r+1,wb,wa,tbc,m);
+    sort(r,wa,wb,tbc,m);
+    for(p=1,rn[F(wb[0])]=0,i=1;i<tbc;i++)
+    rn[F(wb[i])]=c0(r,wb[i-1],wb[i])?p-1:p++;
+    if(p<tbc) dc3(rn,san,tbc-1,p);
+    else for(i=0;i<tbc;i++) san[rn[i]]=i;
+    for(i=0;i<tbc;i++) if(san[i]<tb) wb[ta++]=san[i]*3;
+    if(n%3==1) wb[ta++]=n-1;
+    sort(r,wb,wa,ta,m);
+    for(i=0;i<tbc;i++) wv[wb[i]=G(san[i])]=i;
+    for(i=0,j=0,p=0;i<ta && j<tbc;p++)
+    sa[p]=c12(wb[j]%3,r,wa[i],wb[j])?wa[i++]:wb[j++];
+    for(;i<ta;p++) sa[p]=wa[i++];
+    for(;j<tbc;p++) sa[p]=wb[j++];
+    for (i=0;i<n;++i) rank[sa[i]]=i;
+}
+\end{lstlisting}
 \subsection{后缀自动机}
 下面的代码是求两个串的LCS（最长公共子串）。
 \begin{lstlisting}[language=C++]
