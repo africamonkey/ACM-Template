@@ -13,10 +13,10 @@
 \contentsline {subsubsection}{\numberline {2.8.1}倍增算法}{9}
 \contentsline {subsubsection}{\numberline {2.8.2}DC3算法}{10}
 \contentsline {subsection}{\numberline {2.9}后缀自动机}{11}
-\contentsline {section}{\numberline {3}数据结构}{12}
-\contentsline {subsection}{\numberline {3.1}ST表}{12}
+\contentsline {section}{\numberline {3}数据结构}{13}
+\contentsline {subsection}{\numberline {3.1}ST表}{13}
 \contentsline {subsection}{\numberline {3.2}线段树小技巧}{13}
-\contentsline {subsection}{\numberline {3.3}Splay}{13}
+\contentsline {subsection}{\numberline {3.3}Splay}{14}
 \contentsline {subsection}{\numberline {3.4}可持久化Treap}{16}
 \contentsline {subsection}{\numberline {3.5}可持久化并查集}{18}
 \contentsline {section}{\numberline {4}树}{19}
@@ -24,8 +24,8 @@
 \contentsline {subsection}{\numberline {4.2}动态树}{20}
 \contentsline {section}{\numberline {5}图}{22}
 \contentsline {subsection}{\numberline {5.1}欧拉回路}{22}
-\contentsline {subsection}{\numberline {5.2}最短路径}{23}
-\contentsline {subsubsection}{\numberline {5.2.1}Dijkstra}{23}
+\contentsline {subsection}{\numberline {5.2}最短路径}{24}
+\contentsline {subsubsection}{\numberline {5.2.1}Dijkstra}{24}
 \contentsline {subsubsection}{\numberline {5.2.2}SPFA}{24}
 \contentsline {subsection}{\numberline {5.3}K 短路}{25}
 \contentsline {subsection}{\numberline {5.4}Tarjan}{28}
@@ -34,7 +34,7 @@
 \contentsline {subsection}{\numberline {5.7}网络流}{32}
 \contentsline {subsubsection}{\numberline {5.7.1}最大流}{32}
 \contentsline {subsubsection}{\numberline {5.7.2}上下界有源汇网络流}{33}
-\contentsline {subsubsection}{\numberline {5.7.3}上下界无源汇网络流}{33}
+\contentsline {subsubsection}{\numberline {5.7.3}上下界无源汇网络流}{34}
 \contentsline {subsubsection}{\numberline {5.7.4}费用流}{34}
 \contentsline {subsubsection}{\numberline {5.7.5}zkw费用流}{35}
 \contentsline {section}{\numberline {6}数学}{37}
@@ -45,16 +45,16 @@
 \contentsline {subsubsection}{\numberline {6.4.1}第一类斯特林数}{38}
 \contentsline {subsubsection}{\numberline {6.4.2}第二类斯特林数}{38}
 \contentsline {subsection}{\numberline {6.5}错排公式}{38}
-\contentsline {subsection}{\numberline {6.6}Lucas定理}{38}
+\contentsline {subsection}{\numberline {6.6}Lucas定理}{39}
 \contentsline {subsection}{\numberline {6.7}高斯消元}{39}
 \contentsline {subsubsection}{\numberline {6.7.1}行列式}{39}
 \contentsline {subsubsection}{\numberline {6.7.2}Matrix-Tree定理}{40}
 \contentsline {subsection}{\numberline {6.8}调和级数}{40}
 \contentsline {subsection}{\numberline {6.9}曼哈顿距离的变换}{40}
 \contentsline {subsection}{\numberline {6.10}线性筛素数}{40}
-\contentsline {subsection}{\numberline {6.11}杜教筛}{40}
-\contentsline {subsection}{\numberline {6.12}FFT}{42}
-\contentsline {subsection}{\numberline {6.13}求原根}{43}
+\contentsline {subsection}{\numberline {6.11}杜教筛}{41}
+\contentsline {subsection}{\numberline {6.12}FFT}{43}
+\contentsline {subsection}{\numberline {6.13}求原根}{44}
 \contentsline {subsection}{\numberline {6.14}NTT}{45}
 \contentsline {subsection}{\numberline {6.15}组合数 lcm}{46}
 \contentsline {subsection}{\numberline {6.16}区间 lcm 的维护}{46}
