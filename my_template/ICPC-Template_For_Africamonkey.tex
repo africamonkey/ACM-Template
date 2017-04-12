@@ -513,6 +513,27 @@ int main() {
 \begin{figure}[htbp]
   \centering
   \includegraphics[scale=0.6]{suffix_auto.jpg}
+  \caption{ACADD 构成的后缀自动机}
+  \label{suffix_auto}
+\end{figure}
+
+我们发现 fail 构出一棵前缀树
+
+和后缀树相同，为了使每个前缀都是叶子结点，我们不妨在串 s 前加入一个没出现的字符 '\#'
+
+\begin{figure}
+  \centering
+  \includegraphics[scale=0.6]{suffix_auto2.jpg}
+  \caption{串 ACADD 按 fail 构出的前缀树，与图 $\ref{suffix_auto}$ 对应}
+  \label{suffix_auto2}
+\end{figure}
+
+
+\begin{figure}
+  \centering
+  \includegraphics[scale=0.6]{suffix_auto3.jpg}
+  \caption{串 \#ACADD 按 fail 构出的前缀树}
+  \label{suffix_auto3}
 \end{figure}
 
 \section{数据结构}
