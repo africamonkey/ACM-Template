@@ -386,6 +386,7 @@ void suffix_array(int m) {
 			x[sa[i]]=cmp(y,sa[i-1],sa[i],j,n)?p-1:p++;
 	}
 	for (i=0;i<n;i++) rank[sa[i]]=i;
+	rank[n] = -1;
 }
 void calc_height() {
 	int j=0;
@@ -450,11 +451,46 @@ void dc3(int *r,int *sa,int n,int m) {
 }
 
 void suffix_array(int *r, int *sa, int n, int m) {
-    dc3(r, sa, n + 1, 256);
+    dc3(r, sa, n + 1, m);
     int top = 0;
     for (int i = 0; i < n + 1; ++i)
         if (sa[i] < n) sa[top++] = sa[i];
     for (int i = 0; i < n; ++i) rank[sa[i]] = i;
+    rank[n] = -1;
+}
+\end{lstlisting}
+\subsubsection{小技巧：拼接字符串}
+接口： 
+
+int gao1(int l, int r, int c, int p); 区间 $[l, r)$ 中保证第 $0$ 位到第 $c - 1$ 位都是相同的（设为字符串 $s$ ），现在我们在 $s$ 后面接一个字符 $p$ ，得到一个新的字符串 $s'$ 。返回值为最小的 $k$ 满足后缀 $sa[k]$ 前 $c + 1$ 位为 $s'$ 
+
+int gao2(int l, int r, int c, int p); 区间 $[l, r)$ 中保证第 $0$ 位到第 $c - 1$ 位都是相同的（设为字符串 $s$ ），现在我们在 $s$ 后面接一个后缀 $sa[p]$ ，得到一个新的字符串 $s'$ 。返回值为最小的 $k$ 满足后缀 $sa[k]$ 前 $c + len(sa[p])$ 位为 $s'$ 
+
+\begin{lstlisting}[language=C++]
+int gao1(int l,int r,int c,int p) {
+        --l;
+        while (l+1<r) {
+                int md=(l+r)>>1;
+                if (sa[md]+c<n&&s[sa[md]+c]>=p) r=md; else l=md;
+        }
+        return r;
+}
+int gao2(int l,int r,int c,int p) {
+        --l;
+        while (l+1<r) {
+                int md=(l+r)>>1;
+                if (sa[md]+c<=n&&rk[sa[md]+c]>=p) r=md; else l=md;
+        }
+        return r;
+}
+\end{lstlisting}
+示例调用：
+\begin{lstlisting}[language=C++]
+suf1[m] = -1, suf2[m] = n;
+for (int i = m - 1; i >= 0; --i) {
+	int l = gao1(0, n, 0, t[i]), r = gao1(0, n, 0, t[i]);
+	suf1[i] = gao2(l, r, 1, suf1[i + 1]);
+	suf2[i] = gao2(l, r, 1, suf2[i + 1]);
 }
 \end{lstlisting}
 \subsection{后缀自动机}
