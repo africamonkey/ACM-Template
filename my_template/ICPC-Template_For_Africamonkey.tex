@@ -2106,6 +2106,64 @@ namespace FFT {
 	}
 };
 \end{lstlisting}
+
+\subsection{FWT}
+给定长度为 $2^n$ 的序列 $A[0 \cdots 2^n-1], B[0 \cdots 2^n-1]$ ，求这两序列的
+
+$or$ 卷积： $C_k = \sum\limits_{i \ or \ j=k} A_iB_j$
+
+$and$ 卷积： $C_k = \sum\limits_{i \ and \ j=k} A_iB_j$
+
+$xor$ 卷积： $C_k = \sum\limits_{i \ xor \ j=k} A_iB_j$
+
+序列对 $10^9 + 7$ 取模
+\begin{lstlisting}[language=C++]
+#include <bits/stdc++.h>
+using namespace std;
+inline int read() {
+	int s = 0; char c; while((c=getchar())<'0'||c>'9');
+	do{s=s*10+c-'0';}while((c=getchar())>='0'&&c<='9');
+	return s;
+}
+typedef long long lint;
+typedef pair<lint,lint> pii;
+const int N = (1<<18)+37, MO = 1e9+7;
+int n;
+pii tand(lint a,lint b) { return (pii){a+b,b}; }
+pii iand(lint a,lint b) { return (pii){a-b,b}; }
+pii tor(lint a,lint b) { return (pii){a,a+b}; }
+pii ior(lint a,lint b) { return (pii){a,b-a}; }
+pii txor(lint a,lint b) { return (pii){a+b,a-b}; }
+pii ixor(lint a,lint b) { return (pii){(a+b)/2,(a-b)/2}; }
+pii (*tr)(lint,lint);
+pii (*trs[3])(lint,lint)={tor,tand,txor};
+pii (*ivs[3])(lint,lint)={ior,iand,ixor};
+lint a[N],b[N],x[N],y[N];
+inline void fwt(lint *a) {
+	int s,k,j,je;
+	for(s=2;s<=n;s<<=1) for(k=0;k<n;k+=s)
+		for(j=0,je=s>>1;j<je;j++) {
+			pii t = tr(a[k+j],a[k+j+je]);
+			a[k+j] = t.first;
+			a[k+j+je] = t.second;
+		}
+}
+int main() {
+	int i;
+	n = read(); n = 1<<n;
+	for(i=0;i<n;i++) a[i] = read();
+	for(i=0;i<n;i++) b[i] = read();
+	for(int k=0;k<3;k++) {
+		for(i=0;i<n;i++) x[i] = a[i], y[i] = b[i];
+		tr = trs[k]; fwt(x), fwt(y);
+		for(i=0;i<n;i++) x[i] *= y[i];
+		tr = ivs[k]; fwt(x);
+		for(i=0;i<n;i++) printf("%d ",x[i]%MO); puts("");
+	}
+	return 0;
+}
+\end{lstlisting}
+
 \subsection{求原根}
 接口： LL p\_root(LL p); 
 
@@ -2604,6 +2662,59 @@ int main(){
 	for(int i=3;i<=1000;i++)f[i]=f[i-1]+f[i-2];
 }
 \end{lstlisting}
+
+\subsection{读入优化}
+\begin{lstlisting}[language=C++]
+#define rd RD<int>
+#define rdll RD<long long>
+template <typename Type>
+inline Type RD() {
+    Type x = 0;
+    int flag = 0;
+    char c = getchar();
+    while (!isdigit(c) && c != '-')
+        c = getchar();
+    (c == '-') ? (flag = 1) : (x = c - '0');
+    while (isdigit(c = getchar()))
+        x = x * 10 + c - '0';
+    return flag ? -x : x;
+}
+inline char rdch() {
+    char c = getchar();
+    while (!isalpha(c)) c = getchar();
+    return c;
+}
+\end{lstlisting}
+
+\subsection{位运算及其运用}
+
+\subsubsection{枚举子集}
+
+枚举 $i$ 的非空子集 $j$
+
+\begin{lstlisting}[language=C++]
+for (int j = i; j; j = (j - 1) & i);
+\end{lstlisting}
+
+\subsubsection{求 1 的个数}
+
+\begin{lstlisting}[language=C++]
+int __builtin_popcount(unsigned int x);
+\end{lstlisting}
+
+\subsubsection{求前缀 0 的个数}
+
+\begin{lstlisting}[language=C++]
+int __builtin_clz(unsigned int x);
+\end{lstlisting}
+
+\subsubsection{求后缀 0 的个数}
+
+\begin{lstlisting}[language=C++]
+int __builtin_ctz(unsigned int x);
+\end{lstlisting}
+
+
 \end{document}
 
 
