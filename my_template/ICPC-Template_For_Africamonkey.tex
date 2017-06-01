@@ -606,6 +606,78 @@ int main(){
 			f[j][i]=max(f[j-1][i],f[j-1][i+(1<<j-1)]);
 }
 \end{lstlisting}
+\subsection{左偏树}
+
+左偏树是一个可并堆。
+
+下面的程序写的是一个小根堆，如果需要改成大根堆请在注释了 here 那行修改。
+
+接口：
+
+void push(const T \&x); 插入一个元素。
+
+void merge(leftist \&x); 合并两个堆。注意，合并后原来那个堆将不可访问。
+
+T top() const; 返回堆顶元素。
+
+void pop(); 删除堆顶元素。
+
+int size() const; 返回堆的大小。
+
+\begin{lstlisting}[language=C++]
+template <class T>
+class leftist {
+public:
+    struct node {
+        T key;
+        int dist;
+        node *l, *r;
+    };
+    leftist() : root(NULL), s(0) {}
+    void push(const T &x) {
+        leftist y;
+        y.s = 1;
+        y.root = new node;
+        y.root -> key = x;
+        y.root -> dist = 0;
+        y.root -> l = y.root -> r = NULL;
+        merge(y);
+    }
+    node* merge(node *x, node *y) {
+        if (x == NULL) return y;
+        if (y == NULL) return x;
+        if (y -> key < x -> key) swap(x, y); //here
+        x -> r = merge(x -> r, y);
+        int ld = x -> l ? x -> l -> dist : -1;
+        int rd = x -> r ? x -> r -> dist : -1;
+        if (ld < rd) swap(x -> l, x -> r);
+        if (x -> r == NULL) x -> dist = 0;
+        else x -> dist = x -> r -> dist + 1;
+        return x;
+    }
+    void merge(leftist &x) {
+        root = merge(root, x.root);
+        s += x.s;
+    }
+    T top() const {
+        if (root == NULL) return T();
+        return root -> key;
+    }
+    void pop() {
+        if (root == NULL) return;
+        node *p = root;
+        root = merge(root -> l, root -> r);
+        --s;
+        delete p;
+    }
+    int size() const {
+        return s;
+    }
+private:
+    node* root;
+    int s;
+};
+\end{lstlisting}
 \subsection{线段树小技巧}
 给定一个序列 $a$ ，寻找一个最大的 $i$ 使得 $i \leq y$ 且满足一些条件（如 $a[i] \geq w$ ，那么需要在线段树维护 $a$ 的区间最大值）
 \begin{lstlisting}[language=C++]
