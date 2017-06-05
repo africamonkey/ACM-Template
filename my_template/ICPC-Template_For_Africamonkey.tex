@@ -1788,14 +1788,16 @@ struct NetWorkFlow {
 \subsubsection{zkw费用流}
 注意： \emph{top 要初始化为 1，不得用于有负权的图}
 \begin{lstlisting}[language=C++]
-#define inf 0x3f3f3f3f
+#define inf 0x3f3f3f3f //modify if you use long long or double
+template <class _tp>
 struct NetWorkFlow {
 	struct EDGE {
-		int adj, w, cost, next;
+		int adj, next;
+        _tp w, cost;
 	} edge[M*2];
 	int gh[N], top;
 	int S, T;
-	void addedge(int x, int y, int w, int cost) {
+	void addedge(int x, int y, _tp w, _tp cost) {
 		edge[++top].adj = y;
 		edge[top].w = w;
 		edge[top].cost = cost;
@@ -1811,9 +1813,10 @@ struct NetWorkFlow {
 		top = 1;
 		memset(gh, 0, sizeof(gh));
 	}
-	int cost, d[N], slk[N], v[N];
-	int aug(int x, int f) {
-		int left = f;
+	int v[N];
+    _tp cost, d[N], slk[N];
+	_tp aug(int x, _tp f) {
+	    _tp left = f;
 		if (x == T) {
 			cost += f * d[S];
 			return f;
@@ -1821,9 +1824,9 @@ struct NetWorkFlow {
 		v[x] = true;
 		for (int p=gh[x]; p; p=edge[p].next)
 			if (edge[p].w && !v[edge[p].adj]) {
-				int t = d[edge[p].adj] + edge[p].cost - d[x];
+				_tp t = d[edge[p].adj] + edge[p].cost - d[x];
 				if (t == 0) {
-					int delt = aug(edge[p].adj, min(left, edge[p].w));
+					_tp delt = aug(edge[p].adj, min(left, edge[p].w));
 					if (delt > 0) {
 						edge[p].w -= delt;
 						edge[p^1].w += delt;
@@ -1838,7 +1841,7 @@ struct NetWorkFlow {
 		return f-left;
 	}
 	bool modlabel() {
-		int delt = inf;
+		_tp delt = inf;
 		for (int i=1;i<=T;i++)
 			if (!v[i]) {
 				if (slk[i] < delt) delt = slk[i];
@@ -1849,7 +1852,7 @@ struct NetWorkFlow {
 			if (v[i]) d[i] += delt;
 		return false;
 	}
-	int work() {
+	_tp work() {
 		cost = 0;
 		memset(d, 0, sizeof(d));
 		memset(slk, 63, sizeof(slk));
@@ -1860,7 +1863,8 @@ struct NetWorkFlow {
 		} while (!modlabel());
 		return cost;
 	}
-} nwf;
+};
+NetWorkFlow<int> nwf;
 \end{lstlisting}
 
 \section{数学}
