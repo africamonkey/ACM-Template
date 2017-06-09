@@ -2134,53 +2134,52 @@ int main() {
 \end{lstlisting}
 \subsection{FFT}
 \begin{lstlisting}[language=C++]
-typedef complex<double> comp;
 namespace FFT {
-	comp A[N], B[N],omega[N];
-	void transform(comp *x, int len) {
-		for (int i=1,j=len/2;i<len-1;i++) {
-			if (i<j) swap(x[i], x[j]);
-			int k = len/2;
-			while (j>=k) {
-				j-=k;
-				k/=2;
-			}
-			if (j<k) j+=k;
+	const int maxn = 65537;
+	const double pi = acos(-1.0);
+
+	struct comp {
+		double real , imag;
+		comp() {}
+		comp(double real , double imag): real(real) , imag(imag) {}
+		friend inline comp operator+(const comp &a , const comp &b) {
+			return comp(a.real + b.real , a.imag + b.imag);
 		}
+		friend inline comp operator-(const comp &a , const comp &b) {
+			return comp(a.real - b.real , a.imag - b.imag);
+		}
+		friend inline comp operator*(const comp &a , const comp &b) {
+			return comp(a.real * b.real - a.imag * b.imag , a.real * b.imag + a.imag * b.real);
+		}
+	};
+
+	comp A[maxn] , B[maxn];
+	int rev[maxn], m, len;
+
+	inline void init(int n) {
+		for (m = 1, len = 0; m < n + n; m <<= 1 , len ++);
+		for (int i = 0; i < m; ++i) rev[i] = (rev[i >> 1] >> 1) | ((i & 1) << (len - 1));
+        for (int i = 0; i < m; ++i) A[i] = B[i] = comp(0, 0);
 	}
-	void fft(comp *x, int len, int reverse) {
-		transform(x, len);
-		for (int h=2;h<=len;h<<=1) {
-			for (int i=0;i<h/2;i++) omega[i] = polar(1.0, 2*pi*reverse/h*i);
-			for (int i=0;i<len;i+=h) {
-				for (int j=i;j<i+h/2;j++) {
-					comp w = omega[j-i];
-					comp u = x[j];
-					comp v = (w * x[j+h/2]);
-					x[j] = u + v;
-					x[j+h/2] = u - v;
+
+	inline void dft(comp *a , int v) {
+		for (int i = 0; i < m; ++i) if (i < rev[i]) swap(a[i] , a[rev[i]]);
+		for (int s = 2; s <= m; s <<= 1) {
+			comp g(cos(2 * pi / s) , v * sin(2 * pi / s));
+			for (int k = 0; k < m; k += s) {
+				comp w(1 , 0);
+                for (int j = 0; j < s / 2; ++j) {
+					comp u = a[k + j] , t = w * a[k + j + s / 2];
+					a[k + j] = u + t;
+					a[k + j + s / 2] = u - t;
+					w = w * g;
 				}
 			}
 		}
-		if (reverse == -1) {
-			for (int i=0;i<len;i++)
-				x[i] /= len;
-		}
+		if (v == -1)
+			for (int i = 0; i < m; ++i) a[i].real /= m , a[i].imag /= m;
 	}
-	void work(int n, int *a, int *b) {
-		int len = 1;
-		while (len <= n*2) len *= 2;
-		for (int i=0;i<len;i++) A[i] = B[i] = 0;
-		for (int i=0;i<n;i++) A[i] = a[i], B[i] = b[i];
-		fft(A, len, 1); fft(B, len, 1);
-		for (int i=0;i<len;i++) A[i] = A[i] * B[i];
-		fft(A, len, -1);
-		for (int i=0;i<len;i++) {
-			LL r = round(A[i].real());
-			a[i] = r % mod;
-		}
-	}
-};
+}
 \end{lstlisting}
 
 \subsection{FWT}
