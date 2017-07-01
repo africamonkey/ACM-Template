@@ -1428,7 +1428,7 @@ namespace kthsp {
 \end{lstlisting}
 \subsection{Tarjan}
 割点的判断：一个顶点 $u$ 是割点，当且仅当满足 $(1)$ 或 $(2)$ ： \\
-$(1)$ $u$ 为树根，且 $u$ 有多于一个子树 \\
+$(1)$ $u$ 为树根，且 $u$ 有多于一个子树（即：存在一个儿子 $v$ 使得 $dfn[u] + 1 \neq dfn[v]$ ） \\
 $(2)$ $u$ 不为树根，且满足存在 $(u, v)$ 为树枝边（ $u$ 为 $v$ 的父亲），使得 $dfn[u] \leq low[v]$ \\
 桥的判断：一条无向边 $(u, v)$ 是桥，当且仅当 $(u, v)$ 为树枝边，满足 $dfn[u] < low[v]$ 
 \begin{lstlisting}[language=C++]
