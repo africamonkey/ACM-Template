@@ -591,6 +591,57 @@ max(Parent(s)) = min(s) - 1
   \label{suffix_auto3}
 \end{figure}
 
+\subsection{回文树}
+
+【URAL2040】Palindromes and Super Abilities 2
+
+逐个添加字符串S里的字符 $S_1, S_2, ..., S_n$ 。每次添加字符后，他想知道添加字符后将出现多少个新的本质不同的回文子串。字符集为 $\{a, b\}$
+
+\begin{lstlisting}[language=C++]
+#include <bits/stdc++.h>
+#define N 5000020
+
+char st[N], answer[N];
+int n;
+ 
+struct PAM {
+	int n, tot, last;
+	int len[N], fail[N], next[N][2];
+	void init() {
+		n=0; tot=1;
+		len[1]=-1; fail[1]=0;
+		len[0]=+0; fail[0]=1;
+		last=1;
+	}
+	int get_fail(int x) {
+		for (; st[n-len[x]-1]!=st[n]; x=fail[x]);
+		return x;
+	}
+	void insert(char c) {
+		++n; int cur=last;
+		for (; st[n-len[cur]-1]!=st[n]; cur=fail[cur]); // 判断上一个串的前一个位置和新添加的位置是否相同，相同则说明构成回文。否则找 fail 指针。
+		if (!next[cur][c]) {
+			++tot;
+			len[tot]=len[cur]+2;
+			fail[tot]=next[get_fail(fail[cur])][c];
+			next[cur][c]=tot;
+			answer[n]='1';
+		} else {
+			answer[n]='0';
+		}
+		last=next[cur][c];
+	}
+} pam;
+ 
+int main() {
+	scanf("%s", st+1); n=strlen(st+1);
+	pam.init();
+	for (int i=1;i<=n;i++) pam.insert(st[i]-'a');
+	puts(answer+1);
+	return 0;
+}
+\end{lstlisting}
+
 \section{数据结构}
 \subsection{ST表}
 \begin{lstlisting}[language=C++]
