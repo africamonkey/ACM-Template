@@ -618,8 +618,7 @@ struct PAM {
 		return x;
 	}
 	void insert(char c) {
-		++n; int cur=last;
-		for (; st[n-len[cur]-1]!=st[n]; cur=fail[cur]); // 判断上一个串的前一个位置和新添加的位置是否相同，相同则说明构成回文。否则找 fail 指针。
+		++n; int cur=get_fail(last); // 判断上一个串的前一个位置和新添加的位置是否相同，相同则说明构成回文。否则找 fail 指针。
 		if (!next[cur][c]) {
 			++tot;
 			len[tot]=len[cur]+2;
