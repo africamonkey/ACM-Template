@@ -157,48 +157,29 @@ int main() {
 }
 \end{lstlisting}
 \subsection{KMP}
-接口： int find\_substring(char *pattern, char *text, int *next, int *ret); 
+接口： void kmp(int n, char *a, int m, char *b); 
 
-输入： 模式串，匹配串 
+输入： 模式串长度 $n$ ，模式串 $a$ ，匹配串长度 $m$ ，匹配串 $b$
 
-输出： 返回值表示模式串在匹配串中出现的次数 
+输出： 依次输出每个匹配成功的\emph{起始}位置
 
-KMP的next[i]表示从0到i的字符串s，前缀和后缀的最长重叠长度。
+下标从 $0$ 开始。
+
 \begin{lstlisting}[language=C++]
-void find_next(char *pattern, int *next) {
-	int n = strlen(pattern);
-	for (int i=1;i<n;i++) {
-		int j = i;
-		while (j > 0) {
-			j = next[j];
-			if (pattern[j] == pattern[i]) {
-				next[i+1] = j+1;
-				break;
-			}
-		}
-	}
-}
-int find_substring(char *pattern, char *text, int *next, int *ret) {
-	find_next(pattern, next);
-	int n = strlen(pattern);
-	int m = strlen(text);
-	int k = 0;
-	for (int i=0,j=0;i<m;i++) {
-		if (j<n && text[i]==pattern[j]) {
-			j++;
-		} else {
-			while (j>0) {
-				j = next[j];
-				if (text[i] == pattern[j]) {
-					j++;
-					break;
-				}
-			}
-		}
-		if (j == n)
-			ret[k++] = i-n+1;
-	}
-	return k;
+void kmp(int n, char* a, int m, char *b) {
+    int i, j;
+    for (nxt[0] = j = -1, i = 1; i < n; nxt[i++] = j) {
+        while (~j && a[j + 1] != a[i]) j = nxt[j];
+        if (a[j + 1] == a[i]) ++j;
+    }
+    for (j = -1, i = 0; i < m; ++i) {
+        while (~j && a[j + 1] != b[i]) j = nxt[j];
+        if (a[j + 1] == b[i]) ++j;
+        if (j == n - 1) {
+            printf("%d\n", i - (n - 1) + 1);
+            j = nxt[j];
+        }
+    }
 }
 \end{lstlisting}
 \subsection{可动态修改的KMP}
@@ -2343,6 +2324,9 @@ int main() {
 \end{lstlisting}
 \subsection{NTT}
 998244353 原根为 3 ， 1004535809 原根为 3 ，786433 原根为 10 ， 880803841 原根为 26 。
+
+NTT 公式： $$ y_n = \sum\limits_{i = 0}^{d-1} x_i(g^{\frac{P-1}{d}})^{in} \ \text{mod} \ P $$
+
 \begin{lstlisting}[language=C++]
 #define mod 998244353
 #define g 3
