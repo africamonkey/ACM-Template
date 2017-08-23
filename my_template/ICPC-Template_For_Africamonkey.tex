@@ -2054,27 +2054,27 @@ $
 
 常见积性函数的性质：
 
-$n = \sum\limits_{d|n} \phi(d)$
+$$n = \sum\limits_{d|n} \phi(d)$$
 
-$\sum\limits_{d|n} \mu(d) = \left\{
+$$\sum\limits_{d|n} \mu(d) = \left\{
 	\begin{array}{lr}
 	1, & n = 1 \\
 	0, & n > 1 \\
 	\end{array}
 \right.
-$
+$$
 
-$\sum\limits_{i=1}^{n} \sum\limits_{j=1}^{m} i \times j [gcd(i, j) = d] = \sum\limits_{i=1}^{\lfloor \frac{n}{d} \rfloor} \sum\limits_{j=1}^{\lfloor \frac{m}{d} \rfloor} id \times jd [gcd(i, j) = 1]$
+$$\sum\limits_{i=1}^{n} \sum\limits_{j=1}^{m} i \times j [gcd(i, j) = d] = \sum\limits_{i=1}^{\lfloor \frac{n}{d} \rfloor} \sum\limits_{j=1}^{\lfloor \frac{m}{d} \rfloor} id \times jd [gcd(i, j) = 1]$$
 
-$\phi(n) = \sum\limits_{d|n} \mu(d) \frac{n}{d}$
+$$\phi(n) = \sum\limits_{d|n} \mu(d) \frac{n}{d}$$
 
 \subsection{莫比乌斯反演}
 
 $F(n)$ 和 $f(n)$ 是定义在非负整数集合上的两个函数，则：
 
-$F(n) = \sum\limits_{d|n}f(d) \Rightarrow f(n) = \sum\limits_{d|n} \mu(d) F(\frac{n}{d}) $
+$$F(n) = \sum\limits_{d|n}f(d) \Rightarrow f(n) = \sum\limits_{d|n} \mu(d) F(\frac{n}{d}) $$
 
-$F(n) = \sum\limits_{n|d}f(d) \Rightarrow f(n) = \sum\limits_{n|d} \mu(\frac{d}{n}) F(d) $
+$$F(n) = \sum\limits_{n|d}f(d) \Rightarrow f(n) = \sum\limits_{n|d} \mu(\frac{d}{n}) F(d) $$
 
 
 \subsection{线性筛素数}
@@ -2396,9 +2396,24 @@ int main() {
 }
 \end{lstlisting}
 
+\subsection{幂和}
+
+$$\sum\limits_{i=1}^{n}i^1 = \frac{n(n+1)}{2} = \frac{1}{2}n^2 + \frac{1}{2}n$$
+
+$$\sum\limits_{i=1}^{n}i^2 = \frac{n(n+1)(2n+1)}{6} = \frac{1}{3}n^3 + \frac{1}{2}n^2 + \frac{1}{6}n$$
+
+$$\sum\limits_{i=1}^{n}i^3 = \frac{n^2(n+1)^2}{4} = \frac{1}{4}n^4 + \frac{1}{2}n^3 + \frac{1}{4}n^2$$
+
+$$\sum\limits_{i=1}^{n}i^4 = \frac{n(n+1)(2n+1)(3n^2+3n-1)}{30} = \frac{1}{5}n^5 + \frac{1}{2}n^4 + \frac{1}{3}n^3 - \frac{1}{30}n$$
+
+$$\sum\limits_{i=1}^{n}i^5 = \frac{n^2(n+1)^2(2n^2+2n-1)}{12} = \frac{1}{6}n^6 + \frac{1}{2}n^5 + \frac{5}{12}n^4 - \frac{1}{12}n^2$$
+
+$$\sum\limits_{i=1}^{n}i^6 = \frac{n(n+1)(2n+1)(3n^4+6n^3-3n+1)}{42} = \frac{1}{7}n^7 + \frac{1}{2}n^6 + \frac{1}{2}n^5 - \frac{1}{6}n^3 + \frac{1}{42}n$$
+
+
 \subsection{蔡勒公式}
 
-$w = (\lfloor \frac{c}{4} \rfloor - 2c + y + \lfloor \frac{y}{4} \rfloor + \lfloor \frac{13(m+1)}{5} \rfloor + d - 1) \text{ mod } 7$
+$$w = (\lfloor \frac{c}{4} \rfloor - 2c + y + \lfloor \frac{y}{4} \rfloor + \lfloor \frac{13(m+1)}{5} \rfloor + d - 1) \text{ mod } 7$$
 
 $w$ ： 0星期日，1星期一，2星期二，3星期三，4星期四，5星期五，6星期六
 

@@ -58,25 +58,26 @@
 \contentsline {subsection}{\numberline {6.11}莫比乌斯反演}{46}
 \contentsline {subsection}{\numberline {6.12}线性筛素数}{46}
 \contentsline {subsection}{\numberline {6.13}杜教筛}{46}
-\contentsline {subsection}{\numberline {6.14}FFT}{48}
-\contentsline {subsection}{\numberline {6.15}FWT}{49}
+\contentsline {subsection}{\numberline {6.14}FFT}{49}
+\contentsline {subsection}{\numberline {6.15}FWT}{50}
 \contentsline {subsection}{\numberline {6.16}求原根}{50}
 \contentsline {subsection}{\numberline {6.17}NTT}{51}
-\contentsline {subsection}{\numberline {6.18}蔡勒公式}{52}
-\contentsline {subsection}{\numberline {6.19}皮克定理}{53}
-\contentsline {subsection}{\numberline {6.20}组合数 lcm}{53}
-\contentsline {subsection}{\numberline {6.21}区间 lcm 的维护}{53}
-\contentsline {section}{\numberline {7}几何}{53}
-\contentsline {subsection}{\numberline {7.1}凸包}{53}
+\contentsline {subsection}{\numberline {6.18}幂和}{53}
+\contentsline {subsection}{\numberline {6.19}蔡勒公式}{53}
+\contentsline {subsection}{\numberline {6.20}皮克定理}{53}
+\contentsline {subsection}{\numberline {6.21}组合数 lcm}{53}
+\contentsline {subsection}{\numberline {6.22}区间 lcm 的维护}{53}
+\contentsline {section}{\numberline {7}几何}{54}
+\contentsline {subsection}{\numberline {7.1}凸包}{54}
 \contentsline {section}{\numberline {8}黑科技和杂项}{54}
 \contentsline {subsection}{\numberline {8.1}找规律}{54}
-\contentsline {subsection}{\numberline {8.2}高精度计算}{57}
-\contentsline {subsection}{\numberline {8.3}读入优化}{60}
-\contentsline {subsection}{\numberline {8.4}位运算及其运用}{61}
-\contentsline {subsubsection}{\numberline {8.4.1}枚举子集}{61}
-\contentsline {subsubsection}{\numberline {8.4.2}求 1 的个数}{61}
-\contentsline {subsubsection}{\numberline {8.4.3}求前缀 0 的个数}{61}
-\contentsline {subsubsection}{\numberline {8.4.4}求后缀 0 的个数}{61}
-\contentsline {section}{\numberline {9}Sublime Text}{61}
-\contentsline {subsection}{\numberline {9.1}License}{61}
+\contentsline {subsection}{\numberline {8.2}高精度计算}{58}
+\contentsline {subsection}{\numberline {8.3}读入优化}{61}
+\contentsline {subsection}{\numberline {8.4}位运算及其运用}{62}
+\contentsline {subsubsection}{\numberline {8.4.1}枚举子集}{62}
+\contentsline {subsubsection}{\numberline {8.4.2}求 1 的个数}{62}
+\contentsline {subsubsection}{\numberline {8.4.3}求前缀 0 的个数}{62}
+\contentsline {subsubsection}{\numberline {8.4.4}求后缀 0 的个数}{62}
+\contentsline {section}{\numberline {9}Sublime Text}{62}
+\contentsline {subsection}{\numberline {9.1}License}{62}
 \contentsline {subsection}{\numberline {9.2}Preferences.sublime-settings}{62}
