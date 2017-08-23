@@ -2993,6 +2993,9 @@ int main(){
 \end{lstlisting}
 
 \subsection{读入优化}
+
+\subsubsection{普通读入优化}
+
 \begin{lstlisting}[language=C++]
 #define rd RD<int>
 #define rdll RD<long long>
@@ -3012,6 +3015,29 @@ inline char rdch() {
     char c = getchar();
     while (!isalpha(c)) c = getchar();
     return c;
+}
+\end{lstlisting}
+
+\subsubsection{HDU 专用读入优化}
+
+不支持负数。
+
+\begin{lstlisting}[language=C++]
+const int S = 2000000;
+
+char s[S], *h = s+S, *t = h;
+
+inline char getchr(void) {
+	if(h == t) fread(s, 1, S, stdin), h = s;
+	return *h++;
+}
+
+inline int rd(void) {
+	char c = getchr();
+	for (; !isdigit(c); c = getchr()) ;
+	int x = 0;
+	for (; isdigit(c); c = getchr()) x = x * 10 + c - '0';
+	return x;
 }
 \end{lstlisting}
 
