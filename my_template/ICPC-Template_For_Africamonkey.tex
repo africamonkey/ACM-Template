@@ -887,12 +887,27 @@ struct Treap {
 	struct Node {
 		char key;
 		bool reverse;
-		int lc, rc, size;
+		int lc, rc, size; // if size is long long, remember here
 	} node[N];
 	int n, root, rd;
 	int Rand() { rd = (rd * 20372052LL + 25022087LL) % mod; return rd; }
-	void init() { n = root = 0; }
-	inline int copy(int x) { node[++n] = node[x]; return n; }
+	
+	/*
+	LL Rand() {
+        LL t1 = rand() % 32768;
+        LL t2 = rand() % 32768;
+        LL t3 = rand() % 32768;
+        LL t4 = rand() % 32768;
+        return (((t1 * 32768) + t2) * 32768 + t3) * 32768 + t4;
+    }
+    */	
+	
+	void init() {
+		n = root = 0;
+	}
+	inline int copy(int x) {
+		node[++n] = node[x]; return n;
+	}
 	inline void pushdown(int x) {
 		if (!node[x].reverse) return;
 		if (node[x].lc) node[x].lc = copy(node[x].lc);
@@ -902,11 +917,13 @@ struct Treap {
 		node[node[x].rc].reverse ^= 1;
 		node[x].reverse = 0;
 	}
-	inline void pushup(int x) { node[x].size = node[node[x].lc].size + node[node[x].rc].size + 1; }
+	inline void pushup(int x) {
+		node[x].size = node[node[x].lc].size + node[node[x].rc].size + 1;
+	}
 	int merge(int u, int v) {
 		if (!u || !v) return u+v;
 		pushdown(u); pushdown(v);
-		int t = Rand() % (node[u].size + node[v].size), r;
+		int t = Rand() % (node[u].size + node[v].size), r;  // if size is long long, remember here
 		if (t < node[u].size) {
 			r = copy(u);
 			node[r].rc = merge(node[u].rc, v);
@@ -917,12 +934,12 @@ struct Treap {
 		pushup(r);
 		return r;
 	}
-	int split(int u, int x, int y) {
+	int split(int u, int x, int y) { // if size is long long, remember here
 		if (x > y) return 0;
 		pushdown(u);
 		if (x == 1 && y == node[u].size) return u;
 		if (y <= node[node[u].lc].size) return split(node[u].lc, x, y);
-		int t = node[node[u].lc].size + 1;
+		int t = node[node[u].lc].size + 1; // if size is long long, remember here
 		if (x > t) return split(node[u].rc, x-t, y-t);
 		int num = copy(u);
 		node[num].lc = split(node[u].lc, x, t-1);
@@ -932,7 +949,10 @@ struct Treap {
 	}
 	void insert(int x, char c) {
 		int t1 = split(root, 1, x), t2 = split(root, x+1, node[root].size);
-		node[++n].key = c; node[n].size = 1;
+		node[++n].key = c;
+		node[n].lc = node[n].rc = 0;
+		node[n].reverse = 0;
+		pushup(n);
 		root = merge(merge(t1, n), t2);
 	}
 	void del(int x, int y) {
@@ -1171,6 +1191,162 @@ struct DynamicTREE{
 	}
 } lct;
 \end{lstlisting}
+
+\subsection{求子树的直径}
+
+树形 DP 。
+
+答案保存在 $u, d$ 数组中。
+
+$u[x].exc$ 表示切断 $x$ 与 $father[x]$ 的边， $father[x]$ 表示的那颗子树的直径。
+
+$d[x].exc$ 表示切断 $x$ 与 $father[x]$ 的边， $x$ 表示的那颗子树的直径。
+
+\begin{lstlisting}[language=C++]
+#include <bits/stdc++.h>
+ 
+#define N 200020
+ 
+using namespace std;
+ 
+vector<int> g[N];
+int n, q, top;
+int deep[N], father[N], son[N], size[N], Top[N], dfn[N], rdfn[N];
+ 
+void dfs(int x, int root = 0) {
+    deep[x] = deep[root] + 1;
+    father[x] = root;
+    son[x] = 0; size[x] = 1;
+    if (root) g[x].erase(lower_bound(g[x].begin(), g[x].end(), root));
+    // 去根
+    int dd = 0;
+    for (int i = 0; i < g[x].size(); ++i) {
+        dfs(g[x][i], x);
+        if (size[g[x][i]] > dd) {
+            dd = size[g[x][i]];
+            son[x] = g[x][i];
+        }
+        size[x] += size[g[x][i]];
+    }
+}
+ 
+void split(int x, int tp) {
+    dfn[x] = ++top; rdfn[top] = x; Top[x] = tp;
+    if (son[x]) split(son[x], tp);
+    for (int i = 0; i < g[x].size(); ++i)
+        if (g[x][i] != son[x])
+            split(g[x][i], g[x][i]);
+}
+ 
+struct data {
+    int inc, inc_id;
+    int exc, exc_l, exc_r;
+    //inc 表示从该点出发可以走到的最远距离
+    //inc_id 表示从该点出发可以走到的最远点的编号
+    //exc 表示子树中两点最远距离
+    //exc_l, exc_r 表示子树中两点取得最远距离的两点的编号
+    data() {
+        inc = inc_id = 0;
+        exc = exc_l = exc_r = 0;
+    }
+} u[N], d[N];
+ 
+int safe(int x, int y) {
+    // 防止 inc_id = 0 的情况
+    if (x) return x;
+    return y;
+}
+ 
+void dfs1(int x) {
+    d[x].inc = 1; d[x].inc_id = x;
+    data mx1 = data(), mx2 = data();
+    // mx1, mx2 表示儿子 inc 最大、第2大值，用于更新该点 exc
+    for (int i = 0; i < g[x].size(); ++i) {
+        dfs1(g[x][i]);
+        if (d[g[x][i]].inc + 1 > d[x].inc) {
+            d[x].inc = d[g[x][i]].inc + 1;
+            d[x].inc_id = d[g[x][i]].inc_id;
+        }
+        if (d[g[x][i]].inc > mx1.inc) {
+            mx2 = mx1;
+            mx1 = d[g[x][i]];
+        } else
+        if (d[g[x][i]].inc > mx2.inc) {
+            mx2 = d[g[x][i]];
+        }
+    }
+    d[x].exc = mx1.inc + mx2.inc + 1;
+    d[x].exc_l = safe(mx1.inc_id, x);
+    d[x].exc_r = safe(mx2.inc_id, x);
+    for (int i = 0; i < g[x].size(); ++i)
+        if (d[g[x][i]].exc > d[x].exc) {
+            d[x].exc = d[g[x][i]].exc;
+            d[x].exc_l = d[g[x][i]].exc_l;
+            d[x].exc_r = d[g[x][i]].exc_r;
+        }
+}
+ 
+void dfs2(int x, data y) {
+    u[x] = y;
+    if (!y.exc) y.exc = 1, y.exc_l = y.exc_r = x;
+    data mx1 = y, mx2 = data(), mx3 = data(), mxe1 = y, mxe2 = data();
+    // mx1, mx2, mx3 表示根过来的子树中 inc 的最大、第2大、第3大值
+    // mxe1, mxe2 表示根过来的子树中 exc 的最大、第2大值
+    int mx1_id = -1, mx2_id = -1, mx3_id = -1, mxe1_id = -1, mxe2_id = -1;
+    for (int i = 0; i < g[x].size(); ++i) {
+        if (d[g[x][i]].inc > mx1.inc) {
+            mx3 = mx2; mx3_id = mx2_id;
+            mx2 = mx1; mx2_id = mx1_id;
+            mx1 = d[g[x][i]]; mx1_id = i;
+        } else
+        if (d[g[x][i]].inc > mx2.inc) {
+            mx3 = mx2; mx3_id = mx2_id;
+            mx2 = d[g[x][i]]; mx2_id = i;
+        } else
+        if (d[g[x][i]].inc > mx3.inc) {
+            mx3 = d[g[x][i]]; mx3_id = i;
+        }
+        if (d[g[x][i]].exc > mxe1.exc) {
+            mxe2 = mxe1; mxe2_id = mxe1_id;
+            mxe1 = d[g[x][i]]; mxe1_id = i;
+        } else
+        if (d[g[x][i]].exc > mxe2.exc) {
+            mxe2 = d[g[x][i]]; mxe2_id = i;
+        }
+    }
+    for (int i = 0; i < g[x].size(); ++i) {
+        data z = data();
+        if (i == mx1_id) {
+            z.exc = mx2.inc + mx3.inc + 1;
+            z.exc_l = safe(mx2.inc_id, x);
+            z.exc_r = safe(mx3.inc_id, x);
+        } else
+        if (i == mx2_id) {
+            z.exc = mx1.inc + mx3.inc + 1;
+            z.exc_l = safe(mx1.inc_id, x);
+            z.exc_r = safe(mx3.inc_id, x);
+        } else {
+            z.exc = mx1.inc + mx2.inc + 1;
+            z.exc_l = safe(mx1.inc_id, x);
+            z.exc_r = safe(mx2.inc_id, x);
+        }
+        if (i == mxe1_id) {
+            if (mxe2.exc > z.exc) z = mxe2;
+        } else {
+            if (mxe1.exc > z.exc) z = mxe1;
+        }
+        if (i == mx1_id) {
+            z.inc = mx2.inc + 1;
+            z.inc_id = safe(mx2.inc_id, x);
+        } else {
+            z.inc = mx1.inc + 1;
+            z.inc_id = safe(mx1.inc_id, x);
+        }
+        dfs2(g[x][i], z);
+    }
+}
+\end{lstlisting}
+
 \section{图}
 \subsection{欧拉回路}
 欧拉回路： 
