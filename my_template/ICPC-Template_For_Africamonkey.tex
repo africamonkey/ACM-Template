@@ -2037,6 +2037,46 @@ printf("%d\n", ans);
 $\sum\limits_{i=1}^n \frac{1}{i}$ 在 $n$ 较大时约等于 $ln(n) + r$ ， $r$ 为欧拉常数，约等于 $0.5772156649015328$ 。
 \subsection{曼哈顿距离的变换}
 $\vert x_1 - x_2 \vert + \vert y_1 - y_2 \vert = max(\vert(x_1 + y_1) - (x_2 + y_2) \vert, \vert(x_1 - y_1) - (x_2 - y_2) \vert)$
+\subsection{数论函数变换}
+
+常见积性函数：
+
+欧拉函数 $\phi(n)$ 为不超过 $n$ 的与 $n$ 互质的正整数个数
+
+莫比乌斯函数 $\mu (n) = \left\{
+	\begin{array}{lr}
+	1, & \text{若} n = 1 \\
+	(-1)^k, & \text{若} n \text{无平方数因数，且} n = p_1p_2 \cdots p_k \\
+	0, & \text{若} n \text{有大于 1 的平方数因数} \\
+	\end{array}
+\right.
+$
+
+常见积性函数的性质：
+
+$n = \sum\limits_{d|n} \phi(d)$
+
+$\sum\limits_{d|n} \mu(d) = \left\{
+	\begin{array}{lr}
+	1, & n = 1 \\
+	0, & n > 1 \\
+	\end{array}
+\right.
+$
+
+$\sum\limits_{i=1}^{n} \sum\limits_{j=1}^{m} i \times j [gcd(i, j) = d] = \sum\limits_{i=1}^{\lfloor \frac{n}{d} \rfloor} \sum\limits_{j=1}^{\lfloor \frac{m}{d} \rfloor} id \times jd [gcd(i, j) = 1]$
+
+$\phi(n) = \sum\limits_{d|n} \mu(d) \frac{n}{d}$
+
+\subsection{莫比乌斯反演}
+
+$F(n)$ 和 $f(n)$ 是定义在非负整数集合上的两个函数，则：
+
+$F(n) = \sum\limits_{d|n}f(d) \Rightarrow f(n) = \sum\limits_{d|n} \mu(d) F(\frac{n}{d}) $
+
+$F(n) = \sum\limits_{n|d}f(d) \Rightarrow f(n) = \sum\limits_{n|d} \mu(\frac{d}{n}) F(d) $
+
+
 \subsection{线性筛素数}
 \begin{lstlisting}[language=C++]
 mu[1]=phi[1]=1;top=0;
@@ -2087,15 +2127,7 @@ $$S(n) = \sum\limits_{i = 1}^{n} i^p \phi(i) = \sum\limits_{i = 1}^{n} i^{p+1} -
 
 其中有用到等式 $\sum\limits_{d | n} \phi(d) = n$
 
-另外，莫比乌斯函数
-$\mu (n) = \left\{
-	\begin{array}{lr}
-	1, & \text{若} n = 1 \\
-	(-1)^k, & \text{若} n \text{无平方数因数，且} n = p_1p_2 \cdots p_k \\
-	0, & \text{若} n \text{有大于 1 的平方数因数} \\
-	\end{array}
-\right.
-$ 也可以使用杜教筛求前缀和，记 $S'(n) = \sum\limits_{i = 1}^{n} \mu (i)$ ，则 $S'(n) = 1 - \sum\limits_{i = 2}^{n} S'(\lfloor \frac{n}{i} \rfloor)$
+另外，莫比乌斯函数 $\mu(n)$ 也可以使用杜教筛求前缀和，记 $S'(n) = \sum\limits_{i = 1}^{n} \mu (i)$ ，则 $S'(n) = 1 - \sum\limits_{i = 2}^{n} S'(\lfloor \frac{n}{i} \rfloor)$
 
 
 \begin{lstlisting}
@@ -2222,51 +2254,29 @@ $and$ 卷积： $C_k = \sum\limits_{i \ and \ j=k} A_iB_j$
 
 $xor$ 卷积： $C_k = \sum\limits_{i \ xor \ j=k} A_iB_j$
 
-序列对 $10^9 + 7$ 取模
 \begin{lstlisting}[language=C++]
-#include <bits/stdc++.h>
-using namespace std;
-inline int read() {
-	int s = 0; char c; while((c=getchar())<'0'||c>'9');
-	do{s=s*10+c-'0';}while((c=getchar())>='0'&&c<='9');
-	return s;
+void FWT(int *a, int n) {
+    for (int d = 1; d < n; d <<= 1)
+        for (int m = d << 1, i = 0; i < n; i += m)
+            for (int j = 0; j < d; ++j) {
+                int x = a[i + j], y = a[i + j + d];
+                //or: a[i + j + d] = x + y;
+                //and: a[i + j] = x + y;
+                //xor: a[i + j] = x + y, a[i + j + d] = x - y;
+                // 如答案要求取模，此处记得取模
+            }
 }
-typedef long long lint;
-typedef pair<lint,lint> pii;
-const int N = (1<<18)+37, MO = 1e9+7;
-int n;
-pii tand(lint a,lint b) { return (pii){a+b,b}; }
-pii iand(lint a,lint b) { return (pii){a-b,b}; }
-pii tor(lint a,lint b) { return (pii){a,a+b}; }
-pii ior(lint a,lint b) { return (pii){a,b-a}; }
-pii txor(lint a,lint b) { return (pii){a+b,a-b}; }
-pii ixor(lint a,lint b) { return (pii){(a+b)/2,(a-b)/2}; }
-pii (*tr)(lint,lint);
-pii (*trs[3])(lint,lint)={tor,tand,txor};
-pii (*ivs[3])(lint,lint)={ior,iand,ixor};
-lint a[N],b[N],x[N],y[N];
-inline void fwt(lint *a) {
-	int s,k,j,je;
-	for(s=2;s<=n;s<<=1) for(k=0;k<n;k+=s)
-		for(j=0,je=s>>1;j<je;j++) {
-			pii t = tr(a[k+j],a[k+j+je]);
-			a[k+j] = t.first;
-			a[k+j+je] = t.second;
-		}
-}
-int main() {
-	int i;
-	n = read(); n = 1<<n;
-	for(i=0;i<n;i++) a[i] = read();
-	for(i=0;i<n;i++) b[i] = read();
-	for(int k=0;k<3;k++) {
-		for(i=0;i<n;i++) x[i] = a[i], y[i] = b[i];
-		tr = trs[k]; fwt(x), fwt(y);
-		for(i=0;i<n;i++) x[i] *= y[i];
-		tr = ivs[k]; fwt(x);
-		for(i=0;i<n;i++) printf("%d ",x[i]%MO); puts("");
-	}
-	return 0;
+
+void UFWT(int *a, int n) {
+    for (int d = 1; d < n; d <<= 1)
+        for (int m = d << 1, i = 0; i < n; i += m)
+            for (int j = 0; j < d; ++j) {
+                int x = a[i + j], y = a[i + j + d];
+                //or: a[i + j + d] = y - x;
+                //and: a[i + j] = x - y;
+                //xor: a[i + j] = (x + y) / 2, a[i + j + d] = (x - y) / 2;
+                // 如答案要求取模，此处记得取模
+            }
 }
 \end{lstlisting}
 
@@ -2385,6 +2395,25 @@ int main() {
 	NTT(A, len, -1);
 }
 \end{lstlisting}
+
+\subsection{蔡勒公式}
+
+$w = (\lfloor \frac{c}{4} \rfloor - 2c + y + \lfloor \frac{y}{4} \rfloor + \lfloor \frac{13(m+1)}{5} \rfloor + d - 1) \text{ mod } 7$
+
+$w$ ： 0星期日，1星期一，2星期二，3星期三，4星期四，5星期五，6星期六
+
+$c$ ： 年份前两位数
+
+$y$ ： 年份后两位数
+
+$m$ ： 月（ $3 \leq m \leq 14$ ，即在蔡勒公式中，1、2月要看作上一年的13、14月来计算 ）
+
+$d$ ： 日
+
+\subsection{皮克定理}
+
+给定顶点坐标均是整点（或正方形格点）的简单多边形（凸多边形），皮克定理说明了其面积 $S$ 和内部格点数目 $n$ 、边上格点数目 $s$ 的关系： $S = n + \frac{s}{2} + 1$ 。
+
 \subsection{组合数 lcm}
 $(n+1) lcm(C(n, 0), C(n,1),...,C(n,k)) = lcm(n+1, n, n-1, ..., n-k+1)$
 \subsection{区间 lcm 的维护}
@@ -2828,7 +2857,7 @@ int __builtin_ctz(unsigned int x);
 \subsection{License}
 
 \begin{lstlisting}
-—– BEGIN LICENSE —–
+-- BEGIN LICENSE --
 Michael Barnes
 Single User License
 EA7E-821385
@@ -2840,7 +2869,7 @@ B085E65E 2F5F5360 8489D422 FB8FC1AA
 FCCC7561 8A4A1741 68FA4223 ADCEDE07
 200C25BE DBBC4855 C4CFB774 C5EC138C
 0FEC1CEF D9DCECEC D3A5DAD1 01316C36
-—— END LICENSE ——
+-- END LICENSE --
 \end{lstlisting}
 
 \subsection{Preferences.sublime-settings}
