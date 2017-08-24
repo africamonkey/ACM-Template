@@ -2372,6 +2372,9 @@ int main() {
 }
 \end{lstlisting}
 \subsection{FFT}
+
+\subsubsection{普通FFT}
+
 \begin{lstlisting}[language=C++]
 namespace FFT {
 	const int maxn = 65537;
@@ -2408,9 +2411,10 @@ namespace FFT {
 			for (int k = 0; k < m; k += s) {
 				comp w(1 , 0);
                 for (int j = 0; j < s / 2; ++j) {
-					comp u = a[k + j] , t = w * a[k + j + s / 2];
-					a[k + j] = u + t;
-					a[k + j + s / 2] = u - t;
+					comp &u = a[k + j + s / 2], &v = a[k + j];
+					comp t = w * u;
+					u = v - t;
+					v = v + t;
 					w = w * g;
 				}
 			}
@@ -2419,6 +2423,86 @@ namespace FFT {
 			for (int i = 0; i < m; ++i) a[i].real /= m , a[i].imag /= m;
 	}
 }
+\end{lstlisting}
+
+\subsubsection{模任意素数FFT}
+
+\emph{注意}：调用 $mulmod$ 前先调用 $init$ 。调用 $mulmod$ 前请确保 $a, b$  数组足够大（比 $2n$ 大的 $2$ 的整数次幂）且经过\emph{初始化}。
+
+\begin{lstlisting}[language=C++]
+namespace FFT {
+	const long double pi = acos(-1.0);
+
+	struct comp {
+		long double real, imag;
+		comp() {}
+		comp(long double real, long double imag) : real(real), imag(imag) {}
+		friend inline comp operator + (const comp &a, const comp &b) {
+			return comp(a.real + b.real, a.imag + b.imag);
+		}
+		friend inline comp operator - (const comp &a, const comp &b) {
+			return comp(a.real - b.real, a.imag - b.imag);
+		}
+		friend inline comp operator * (const comp &a, const comp &b) {
+			return comp(a.real * b.real - a.imag * b.imag, a.real * b.imag + a.imag * b.real);
+		}
+		inline comp conj() {
+			return comp(real, -imag);
+		}
+	};
+
+	comp A[maxn], B[maxn];
+	int rev[maxn], m, len;
+
+	inline void init(int n) {
+		for (m = 1, len = 0; m < n + n; m <<= 1, ++len);
+		for (int i = 0; i < m; ++i) rev[i] = (rev[i >> 1] >> 1) | ((i & 1) << (len - 1));
+		for (int i = 0; i < m; ++i) A[i] = B[i] = comp(0, 0);
+	}
+
+	inline void dft(comp *a, int v) {
+		for (int i = 0; i < m; ++i) if (i < rev[i]) swap(a[i], a[rev[i]]);
+		for (int s = 2; s <= m; s <<= 1) {
+			comp g(cos(2 * pi / s), v * sin(2 * pi / s));
+			for (int k = 0; k < m; k += s) {
+				comp w(1, 0);
+				for (int j = 0; j < s / 2; ++j) {
+					comp &u = a[k + j + s / 2], &v = a[k + j];
+					comp t = w * u;
+					u = v - t;
+					v = v + t;
+					w = w * g;
+				}
+			}
+		}
+		if (v == -1)
+			for (int i = 0; i < m; ++i) a[i].real /= m, a[i].imag /= m;
+	}
+
+	inline void mulmod(int *a, int *b, int *c) { // c = a * b % mod, c不能为a或b
+		int M = sqrt(mod);
+		for (int i = 0; i < m; ++i) {
+			A[i] = comp(a[i] / M, a[i] % M);
+			B[i] = comp(b[i] / M, b[i] % M);
+		}	
+		dft(A, 1); dft(B, 1);
+		static comp t[maxn];
+		for (int i = 0; i < m; ++i) {
+			int j = i ? m - i : 0;
+			t[i] = ((A[i] + A[j].conj()) * (B[j].conj() - B[i]) + (A[j].conj() - A[i]) * (B[i] + B[j].conj())) * comp(0, 0.25);
+		}
+		dft(t, -1);
+		for (int i = 0; i < m; ++i)
+			c[i] = (LL)(t[i].real + 0.5) % mod * M % mod;
+		for (int i = 0; i < m; ++i) {
+			int j = i ? m - i : 0;
+			t[i] = (A[j].conj() - A[i]) * (B[j].conj() - B[i]) * comp(-0.25, 0) + comp(0, 0.25) * (A[i] + A[j].conj()) * (B[i] + B[j].conj());
+		}
+		dft(t, -1);
+		for (int i = 0; i < m; ++i)
+			c[i] = (1ll * c[i] + (LL)(t[i].real + 0.5) + (LL)(t[i].imag + 0.5) % mod * M * M % mod) % mod;
+	}
+};
 \end{lstlisting}
 
 \subsection{FWT}
