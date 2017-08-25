@@ -1,4 +1,4 @@
-This is XeTeX, Version 3.14159265-2.6-0.99996 (TeX Live 2016) (preloaded format=xelatex 2017.3.28)  24 AUG 2017 20:31
+This is XeTeX, Version 3.14159265-2.6-0.99996 (TeX Live 2016) (preloaded format=xelatex 2017.3.28)  25 AUG 2017 11:49
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -1489,19 +1489,19 @@ LaTeX Font Warning: Font shape `EU1/FandolFang-Regular(0)/m/it' undefined
 File: nwf-1.jpg Graphic file (type QTm)
  <use  "nwf-1.jpg" >
 [42] [43] [44] [45] [46] [47] [48] [49] [50] [51] [52] [53] [54] [55] [56]
-[57] [58] [59] [60] [61] [62] [63] [64] [65] [66] [67] [68]
+[57] [58] [59] [60] [61] [62] [63] [64] [65] [66] [67] [68] [69] [70] [71]
 (./ICPC-Template_For_Africamonkey.aux)
 
 LaTeX Font Warning: Some font shapes were not available, defaults substituted.
 
  ) 
 Here is how much of TeX's memory you used:
- 25357 strings out of 493591
- 486648 string characters out of 6143546
- 854265 words of memory out of 5000000
- 28488 multiletter control sequences out of 15000+600000
+ 25417 strings out of 493591
+ 487988 string characters out of 6143546
+ 868265 words of memory out of 5000000
+ 28548 multiletter control sequences out of 15000+600000
  13684 words of font info for 84 fonts, out of 8000000 for 9000
  1347 hyphenation exceptions out of 8191
- 65i,9n,77p,10454b,1680s stack positions out of 5000i,500n,10000p,200000b,80000s
+ 65i,17n,77p,10454b,1680s stack positions out of 5000i,500n,10000p,200000b,80000s
 
-Output written on ICPC-Template_For_Africamonkey.pdf (68 pages).
+Output written on ICPC-Template_For_Africamonkey.pdf (71 pages).

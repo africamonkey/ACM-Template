@@ -2695,6 +2695,202 @@ $(n+1) lcm(C(n, 0), C(n,1),...,C(n,k)) = lcm(n+1, n, n-1, ..., n-k+1)$
 对于一个数，将其分解质因数，若有因子 $p^k$ ，那么拆分出 $k$ 个数 $p, p^2, ..., p^k$ ，权值都为 $p$ ，那么查询区间 $[l, r]$ 内所有数的 lcm 的答案 = 所有在该区间中出现过的数的权值之积，可持久化线段树维护即可。
 
 \section{几何}
+
+\subsection{二维计算几何}
+
+\subsubsection{计算几何误差修正}
+
+\begin{lstlisting}[language=C++]
+const double pi = acos(-1.0);
+const double eps = 1e-8;
+
+inline double sqr(double x) {
+	return x * x;
+}
+
+inline int sgn(double x) {
+	if (x < -eps) return -1;
+	return x > eps;
+}
+
+inline int cmp(double x, double y) {
+	return sgn(x - y);
+}
+\end{lstlisting}
+
+\subsubsection{计算几何点类}
+
+成员函数：
+
+
+$
+\begin{array}{lr}
+	\text{read()} & \text{输入一个点} \\
+	\text{norm()} & \text{计算向量的模长} \\
+\end{array}
+$
+
+相关函数：
+
+$
+\begin{array}{lr}
+	\text{double sqr(double x)} & \text{计算一个数的平方} \\
+	\text{double det(const point \&a, const point \&b)} & \text{计算两个向量的叉积} \\
+	\text{double dot(const point \&a, const point \&b)} & \text{计算两个向量的点积} \\
+	\text{double dis(const point \&a, const point \&b)} & \text{计算两个点的距离} \\
+	\text{point rotate\_point(const point \&p, double A)} &\overrightarrow{OP}  \text{绕原点逆时针旋转A弧度} \\
+	
+\end{array}
+$
+
+
+\begin{lstlisting}[language=C++]
+struct point {
+	double x, y;
+	point() : x(0), y(0) {}
+	point(double a, double b) : x(a), y(b) {}
+	inline void read() {
+		scanf("%lf%lf", &x, &y);
+	}
+	inline friend point operator + (const point &a, const point &b) {
+		return point(a.x + b.x, a.y + b.y);
+	}
+	inline friend point operator - (const point &a, const point &b) {
+		return point(a.x - b.x, a.y - b.y);
+	}
+	inline friend bool operator == (const point &a, const point &b) {
+		return cmp(a.x, b.x) == 0 && cmp(a.y, b.y) == 0;
+	}
+	inline friend point operator * (const double &a, const point &b) {
+		return point(a * b.x, a * b.y);
+	}
+	inline friend point operator / (const point &a, const double &b) {
+		return point(a.x / b, a.y / b);
+	}
+	inline double norm() const {
+		return sqrt(sqr(x) + sqr(y));
+	}
+};
+
+inline double det(const point &a, const point &b) {
+	return a.x * b.y - a.y * b.x;
+}
+
+inline double dot(const point &a, const point &b) {
+	return a.x * b.x + a.y * b.y;
+}
+
+inline double dis(const point &a, const point &b) {
+	return (a - b).norm();
+}
+
+inline point rotate_point(const point &p, double A) {
+	double tx = p.x, ty = p.y;
+	return point(tx * cos(A) - ty * sin(A), tx * sin(A) + ty * cos(A));
+}
+\end{lstlisting}
+
+\subsubsection{计算几何线段类}
+
+相关函数：
+
+bool point\_on\_segment(const point \&p, const segment \&l) 判断点p是否在线段l上（含端点）
+
+double point\_to\_segment\_dist(const point \&p, const segment \&l) 求点p到线段l的距离
+
+point sym\_point(const point \&p, const segment \&l) 求点p关于线段l的对称点
+
+point point\_proj\_line(const point \&p, const segment \&l) 求点p到线段l的垂足
+
+bool parallel(const segment \&a, const segment \&b) 判断线段a和线段b是否平行
+
+point intersect\_point(const segment \&a, const segment \&b) 求直线a与直线b的交点（如要求线段a与线段b的交点，应先判断是否有）
+
+bool is\_segment\_intersect(const segment \&l1, const segment \&l2) 判断线段a与线段b是否相交（含端点）（如不含端点，将 $\leq$ 改为 $<$ ）
+
+bool is\_line\_intersect\_segment(const point \&p1, const point \&p2, const segment \&l) 判断直线 $p_1p_2$ 是否与线段 $l$ 相交
+
+bool is\_half\_line\_intersect\_segment(const point \&p1, const point \&p2, const segment \&l) 判断射线 $p_1p_2$ 是否与线段 $l$ 相交（含端点 $p_1$ ）（如不含端点 $p_1$ ，将 $\geq$ 改为 $>$ ）
+
+\begin{lstlisting}[language=C++]
+struct segment {
+	point a, b;
+	segment() {}
+	segment(point x, point y) : a(x), b(y) {}
+	void read() {
+		a.read(); b.read();
+	}
+};
+
+// determine whether point p is on segment l
+bool point_on_segment(const point &p, const segment &l) {
+	if ((cmp(l.a.x, p.x) <= 0 || cmp(l.b.x, p.x) <= 0) &&
+		(cmp(l.a.x, p.x) >= 0 || cmp(l.b.x, p.x) >= 0) &&
+		(cmp(l.a.y, p.y) <= 0 || cmp(l.b.y, p.y) <= 0) &&
+		(cmp(l.a.y, p.y) >= 0 || cmp(l.b.y, p.y) >= 0)) {
+		return sgn(det(p - l.a, l.b - l.a)) == 0;
+	}
+	return 0;
+}
+
+// determine the distance from the point p to segment l
+double point_to_segment_dist(const point &p, const segment &l) {
+	if (dis(l.a, l.b) < eps) return dis(p, l.a);
+	if (sgn(dot(l.b - l.a, p - l.a)) < 0) return dis(l.a, p);
+	if (sgn(dot(l.a - l.b, p - l.b)) < 0) return dis(l.b, p);
+	return fabs(det(l.b - l.a, p - l.a)) / dis(l.b, l.a);
+}
+
+// determine the symmetrical point of point p on segment l
+point sym_point(const point &p, const segment &l) {
+	double a = l.b.x - l.a.x;
+	double b = l.b.y - l.a.y;
+	double t = ((p.x - l.a.x) * a + (p.y - l.a.y) * b) / (a * a + b * b);
+	return point(2 * l.a.x + 2 * a * t - p.x, 2 * l.a.y + 2 * b * t - p.y);
+}
+
+point point_proj_line(const point &p, const segment &l) {
+	double r = dot((l.b - l.a), (p - l.a)) / dot(l.b - l.a, l.b - l.a);
+	return l.a + r * (l.b - l.a);
+}
+
+bool parallel(const segment &a, const segment &b) {
+	return sgn(det(a.a - a.b, b.a - b.b)) == 0;
+}
+
+point intersect_point(const segment &a, const segment &b) {
+	double s1 = det(a.a - b.a, b.b - b.a);
+	double s2 = det(a.b - b.a, b.b - b.a);
+	return (s1 * a.b - s2 * a.a) / (s1 - s2);
+}
+
+// determine whether segment l1 intersects with segment l2
+bool is_segment_intersect(const segment &l1, const segment &l2) {
+	const point &s1 = l1.a, &e1 = l1.b;
+	const point &s2 = l2.a, &e2 = l2.b;
+	if ( cmp( min(s1.x, e1.x), max(s2.x, e2.x) ) <= 0 &&
+		 cmp( min(s1.y, e1.y), max(s2.y, e2.y) ) <= 0 &&
+		 cmp( min(s2.x, e2.x), max(s1.x, e1.x) ) <= 0 &&
+		 cmp( min(s2.y, e2.y), max(s1.y, e1.y) ) <= 0 &&
+		 sgn( det(s2 - s1, e2 - s1) ) * sgn( det(s2 - e1, e2 - e1) ) <= 0 &&
+		 sgn( det(s1 - s2, e1 - s2) ) * sgn( det(s1 - e2, e1 - e2) ) <= 0)
+		return 1;
+	return 0;
+}
+
+// determine whether line p1p2 intersects with segment l
+bool is_line_intersect_segment(const point &p1, const point &p2, const segment &l) {
+	assert(!(p1 == p2));
+	return sgn( det(p1 - l.a, p2 - l.a) ) * sgn( det(p1 - l.b, p2 - l.b) ) <= 0;
+}
+
+// determine whether half-line p1p2 intersects with segment l
+bool is_half_line_intersect_segment(const point &p1, const point &p2, const segment &l) {
+	return is_line_intersect_segment(p1, p2, l) && sgn( det(p1 - l.a, p2 - l.a) ) * sgn( det(p1 - l.a, l.b - l.a) ) >= 0;
+}
+
+\end{lstlisting}
+
 \subsection{凸包}
 \begin{lstlisting}[language=C++]
 typedef complex<int> point;
