@@ -477,16 +477,25 @@ for (int i = m - 1; i >= 0; --i) {
 \subsection{后缀自动机}
 下面的代码是求两个串的LCS（最长公共子串）。
 \begin{lstlisting}[language=C++]
-#include <cstdio>
-#include <cstdlib>
-#include <cstring>
+#include <bits/stdc++.h>
+
 #define N 500001
+#define M (N << 1)
+
 using namespace std;
+
 char st[N];
-int pre[N<<1], son[26][N<<1], step[N<<1], refer[N<<1], last, total;
-int apply(int x, int now) { step[++total]=x; refer[total] = now; return total; }
+int pre[M], son[26][M], step[M], refer[M], size[M], tmp[M], topo[M], last, total;
+
+int apply(int x, int now) {
+	step[++total] = x;
+	refer[total] = now;
+	return total;
+}
+
 void extend(char x, int now) {
 	int p = last, np = apply(step[last]+1, now);
+	size[np] = 1;
 	for (; p && !son[x][p]; p=pre[p]) son[x][p] = np;
 	if (!p) pre[np] = 1;
 	else {
@@ -506,13 +515,27 @@ void init() {
 	last = total = 0;
 	last = apply(0, 0);
 	scanf("%s",st);
-	for (int i=0; st[i]; i++)
-		extend(st[i]-'a', i);
-	scanf("%s",st);
+	int n = strlen(st);
+	for (int i = 0; i <= n * 2; ++i) {
+		pre[i] = step[i] = refer[i] = size[i] = tmp[i] = topo[i] = 0;
+		for (int j = 0; j < 26; ++j)
+			son[j][i] = 0;
+	}
+	for (int i = 0; i < n; ++i)
+		extend(st[i] - 'a', i);
+	for (int i = 1; i <= total; ++i)
+		tmp[step[i]] ++;
+	for (int i = 1; i <= n; ++i)
+		tmp[i] += tmp[i - 1];
+	for (int i = 1; i <= total; ++i)
+		topo[tmp[step[i]]--] = i;
+	for (int i = total; i; --i)
+		size[pre[topo[i]]] += size[topo[i]];
 }
 int main() {
 	init();
 	int p = 1, now = 0, ans = 0;
+	scanf("%s", st);
 	for (int i=0; st[i]; i++) {
 		int index = st[i]-'a';
 		for (; p && !son[index][p]; p = pre[p], now = step[p]) ;
@@ -528,7 +551,7 @@ int main() {
 }
 \end{lstlisting}
 
-一些定义和性质：
+\paragraph{一些定义和性质}
 
 Right(str) 表示 str 在母串 S 中所有出现的结束位置集合
 
@@ -545,6 +568,18 @@ Parent 函数可以表示一个树形结构。不妨叫它 Parent 树
 max(Parent(s)) = min(s) - 1
 
 令 refer(s) 表示产生 s 状态的字符所在位置。则 Right(s) 的合法子串的起始位置为 [refer(s) - max(s) + 1, refer(s) - min(s) + 1] ，即 [refer(s) - max(s) + 1, refer(s) - max(Parent(s))]
+
+\paragraph{代码中变量名含义}
+
+pre[s] 为上述定义中的 Parent(s)
+
+step[s] 为从初始状态走到 s 状态最多需要多少步
+
+refer[s] 为上述定义中的 refer(s)
+
+size[s] 为 Right(s) 集合的大小
+
+topo[s] 为 Parent 树的拓扑序，根（初始状态）在前
 
 \begin{figure}[htbp]
   \centering
