@@ -88,8 +88,8 @@
 \contentsline {subsection}{\numberline {8.5}位运算及其运用}{73}
 \contentsline {subsubsection}{\numberline {8.5.1}枚举子集}{73}
 \contentsline {subsubsection}{\numberline {8.5.2}求 1 的个数}{73}
-\contentsline {subsubsection}{\numberline {8.5.3}求前缀 0 的个数}{73}
-\contentsline {subsubsection}{\numberline {8.5.4}求后缀 0 的个数}{73}
-\contentsline {section}{\numberline {9}Sublime Text}{73}
-\contentsline {subsection}{\numberline {9.1}License}{73}
+\contentsline {subsubsection}{\numberline {8.5.3}求前缀 0 的个数}{74}
+\contentsline {subsubsection}{\numberline {8.5.4}求后缀 0 的个数}{74}
+\contentsline {section}{\numberline {9}Sublime Text}{74}
+\contentsline {subsection}{\numberline {9.1}License}{74}
 \contentsline {subsection}{\numberline {9.2}Preferences.sublime-settings}{74}
