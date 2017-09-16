@@ -1059,6 +1059,163 @@ namespace pers_union {
 \end{lstlisting}
 
 \section{树}
+
+\subsection{树链剖分}
+
+接口：
+
+$
+\begin{array}{ll}
+	\text{void addedge(int x, int y);} & \text{将 x 到 y 连边，注意这是单向边} \\
+	\text{void dfs(int x, int root = 0);} & \text{从 x 开始遍历整棵树} \\
+	\text{void split(int x, int tp);} & \text{划分轻重链} \\
+	\text{int lca(int x, int y);} & \text{求 x 和 y 的 lca} \\
+	\text{int query(int x, int y);} & \text{求 x 到 y 经过的点数} \\
+	\text{int skip(int x, int k);} & \text{求从 x 向根方向跳 k 步到达的节点（若超出根，则返回 0）} \\
+	\text{void get\_data(int x, int y);} & \text{将 x 到 y 路径上的重链找出来，存在 seg[0] 中} \\
+	
+\end{array}
+$
+
+\emph{Debug 技巧}：换一个根来 dfs 以测试程序是否能通过 $father[i] > i$ 的数据
+
+\begin{lstlisting}[language=C++]
+struct EDGE {
+	int adj, next;
+} edge[N * 2];
+
+int n, gh[N], top, s_top;
+int father[N], deep[N], son[N], size[N], Top[N], dfn[N], rdfn[N];
+
+void addedge(int x, int y) {
+	edge[++top].adj = y;
+	edge[top].next = gh[x];
+	gh[x] = top;
+}
+
+void dfs(int x, int root = 0) {
+	father[x] = root;
+	deep[x] = deep[root] + 1;
+	son[x] = 0;
+	size[x] = 1;
+	int dd = 0;
+	for (int p = gh[x]; p; p = edge[p].next)
+		if (edge[p].adj != root) {
+			dfs(edge[p].adj, x);
+			if (size[edge[p].adj] > dd) {
+				dd = size[edge[p].adj];
+				son[x] = edge[p].adj;
+			}
+			size[x] += size[edge[p].adj];
+		}
+}
+
+void split(int x, int tp) {
+	Top[x] = tp; dfn[x] = ++s_top; rdfn[s_top] = x;
+	if (son[x]) split(son[x], tp);
+	for (int p = gh[x]; p; p = edge[p].next)
+		if (edge[p].adj != father[x] && edge[p].adj != son[x])
+			split(edge[p].adj, edge[p].adj);
+}
+
+int lca(int x, int y) {
+	int tx = Top[x], ty = Top[y];
+	while (tx != ty) {
+		if (deep[tx] < deep[ty]) {
+			swap(tx, ty);
+			swap(x, y);
+		}
+		x = father[tx];
+		tx = Top[x];
+	}
+	if (deep[x] < deep[y])
+		swap(x, y);
+	return y;
+}
+
+int query(int x, int y) {
+	int tx = Top[x], ty = Top[y];
+	int ans = 0;
+	while (tx != ty) {
+		if (deep[tx] < deep[ty]) {
+			swap(tx, ty);
+			swap(x, y);
+		}
+		ans += dfn[x] - dfn[tx] + 1;
+		x = father[tx];
+		tx = Top[x];
+	}
+	if (deep[x] < deep[y])
+		swap(x, y);
+	ans += dfn[x] - dfn[y] + 1;
+	return ans;
+}
+
+int skip(int x, int k) {
+	int tx = Top[x];
+	while (tx) {
+		if (k < dfn[x] - dfn[tx] + 1) {
+			return rdfn[ dfn[x] - k ];
+		} else {
+			k -= dfn[x] - dfn[tx] + 1;
+			x = father[tx];
+			tx = Top[x];
+		}
+	}
+	return 0;
+}
+
+struct segment {
+	int l, r;
+	data d;
+	segment(int _l, int _r) { // from _l to _r
+		l = _l, r = _r;
+		if (l <= r) d = query(l, r, 0);
+		else d = query(r, l, 1); //reverse
+	}
+};
+ 
+vector<segment> seg[2];
+
+void get_data(int x, int y) {
+	seg[0].clear(); seg[1].clear();
+	int tx = Top[x], ty = Top[y];
+	int s = 0;
+	while (tx != ty) {
+		if (deep[tx] < deep[ty]) {
+			swap(tx, ty);
+			swap(x, y);
+			s ^= 1;
+		}
+		if (s == 0)
+			seg[s].push_back(segment(w[x], w[tx]));
+		else
+			seg[s].push_back(segment(w[tx], w[x]));
+		x = father[tx];
+		tx = Top[x];
+	}
+	if (x != y) {
+		if (deep[x] < deep[y]) {
+			swap(x, y);
+			s ^= 1;
+		}
+		if (s == 0)
+			seg[s].push_back(segment(w[x], w[y] + 1));
+		else
+			seg[s].push_back(segment(w[y] + 1, w[x]));
+	}
+	reverse(seg[1].begin(), seg[1].end());
+	for (int i = 0; i < seg[1].size(); ++i)
+		seg[0].push_back(seg[1][i]);
+	// saved to seg[0]
+}
+
+void init() {
+	top = s_top = 0;
+	for (int i = 1; i <= n; ++i) gh[i] = 0;
+}
+\end{lstlisting}
+
 \subsection{点分治}
 初始化时须设置 $top = 1$ 。
 \begin{lstlisting}[language=C++]
