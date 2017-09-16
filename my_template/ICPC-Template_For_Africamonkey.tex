@@ -607,6 +607,10 @@ topo[s] 为 Parent 树的拓扑序，根（初始状态）在前
   \label{suffix_auto3}
 \end{figure}
 
+\subsubsection{广义后缀自动机}
+
+先建 Trie ，再按照 \emph{BFS} 序建后缀自动机。从节点 $x$ 开始向子树更新时，其所有儿子都从同一个 last ，即 $last[x]$ 更新。
+
 \subsection{回文树}
 
 【URAL2040】Palindromes and Super Abilities 2
