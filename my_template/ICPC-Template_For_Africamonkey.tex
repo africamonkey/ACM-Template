@@ -2315,7 +2315,7 @@ int main(){
 		if(flag){
 			d=exgcd(k,a,x,y);
 			if((r-m)%d){flag=0;continue;}
-			x=(x*(r-m)/d+a/d)%(a/d),y=k/d*a,m=((x*k+m)%y)%y;
+			x=(x*((r-m)/d)+a/d)%(a/d),y=k/d*a,m=((x*k+m)%y)%y;
 			if(m<0)m+=y;
 			k=y;
 		}
