@@ -176,7 +176,7 @@ void kmp(int n, char* a, int m, char *b) {
         while (~j && a[j + 1] != b[i]) j = nxt[j];
         if (a[j + 1] == b[i]) ++j;
         if (j == n - 1) {
-            printf("%d\n", i - (n - 1) + 1);
+            printf("%d\n", i - n + 1);
             j = nxt[j];
         }
     }
