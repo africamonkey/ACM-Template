@@ -2869,6 +2869,140 @@ int main() {
 }
 \end{lstlisting}
 
+\subsection{Berlekamp Messay 算法求线性递推式}
+
+适合所有 $S_n = \sum\limits_{i = 1}^{L} a_iS_{n - i}$ 的递推式。只需在 $vector<int> t$ 中输入前 $2L$ 项，即可计算出第 $m$ 项的值 modulo MOD 。
+
+时间复杂度 $O(L^2\log{(m)})$ 。
+
+异常处理：若提示 48 行 assertion error (assert(l * 2 + 1 < s.size()) ，则表示输入项数不足 $2L + 2$ 项，需要更多的项来确定线性递推式。
+
+\begin{lstlisting}[language=C++]
+#include <bits/stdc++.h>
+
+using namespace std;
+typedef long long ll;
+
+int MOD;
+
+int bin(int a, int n) {
+	int res = 1;
+	while (n) {
+		if (n & 1) res = 1LL * res * a % MOD;
+		a = 1LL * a * a % MOD;
+		n >>= 1;
+	}
+	return res;
+}
+
+int inv(int x) {
+	return bin(x, MOD - 2);
+}
+
+vector<int> berlekamp(vector<int> s) {
+	int l = 0;
+	vector<int> la(1, 1);
+	vector<int> b(1, 1);
+	for (int r = 1; r <= (int)s.size(); r++) {
+		int delta = 0;
+		for (int j = 0; j <= l; j++) {
+			delta = (delta + 1LL * s[r - 1 - j] * la[j]) % MOD;
+		}
+		b.insert(b.begin(), 0);
+		if (delta != 0) {
+			vector<int> t(max(la.size(), b.size()));
+			for (int i = 0; i < (int)t.size(); i++) {
+				if (i < (int)la.size()) t[i] = (t[i] + la[i]) % MOD;
+				if (i < (int)b.size()) t[i] = (t[i] - 1LL * delta * b[i] % MOD + MOD) % MOD;
+			}
+			if (2 * l <= r - 1) {
+				b = la;
+				int od = inv(delta);
+				for (int &x : b) x = 1LL * x * od % MOD;
+				l = r - l;
+			}
+			la = t;
+		}
+	}
+	assert(la.size() == l + 1);
+	assert(l * 2 + 1 < s.size());
+	reverse(la.begin(), la.end());
+	return la;
+}
+
+vector<int> mul(vector<int> a, vector<int> b) {
+	vector<int> c(a.size() + b.size() - 1);
+	for (int i = 0; i < (int)a.size(); i++) {
+		for (int j = 0; j < (int)b.size(); j++) {
+			c[i + j] = (c[i + j] + 1LL * a[i] * b[j]) % MOD;
+		}
+	}
+	vector<int> res(c.size());
+	for (int i = 0; i < (int)res.size(); i++) res[i] = c[i] % MOD;
+	return res;
+}
+
+vector<int> mod(vector<int> a, vector<int> b) {
+	if (a.size() < b.size()) a.resize(b.size() - 1);
+
+	int o = inv(b.back());
+	for (int i = (int)a.size() - 1; i >= b.size() - 1; i--) {
+		if (a[i] == 0) continue;
+		int coef = 1LL * o * (MOD - a[i]) % MOD;
+		for (int j = 0; j < (int)b.size(); j++) {
+			a[i - (int)b.size() + 1 + j] = (a[i - (int)b.size() + 1 + j] + 1LL * coef * b[j]) % MOD;
+		}
+	}
+	while (a.size() >= b.size()) {
+		assert(a.back() == 0);
+		a.pop_back();
+	}
+	return a;
+}
+
+vector<int> bin(int n, vector<int> p) {
+	vector<int> res(1, 1);
+	vector<int> a(2); a[1] = 1;
+	while (n) {
+		if (n & 1) res = mod(mul(res, a), p);
+		a = mod(mul(a, a), p);
+		n >>= 1;
+	}
+	return res;
+}
+
+void solve() {
+	int m = 22;
+	vector<int> t;
+	t.push_back(1);
+	t.push_back(9);
+	t.push_back(41);
+	t.push_back(109);
+	t.push_back(205);
+	t.push_back(325);
+	t.push_back(473);
+	t.push_back(649);
+	t.push_back(853);
+	t.push_back(1085);
+	t.push_back(1345);
+	t.push_back(1633);
+	t.push_back(1949);
+	t.push_back(2293);
+
+	MOD = 998244353;
+	vector<int> v = berlekamp(t);
+	vector<int> o = bin(m - 1, v);
+	int res = 0;
+	for (int i = 0; i < (int)o.size(); i++) res = (res + 1LL * o[i] * t[i]) % MOD;
+	printf("%d\n", res);
+}
+
+int main() {
+	solve();
+	return 0;
+}
+\end{lstlisting}
+
 \subsection{幂和}
 
 $$\sum\limits_{i=1}^{n}i^1 = \frac{n(n+1)}{2} = \frac{1}{2}n^2 + \frac{1}{2}n$$
@@ -3134,15 +3268,18 @@ int convexHull(point p[],int n,point ch[]) {
 \end{lstlisting}
 \section{黑科技和杂项}
 \subsection{找规律}
-有些题目，只给一个正整数 $n$ ，然后要求输出一个答案。这时，我们可以暴力得到小数据的解，用高斯消元得到递推式，然后用矩阵快速幂求解。
 
-使用方法： 
+此方法已过时，请参照“数学 > Berlekamp Messay 算法求线性递推式”。本法使用矩阵快速幂，效率 $O(L^3\log{(m)})$ ，而用 Berlekamp 加多项式快速幂可以做到 $O(L^2\log{(m)})$ ，故不推荐使用本法。
 
-首先在 gauss.in 中输入小数据的解（ $n = 1$ 时， $n = 2$ 时， $\cdots$ ） ，以 $EOF$ 结束。 
+\sout{有些题目，只给一个正整数 $n$ ，然后要求输出一个答案。这时，我们可以暴力得到小数据的解，用高斯消元得到递推式，然后用矩阵快速幂求解。}
 
-依次运行 gauss.cpp , matrix.cpp ，得到 matrix.out 
+\sout{使用方法： }
 
-将 matrix.out 中的文件粘贴在 main.cpp 中相应的位置中。注意模数一定要是质数。
+\sout{首先在 gauss.in 中输入小数据的解（ $n = 1$ 时， $n = 2$ 时， $\cdots$ ） ，以 $EOF$ 结束。 }
+
+\sout{依次运行 gauss.cpp , matrix.cpp ，得到 matrix.out }
+
+\sout{将 matrix.out 中的文件粘贴在 main.cpp 中相应的位置中。注意模数一定要是质数。}
 
 
 \begin{lstlisting}[language=C++]
