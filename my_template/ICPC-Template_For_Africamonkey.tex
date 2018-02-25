@@ -1255,7 +1255,7 @@ void dc(int x) {
 	ltop = 0;
 	for (int p=gh[x]; p; p=edge[p].next)
 		if (edge[p].valid)
-			list[++ltop] = p;
+			list[++ltop] = edge[p].adj;
 	clear();
 	for (int i=1;i<=ltop;i++) {
 		update();
@@ -3822,6 +3822,22 @@ E36B85CC 84991F19 7575D828 470A92AB
 	"show_encoding": true,
 	"update_check": false
 }
+\end{lstlisting}
+
+\section{Vim}
+
+\begin{lstlisting}
+syntax on
+set cindent
+set nu
+set tabstop=4
+set shiftwidth=4
+set background=dark
+
+inoremap <C-j> <down>
+inoremap <C-k> <up>
+inoremap <C-h> <left>
+inoremap <C-l> <right>
 \end{lstlisting}
 
 
