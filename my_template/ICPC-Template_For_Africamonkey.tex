@@ -3266,6 +3266,42 @@ int convexHull(point p[],int n,point ch[]) {
 	return m;
 }
 \end{lstlisting}
+
+\subsection{半平面交}
+
+输入 vec1 表示所有的半平面 y >= kx + b 的参数 k 和 b 。
+
+输出 vec2 表示下凸壳（对应 y >= kx + b）或者上凸壳（对应 y <= kx + b）。
+
+\begin{lstlisting}[language=C++]
+vector< pair< LL, LL > > vec1, vec2;
+
+LL getval(int t, LL x) {
+	return vec2[t].first * x + vec2[t].second;
+}
+
+void solve() {
+	// vec1 stores pair< k, b > for all plane y >=(or <=) kx + b
+	sort(vec1.begin(), vec1.end());
+	// reverse(vec1.begin(), vec1.end()); // if y <= kx + b
+	for (int i = 0; i < vec1.size(); ++i) {
+		while (vec2.size() >= 2) {
+			LL k1 = vec2[vec2.size() - 2].first;
+			LL b1 = vec2[vec2.size() - 2].second;
+			LL k2 = vec2[vec2.size() - 1].first;
+			LL b2 = vec2[vec2.size() - 1].second;
+			LL k3 = vec1[i].first;
+			LL b3 = vec1[i].second;
+			if ((b2 - b1) * (k2 - k3) >= (b3 - b2) * (k1 - k2))
+				vec2.pop_back();
+			else
+				break;
+		}
+		vec2.push_back(vec1[i]);
+	}
+}
+\end{lstlisting}
+
 \section{黑科技和杂项}
 \subsection{找规律}
 
