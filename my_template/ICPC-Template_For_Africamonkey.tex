@@ -381,64 +381,61 @@ void calc_height() {
 }
 \end{lstlisting}
 \subsubsection{DC3算法}
-注意：
 
-$N$ 至少为字符串长度的 $3$ 倍
+感谢浙江大学陈靖邦提供本模板。
 
-接口： suffix\_array(int *r, int *sa, int n, int m); 
-
-r 表示字符串， sa 为后缀数组输出，$n$ 表示字符串长度，下标从 $0$ 开始。$m$ 为字符集大小。
 \begin{lstlisting}[language=C++]
-#define F(x) ((x)/3 + ((x)%3 == 1 ? 0:tb))
-#define G(x) ((x) < tb ? (x)*3+1 : ((x)-tb)*3 + 2)
-#define rank rank2
-
-int r[N], wa[N], wb[N], ws[N], wv[N], sa[N], rank[N];
-
-int c0(int *r,int a,int b) {
-    return r[a]==r[b]&&r[a+1]==r[b+1]&&r[a+2]==r[b+2];
+namespace SA {
+int sa[N], rk[N], ht[N], s[N<<1], t[N<<1], p[N], cnt[N], cur[N];
+#define pushS(x) sa[cur[s[x]]--] = x
+#define pushL(x) sa[cur[s[x]]++] = x
+#define inducedSort(v) fill_n(sa, n, -1); fill_n(cnt, m, 0);                  \
+    for (int i = 0; i < n; i++) cnt[s[i]]++;                                  \
+    for (int i = 1; i < m; i++) cnt[i] += cnt[i-1];                           \
+    for (int i = 0; i < m; i++) cur[i] = cnt[i]-1;                            \
+    for (int i = n1-1; ~i; i--) pushS(v[i]);                                  \
+    for (int i = 1; i < m; i++) cur[i] = cnt[i-1];                            \
+    for (int i = 0; i < n; i++) if (sa[i] > 0 &&  t[sa[i]-1]) pushL(sa[i]-1); \
+    for (int i = 0; i < m; i++) cur[i] = cnt[i]-1;                            \
+    for (int i = n-1;  ~i; i--) if (sa[i] > 0 && !t[sa[i]-1]) pushS(sa[i]-1)
+void sais(int n, int m, int *s, int *t, int *p) {
+    int n1 = t[n-1] = 0, ch = rk[0] = -1, *s1 = s+n;
+    for (int i = n-2; ~i; i--) t[i] = s[i] == s[i+1] ? t[i+1] : s[i] > s[i+1];
+    for (int i = 1; i < n; i++) rk[i] = t[i-1] && !t[i] ? (p[n1] = i, n1++) : -1;
+    inducedSort(p);
+    for (int i = 0, x, y; i < n; i++) if (~(x = rk[sa[i]])) {
+        if (ch < 1 || p[x+1] - p[x] != p[y+1] - p[y]) ch++;
+        else for (int j = p[x], k = p[y]; j <= p[x+1]; j++, k++)
+            if ((s[j]<<1|t[j]) != (s[k]<<1|t[k])) {ch++; break;}
+        s1[y = x] = ch;
+    }
+    if (ch+1 < n1) sais(n1, ch+1, s1, t+n, p+n1);
+    else for (int i = 0; i < n1; i++) sa[s1[i]] = i;
+    for (int i = 0; i < n1; i++) s1[i] = p[sa[i]];
+    inducedSort(s1);
 }
-
-int c12(int k,int *r,int a,int b) {
-    if(k==2) return r[a]<r[b]||r[a]==r[b]&&c12(1,r,a+1,b+1);
-    else return r[a]<r[b]||r[a]==r[b]&&wv[a+1]<wv[b+1];
+template<typename T>
+int mapCharToInt(int n, const T *str) {
+    int m = *max_element(str, str+n);
+    fill_n(rk, m+1, 0);
+    for (int i = 0; i < n; i++) rk[str[i]] = 1;
+    for (int i = 0; i < m; i++) rk[i+1] += rk[i];
+    for (int i = 0; i < n; i++) s[i] = rk[str[i]] - 1;
+    return rk[m];
 }
-
-void dsort(int *r,int *a,int *b,int n,int m) {
-    int i;for(i=0;i<n;i++) wv[i]=r[a[i]];
-    for(i=0;i<m;i++) ws[i]=0;
-    for(i=0;i<n;i++) ws[wv[i]]++;
-    for(i=1;i<m;i++) ws[i]+=ws[i-1];
-    for(i=n-1;i>=0;i--) b[--ws[wv[i]]]=a[i];
+// Ensure that str[n] is the unique lexicographically smallest character in str.
+template<typename T>
+void suffixArray(int n, const T *str) {
+    int m = mapCharToInt(++n, str);
+    sais(n, m, s, t, p);
+    for (int i = 0; i < n; i++) rk[sa[i]] = i;
+    for (int i = 0, h = ht[0] = 0; i < n-1; i++) {
+        int j = sa[rk[i]-1];
+        while (i+h < n && j+h < n && s[i+h] == s[j+h]) h++;
+        if (ht[rk[i]] = h) h--;
+    }
 }
-
-void dc3(int *r,int *sa,int n,int m) {
-    int i,j,*rn=r+n,*san=sa+n,ta=0,tb=(n+1)/3,tbc=0,p;
-    r[n]=r[n+1]=0;
-    for(i=0;i<n;i++) if(i%3!=0) wa[tbc++]=i;
-    dsort(r+2,wa,wb,tbc,m);
-    dsort(r+1,wb,wa,tbc,m);
-    dsort(r,wa,wb,tbc,m);
-    for(p=1,rn[F(wb[0])]=0,i=1;i<tbc;i++) rn[F(wb[i])]=c0(r,wb[i-1],wb[i])?p-1:p++;
-    if(p<tbc) dc3(rn,san,tbc,p);
-    else for(i=0;i<tbc;i++) san[rn[i]]=i;
-    for(i=0;i<tbc;i++) if(san[i]<tb) wb[ta++]=san[i]*3;
-    if(n%3==1) wb[ta++]=n-1;
-    dsort(r,wb,wa,ta,m);
-    for(i=0;i<tbc;i++) wv[wb[i]=G(san[i])]=i;
-    for(i=0,j=0,p=0;i<ta && j<tbc;p++)sa[p]=c12(wb[j]%3,r,wa[i],wb[j])?wa[i++]:wb[j++];
-    for(;i<ta;p++) sa[p]=wa[i++];
-    for(;j<tbc;p++) sa[p]=wb[j++];
-}
-
-void suffix_array(int *r, int *sa, int n, int m) {
-    dc3(r, sa, n + 1, m);
-    int top = 0;
-    for (int i = 0; i < n + 1; ++i)
-        if (sa[i] < n) sa[top++] = sa[i];
-    for (int i = 0; i < n; ++i) rank[sa[i]] = i;
-    rank[n] = -1;
-}
+};
 \end{lstlisting}
 \subsubsection{小技巧：拼接字符串}
 接口： 
