@@ -973,7 +973,7 @@ struct Treap {
 	int split(int u, int x, int y) { // if size is long long, remember here
 		if (x > y) return 0;
 		pushdown(u);
-		if (x == 1 && y == node[u].size) return u;
+		if (x == 1 && y == node[u].size) return copy(u);
 		if (y <= node[node[u].lc].size) return split(node[u].lc, x, y);
 		int t = node[node[u].lc].size + 1; // if size is long long, remember here
 		if (x > t) return split(node[u].rc, x-t, y-t);
