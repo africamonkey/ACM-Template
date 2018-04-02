@@ -673,6 +673,155 @@ int main(){
 			f[j][i]=max(f[j-1][i],f[j-1][i+(1<<j-1)]);
 }
 \end{lstlisting}
+
+\subsection{K-D Tree}
+
+\begin{lstlisting}[language=C++]
+int n, cmp_d, root;
+
+struct node {
+	int d[2], l, r, Max[2], Min[2], val, sum, f;
+} t[N];
+
+inline bool cmp(const node &a, const node &b) {
+	if (a.d[cmp_d] != b.d[cmp_d]) return a.d[cmp_d] < b.d[cmp_d];
+	return a.d[cmp_d ^ 1] < b.d[cmp_d ^ 1];
+}
+
+inline void umax(int &a, int b) {
+	if (b > a) a = b;
+}
+
+inline void umin(int &a, int b) {
+	if (b < a) a = b;
+}
+
+inline void up(int x, int y) {
+	umax(t[x].Max[0], t[y].Max[0]);
+	umin(t[x].Min[0], t[y].Min[0]);
+	umax(t[x].Max[1], t[y].Max[1]);
+	umin(t[x].Min[1], t[y].Min[1]);
+}
+
+int build(int l, int r, int D, int f) {
+	int mid = (l + r) / 2;
+	cmp_d = D;
+	nth_element(t + l + 1, t + mid + 1, t + r + 1, cmp);
+	t[mid].f = f;
+	t[mid].Max[0] = t[mid].Min[0] = t[mid].d[0];
+	t[mid].Max[1] = t[mid].Min[1] = t[mid].d[1];
+	t[mid].val = t[mid].sum = 0;
+	if (l != mid) t[mid].l = build(l, mid - 1, !D, mid);
+	else t[mid].l = 0;
+	if (r != mid) t[mid].r = build(mid + 1, r, !D, mid);
+	else t[mid].r = 0;
+	if (t[mid].l) up(mid, t[mid].l);
+	if (t[mid].r) up(mid, t[mid].r);
+	return mid;
+}
+
+// 将编号为 x 的点的权值增加 p 
+// 请注意，此处的 x 是经过排序的。你需要将点的坐标先作映射。
+void change(int x, int p) {
+	x = id[x];
+	for (t[x].val += p; x; x = t[x].f)
+		t[x].sum += p;
+}
+
+inline long long sqr(long long x) {
+	return x * x;
+}
+
+// 欧几里得距离的平方，下界
+inline long long euclid_lower_bound(const node &a, int X, int Y) {
+	return sqr(max(max(X - a.Max[0], a.Min[0] - X), 0)) +
+		sqr(max(max(Y - a.Max[1], a.Min[1] - Y), 0));
+}
+
+// 欧几里得距离的平方，上界
+inline long long euclid_upper_bound(const node &a, int X, int Y) {
+	return max(sqr(X - a.Min[0]), sqr(X - a.Max[0])) +
+		max(sqr(Y - a.Min[1]), sqr(Y - a.Max[1]));
+}
+
+// 曼哈顿距离，下界
+inline long long manhattan_lower_bound(const node &a, int X, int Y) {
+	return max(a.Min[0] - X, 0) + max(X - a.Max[0], 0) + 
+		max(a.Min[1] - Y, 0) + max(Y - a.Max[1], 0);
+}
+
+// 曼哈顿距离，上界
+inline long long manhattan_upper_bound(const node &a, int X, int Y) {
+	return max(abs(X - a.Max[0]), abs(a.Min[0] - X)) + 
+		max(abs(Y - a.Max[1]), abs(a.Min[1] - Y));
+}
+
+// 添加一个点（注意此处的添加可能导致这棵树不平衡，慎用！）
+void add(int k) {
+	t[k].Max[0] = t[k].Min[0] = t[k].d[0];
+	t[k].Max[1] = t[k].Min[1] = t[k].d[1];
+	t[k].val = t[k].sum = 0;
+	t[k].l = t[k].r = t[k].f = 0;
+	if (!root) {
+		root = k;
+		return;
+	}
+	int p = root;
+	int D = 0;
+	while (1) {
+		up(p, k);
+		if (t[k].d[D] <= t[p].d[D]) {
+			if (t[p].l) p = t[p].l;
+			else {
+				t[p].l = k;
+				t[k].f = p;
+				return;
+			}
+		} else {
+			if (t[p].r) p = t[p].r;
+			else {
+				t[p].r = k;
+				t[k].f = p;
+				return;
+			}
+		}
+		D ^= 1;
+	}
+}
+
+inline long long getdis(const node &a, int X, int Y) {
+	return sqr(a.d[0] - X) + sqr(a.d[1] - Y);
+}
+
+// 此处询问距离点 (X, Y) 最远的一个点的距离， ans 需传入无穷小
+void ask(int p, int X, int Y, long long &ans) {
+	if (!p) return;
+	ans = max(ans, getdis(t[p], X, Y));
+	long long dl = t[p].l ? euclid_upper_bound(t[t[p].l], X, Y) : 0;
+	long long dr = t[p].r ? euclid_upper_bound(t[t[p].r], X, Y) : 0;
+	if (dl > dr) {
+		if (dl > ans) ask(t[p].l, X, Y, ans);
+		if (dr > ans) ask(t[p].r, X, Y, ans);
+	} else {
+		if (dr > ans) ask(t[p].r, X, Y, ans);
+		if (dl > ans) ask(t[p].l, X, Y, ans);
+	}
+}
+
+int main() {
+	while (~scanf("%d", &n)) {
+		for (int i = 1; i <= n; ++i) {
+			int x, y, type;
+			scanf("%d%d%d", &x, &y, &type);
+			t[i].d[0] = x;
+			t[i].d[1] = y;
+		}
+		root = build(1, n, 0, 0);
+	}
+}
+
+\end{lstlisting}
+
 \subsection{左偏树}
 
 左偏树是一个可并堆。
