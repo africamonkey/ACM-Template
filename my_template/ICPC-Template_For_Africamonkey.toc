@@ -39,12 +39,12 @@
 \contentsline {subsubsection}{\numberline {5.2.2}SPFA}{40}
 \contentsline {subsection}{\numberline {5.3}K 短路}{41}
 \contentsline {subsection}{\numberline {5.4}Tarjan}{44}
-\contentsline {subsection}{\numberline {5.5}2-SAT}{44}
+\contentsline {subsection}{\numberline {5.5}2-SAT}{45}
 \contentsline {subsection}{\numberline {5.6}统治者树（Dominator Tree）}{47}
 \contentsline {subsection}{\numberline {5.7}网络流}{48}
 \contentsline {subsubsection}{\numberline {5.7.1}最大流}{48}
 \contentsline {subsubsection}{\numberline {5.7.2}上下界有源汇网络流}{49}
-\contentsline {subsubsection}{\numberline {5.7.3}上下界无源汇网络流}{49}
+\contentsline {subsubsection}{\numberline {5.7.3}上下界无源汇网络流}{50}
 \contentsline {subsubsection}{\numberline {5.7.4}费用流}{50}
 \contentsline {subsubsection}{\numberline {5.7.5}zkw费用流}{51}
 \contentsline {section}{\numberline {6}数学}{53}
@@ -55,34 +55,34 @@
 \contentsline {subsubsection}{\numberline {6.4.1}第一类斯特林数}{54}
 \contentsline {subsubsection}{\numberline {6.4.2}第二类斯特林数}{54}
 \contentsline {subsection}{\numberline {6.5}错排公式}{54}
-\contentsline {subsection}{\numberline {6.6}Lucas定理}{54}
+\contentsline {subsection}{\numberline {6.6}Lucas定理}{55}
 \contentsline {subsection}{\numberline {6.7}高斯消元}{55}
 \contentsline {subsubsection}{\numberline {6.7.1}行列式}{55}
 \contentsline {subsubsection}{\numberline {6.7.2}Matrix-Tree定理}{56}
 \contentsline {subsection}{\numberline {6.8}调和级数}{56}
 \contentsline {subsection}{\numberline {6.9}曼哈顿距离的变换}{56}
 \contentsline {subsection}{\numberline {6.10}数论函数变换}{56}
-\contentsline {subsection}{\numberline {6.11}莫比乌斯反演}{56}
+\contentsline {subsection}{\numberline {6.11}莫比乌斯反演}{57}
 \contentsline {subsection}{\numberline {6.12}线性筛素数}{57}
 \contentsline {subsection}{\numberline {6.13}杜教筛}{57}
-\contentsline {subsection}{\numberline {6.14}FFT}{59}
-\contentsline {subsubsection}{\numberline {6.14.1}普通FFT}{59}
-\contentsline {subsubsection}{\numberline {6.14.2}模任意素数FFT}{60}
+\contentsline {subsection}{\numberline {6.14}FFT}{60}
+\contentsline {subsubsection}{\numberline {6.14.1}普通FFT}{60}
+\contentsline {subsubsection}{\numberline {6.14.2}模任意素数FFT}{61}
 \contentsline {subsection}{\numberline {6.15}FWT}{62}
 \contentsline {subsection}{\numberline {6.16}求原根}{63}
 \contentsline {subsection}{\numberline {6.17}NTT}{64}
 \contentsline {subsection}{\numberline {6.18}Berlekamp Messay 算法求线性递推式}{65}
 \contentsline {subsection}{\numberline {6.19}幂和}{68}
 \contentsline {subsection}{\numberline {6.20}蔡勒公式}{68}
-\contentsline {subsection}{\numberline {6.21}皮克定理}{68}
-\contentsline {subsection}{\numberline {6.22}组合数 lcm}{68}
+\contentsline {subsection}{\numberline {6.21}皮克定理}{69}
+\contentsline {subsection}{\numberline {6.22}组合数 lcm}{69}
 \contentsline {subsection}{\numberline {6.23}区间 lcm 的维护}{69}
 \contentsline {section}{\numberline {7}几何}{69}
 \contentsline {subsection}{\numberline {7.1}二维计算几何}{69}
 \contentsline {subsubsection}{\numberline {7.1.1}计算几何误差修正}{69}
 \contentsline {subsubsection}{\numberline {7.1.2}计算几何点类}{69}
-\contentsline {subsubsection}{\numberline {7.1.3}计算几何线段类}{70}
-\contentsline {subsection}{\numberline {7.2}凸包}{72}
+\contentsline {subsubsection}{\numberline {7.1.3}计算几何线段类}{71}
+\contentsline {subsection}{\numberline {7.2}凸包}{73}
 \contentsline {subsection}{\numberline {7.3}半平面交}{73}
 \contentsline {section}{\numberline {8}黑科技和杂项}{74}
 \contentsline {subsection}{\numberline {8.1}找规律}{74}
@@ -90,14 +90,14 @@
 \contentsline {subsection}{\numberline {8.3}高精度计算}{79}
 \contentsline {subsection}{\numberline {8.4}读入优化}{82}
 \contentsline {subsubsection}{\numberline {8.4.1}普通读入优化}{82}
-\contentsline {subsubsection}{\numberline {8.4.2}HDU 专用读入优化}{82}
+\contentsline {subsubsection}{\numberline {8.4.2}HDU 专用读入优化}{83}
 \contentsline {subsection}{\numberline {8.5}O2 优化}{83}
-\contentsline {subsection}{\numberline {8.6}位运算及其运用}{83}
-\contentsline {subsubsection}{\numberline {8.6.1}枚举子集}{83}
-\contentsline {subsubsection}{\numberline {8.6.2}求 1 的个数}{83}
+\contentsline {subsection}{\numberline {8.6}位运算及其运用}{84}
+\contentsline {subsubsection}{\numberline {8.6.1}枚举子集}{84}
+\contentsline {subsubsection}{\numberline {8.6.2}求 1 的个数}{84}
 \contentsline {subsubsection}{\numberline {8.6.3}求前缀 0 的个数}{84}
 \contentsline {subsubsection}{\numberline {8.6.4}求后缀 0 的个数}{84}
 \contentsline {section}{\numberline {9}Sublime Text}{84}
 \contentsline {subsection}{\numberline {9.1}License}{84}
 \contentsline {subsection}{\numberline {9.2}Preferences.sublime-settings}{84}
-\contentsline {section}{\numberline {10}Vim}{84}
+\contentsline {section}{\numberline {10}Vim}{85}

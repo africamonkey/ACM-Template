@@ -1428,108 +1428,119 @@ command(x, y) ： 将 x 到 y 路径的 Splay Tree 分离出来。
 
 linkcut(u1, v1, u2, v2) ： 将树中原有的边 (u1, v1) 删除，加入一条新边 (u2, v2) 
 \begin{lstlisting}[language=C++]
-struct DynamicTREE{
-	struct NODE{
-		int father, son[2], top, size, reverse;
-	} splay[N];
-	void init(int i, int fat) {
-		splay[i].father = splay[i].son[0] = splay[i].son[1] = 0;
-		splay[i].top = fat; splay[i].size = 1; splay[i].reverse = 0;
+struct DTree {
+	int f[N], son[N][2], sz[N], rev[N], val[N], minid[N], minval[N];
+	int tot;
+	stack<int> s;
+	void init(int i) {
+		tot = max(tot, i);
+		son[i][0] = son[i][1] = 0;
+		f[i] = sz[i] = rev[i] = 0;
+		val[i] = minval[i] = inf;
+		minid[i] = i;
 	}
-	void pushdown(int x) {
+	bool isroot(int x) {
+		return !f[x] || (son[f[x]][0] != x && son[f[x]][1] != x);
+	}
+	void rev1(int x) {
 		if (!x) return;
-		int s0 = splay[x].son[0], s1 = splay[x].son[1];
-		if (splay[x].reverse) {
-			splay[s0].reverse ^= 1;
-			splay[s1].reverse ^= 1;
-			swap(splay[x].son[0], splay[x].son[1]);
-			splay[x].reverse = 0;
-		}
-		s0 = splay[x].son[0], s1 = splay[x].son[1];
-		splay[s0].top = splay[s1].top = splay[x].top;
+		swap(son[x][0], son[x][1]);
+		rev[x] ^= 1;
 	}
-	void pushup(int x) {
+	void down(int x) {
 		if (!x) return;
-		pushdown(splay[x].son[0]);
-		pushdown(splay[x].son[1]);
-		splay[x].size = splay[splay[x].son[0]].size + splay[splay[x].son[1]].size + 1;
+		if (rev[x]) rev1(son[x][0]), rev1(son[x][1]), rev[x] = 0;
 	}
-	void sc(int x, int y, int w, bool Auto=true) {
-		splay[x].son[w] = y;
-		splay[y].father = x;
-		if (Auto) {
-			pushup(y);
-			pushup(x);
-		}
-	}
-	int top, tush[N];
-	void flowdown(int x) {
-		for (top=1; x; top++, x = splay[x].father) tush[top] = x;
-		for (; top; top--) pushdown(tush[top]);
+	void up(int x) {
+		if (!x) return;
+		down(son[x][0]); down(son[x][1]);
+		sz[x] = sz[son[x][0]] + sz[son[x][1]] + 1;
+		minval[x] = val[x]; minid[x] = x;
+		if (minval[son[x][0]] < minval[x]) minval[x] = minval[son[x][0]], minid[x] = minid[son[x][0]];
+		if (minval[son[x][1]] < minval[x]) minval[x] = minval[son[x][1]], minid[x] = minid[son[x][1]];
 	}
 	void rotate(int x) {
-		if (!x) return;
-		int y = splay[x].father;
-		int w = splay[y].son[1] == x;
-		pushdown(y);
-		pushdown(x);
-		sc(splay[y].father, x, splay[splay[y].father].son[1]==y, false);
-		sc(y, splay[x].son[w^1], w, false);
-		sc(x, y, w^1, false);
-		pushup(y);
-		pushup(x);
+		int y = f[x], w = son[y][1] == x;
+		son[y][w] = son[x][w ^ 1];
+		if (son[x][w ^ 1]) f[son[x][w ^ 1]] = y;
+		if (f[y]) {
+			int z = f[y];
+			if (son[z][0] == y) son[z][0] = x;
+			else if (son[z][1] == y) son[z][1] = x;
+		}
+		f[x] = f[y]; f[y] = x; son[x][w ^ 1] = y;
+		up(y);
 	}
-	void Splay(int x, int rt=0) {
-		if (!x) return;
-		flowdown(x);
-		while (splay[x].father != rt) {
-			int y = splay[x].father;
-			int w = splay[y].son[1]==x;
-			if (splay[y].father != rt && splay[splay[y].father].son[w] == y) rotate(y);
+	void splay(int x) {
+		while (!s.empty()) s.pop();
+		s.push(x);
+		for (int i = x; !isroot(i); i = f[i]) s.push(f[i]);
+		while (!s.empty()) down(s.top()), s.pop();
+		while (!isroot(x)) {
+			int y = f[x];
+			if (!isroot(y)) {
+				if ((son[f[y]][0] == y) ^ (son[y][0] == x))
+					rotate(x);
+				else
+					rotate(y);
+			}
 			rotate(x);
 		}
-	}
-	void split(int x) {
-		int y = splay[x].son[1];
-		if (!y) return;
-		splay[y].father = 0;
-		splay[x].son[1] = 0;
-		splay[y].top = x;
-		pushup(x);
+		up(x);
 	}
 	void access(int x) {
-		int y = 0;
-		while (x) {
-			Splay(x);
-			split(x);
-			sc(x, y, 1);
-			Splay(x);
-			y = x;
-			x = splay[x].top;
+		for (int y = 0; x; y = x, x = f[x]) {
+			splay(x);
+			son[x][1] = y;
+			up(x);
 		}
 	}
-	void changeroot(int x) {
+	int root(int x) {
 		access(x);
-		Splay(x);
-		splay[x].reverse = 1;
-		Splay(x);
+		splay(x);
+		while (son[x][0]) x = son[x][0];
+		return x;
 	}
-	void command(int x, int y, ...) {
-		LL ans = 0;
-		changeroot(x);
+	void makeroot(int x) {
+		access(x);
+		splay(x);
+		rev1(x);
+	}
+	void link(int x, int y) {
+		makeroot(x);
+		f[x] = y;
+		access(x);
+	}
+	void cutf(int x) { // 它和父亲的边
+		access(x);
+		splay(x);
+		f[son[x][0]] = 0;
+		son[x][0] = 0;
+		up(x);
+	}
+	void cut(int x, int y) { // 切断 x 与 y 之间的边（须保证 x 与 y 相邻）
+		makeroot(x);
+		cutf(y);
+	}
+	int ask(int x, int y) { // 询问 x 到 y 之间取得最小值的点
+		makeroot(x);
 		access(y);
-		Splay(x);
-		//then you can modify the Splay Tree
+		splay(y);
+		return minid[y];
 	}
-	void linkcut(int u1, int v1, int u2, int v2) {
-		changeroot(u1);
-		access(v1);
-		Splay(u1); split(u1);
-		splay[v1].top = 0;
-		access(u2); changeroot(u2);
-		access(v2); changeroot(v2);
-		Splay(u2); Splay(v2);
-		splay[v2].top = u2;
+	int querymin_cut(int x, int y) { // 询问 x 到 y 之间取得最小值的点，并把它删去（须保证该点在 x 和 y 之间，且度数恰好为 2）
+		int m = ask(x, y);
+		makeroot(x);
+		cutf(m);
+		makeroot(y);
+		cutf(m);
+		return val[m];
+	}
+	void link(int x, int y, int w) { // 在 x 和 y 之间添加一条权值为 w 的边（将边视为点插入）
+		init(++tot);
+		val[tot] = minval[tot] = w;
+		link(x, tot);
+		link(y, tot);
 	}
 } lct;
 \end{lstlisting}
