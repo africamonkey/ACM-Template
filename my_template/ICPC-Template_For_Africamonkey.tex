@@ -1422,11 +1422,9 @@ void dc(int x) {
 }
 \end{lstlisting}
 \subsection{Link Cut Tree}
-接口： 
 
-command(x, y) ： 将 x 到 y 路径的 Splay Tree 分离出来。 
+请注意，一开始必须调用 lct.init(0) ，否则求出的最小值一定会是 0 。
 
-linkcut(u1, v1, u2, v2) ： 将树中原有的边 (u1, v1) 删除，加入一条新边 (u2, v2) 
 \begin{lstlisting}[language=C++]
 struct DTree {
 	int f[N], son[N][2], sz[N], rev[N], val[N], minid[N], minval[N];
