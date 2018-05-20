@@ -3745,6 +3745,175 @@ struct frac {
 };
 \end{lstlisting}
 
+\subsection{取模整数类}
+
+如果需要用模意义下的除法，需定义常量 $D$ 为除数的最大值，并执行 init\_inv() 。
+
+\begin{lstlisting}[language=C++]
+struct mod;
+mod* inv;
+
+struct mod {
+	static constexpr int MOD = 1000 * 1000 * 1000 + 7; // std=c++11
+	mod(int x_) : x((x_ % MOD + MOD) % MOD) {}
+	mod() = default;
+	int x = 0;
+	inline mod operator *(mod other) const {
+		return ((long long)x * other.x) % MOD;
+	}
+	inline mod& operator *=(mod other) {
+		x = ((long long)x * other.x) % MOD;
+		return *this;
+	}
+	inline mod operator +(mod other) const {
+		int res = x + other.x;
+		if (res >= MOD) {
+			res -= MOD;
+		}
+		return res;
+	}
+	inline mod& operator +=(mod other) {
+		if ((x += other.x) >= MOD) {
+			x -= MOD;
+		}
+		return *this;
+	}
+	inline mod operator -(mod other) const {
+		int res = x - other.x;
+		if (res < 0) {
+			res += MOD;
+		}
+		return res;
+	}
+	inline mod& operator -=(mod other) {
+		if ((x -= other.x) < 0) {
+			x += MOD;
+		}
+		return *this;
+	}
+	inline mod operator /(mod other) const {
+		return (*this) * inv[other.x];
+	}
+	inline mod& operator /=(mod other) {
+		return *this *= inv[other.x];
+	}
+	inline bool operator ==(mod other) const {
+		return x == other.x;
+	}
+	inline mod operator -() const {
+		return x != 0 ? MOD - x : 0;
+	}
+};
+
+void init_inv() {
+	inv = new mod[D];
+	inv[1] = 1;
+	for (int i = 2; i < D; i++) {
+		inv[i] = (mod::MOD - (long long)mod::MOD / i * inv[mod::MOD % i].x % mod::MOD) % mod::MOD;
+	}
+}
+\end{lstlisting}
+
+\subsection{多项式类}
+
+\begin{lstlisting}[language=C++]
+struct poly {
+	vector<mod> C;
+	poly() {}
+	explicit poly(const vector<mod> &C_) : C(C_) {}
+	static const poly zero;
+	inline int deg() const {
+		return (int)C.size() - 1;
+	}
+	inline mod operator[](int x) const {
+		return (x < 0 || x > deg()) ? mod(0) : C[x];
+	}
+	inline mod& operator[](int x) {
+		if (x > deg()) {
+			C.resize(x + 1);
+		}
+		return C[x];
+	}
+	inline friend poly operator +(const poly& a, const poly& b) {
+		vector<mod> c(max(a.deg(), b.deg()) + 1);
+		for (int i = 0; i < c.size(); i++) {
+			c[i] = a[i] + b[i];
+		}
+		return poly(c);
+	}
+	inline friend poly operator -(const poly& a, const poly& b) {
+		vector<mod> c(max(a.deg(), b.deg()) + 1);
+		for (int i = 0; i < c.size(); i++) {
+			c[i] = a[i] - b[i];
+		}
+		return poly(c);
+	}
+	inline bool isZero() const {
+		return C.empty();
+	}
+	inline friend poly operator *(const poly& a, const poly& b) {
+		if (a.isZero() || b.isZero()) {
+			return zero;
+		}
+		vector<mod> c(1 + a.deg() + b.deg());
+		for (int i = 0; i <= a.deg(); i++) {
+			for (int j = 0; j <= b.deg(); j++) {
+				c[i + j] += a[i] * b[j];
+			}
+		}
+		return poly(c);
+	}
+	inline poly derivative() const {
+		if (isZero()) {
+			return zero;
+		}
+		vector<mod> res(deg());
+		for (int i = 0; i < deg(); i++) {
+			res[i] = C[i + 1] * (i + 1);
+		}
+		return poly(res);
+	}
+	inline poly primitive() const {
+		if (isZero()) {
+			return zero;
+		}
+		vector<mod> res(2 + deg());
+		for (int i = 1; i <= 1 + deg(); i++) {
+			res[i] = C[i - 1] / i;
+		}
+		return poly(res);
+	}
+	inline mod operator()(mod x) const {
+		mod res = 0;
+		for (int i = deg(); i >= 0; i--) {
+			res = res * x + C[i];
+		}
+		return res;
+	}
+	// Expand P(x+t).
+	inline poly shift(int t) const {
+		poly res;
+		res[deg()];
+		vector<mod> binomial(deg() + 1, 0);
+		binomial[0] = 1;
+		for (int i = 0; i <= deg(); i++) {
+			mod cur = 1;
+			for (int j = i; j >= 0; j--) {
+				res[j] += C[i] * binomial[j] * cur;
+				cur *= t;
+			}
+			if (i == deg()) {
+				break;
+			}
+			for (int j = i + 1; j > 0; j--) {
+				binomial[j] += binomial[j - 1];
+			}
+		}
+		return res;
+	}
+};
+\end{lstlisting}
+
 \subsection{高精度计算}
 \begin{lstlisting}[language=C++]
 #include<algorithm>

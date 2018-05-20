@@ -87,17 +87,19 @@
 \contentsline {section}{\numberline {8}黑科技和杂项}{74}
 \contentsline {subsection}{\numberline {8.1}找规律}{74}
 \contentsline {subsection}{\numberline {8.2}分数类}{77}
-\contentsline {subsection}{\numberline {8.3}高精度计算}{79}
-\contentsline {subsection}{\numberline {8.4}读入优化}{82}
-\contentsline {subsubsection}{\numberline {8.4.1}普通读入优化}{82}
-\contentsline {subsubsection}{\numberline {8.4.2}HDU 专用读入优化}{82}
-\contentsline {subsection}{\numberline {8.5}O2 优化}{83}
-\contentsline {subsection}{\numberline {8.6}位运算及其运用}{83}
-\contentsline {subsubsection}{\numberline {8.6.1}枚举子集}{83}
-\contentsline {subsubsection}{\numberline {8.6.2}求 1 的个数}{84}
-\contentsline {subsubsection}{\numberline {8.6.3}求前缀 0 的个数}{84}
-\contentsline {subsubsection}{\numberline {8.6.4}求后缀 0 的个数}{84}
-\contentsline {section}{\numberline {9}Sublime Text}{84}
-\contentsline {subsection}{\numberline {9.1}License}{84}
-\contentsline {subsection}{\numberline {9.2}Preferences.sublime-settings}{84}
-\contentsline {section}{\numberline {10}Vim}{84}
+\contentsline {subsection}{\numberline {8.3}取模整数类}{79}
+\contentsline {subsection}{\numberline {8.4}多项式类}{80}
+\contentsline {subsection}{\numberline {8.5}高精度计算}{82}
+\contentsline {subsection}{\numberline {8.6}读入优化}{85}
+\contentsline {subsubsection}{\numberline {8.6.1}普通读入优化}{85}
+\contentsline {subsubsection}{\numberline {8.6.2}HDU 专用读入优化}{86}
+\contentsline {subsection}{\numberline {8.7}O2 优化}{87}
+\contentsline {subsection}{\numberline {8.8}位运算及其运用}{87}
+\contentsline {subsubsection}{\numberline {8.8.1}枚举子集}{87}
+\contentsline {subsubsection}{\numberline {8.8.2}求 1 的个数}{87}
+\contentsline {subsubsection}{\numberline {8.8.3}求前缀 0 的个数}{87}
+\contentsline {subsubsection}{\numberline {8.8.4}求后缀 0 的个数}{87}
+\contentsline {section}{\numberline {9}Sublime Text}{87}
+\contentsline {subsection}{\numberline {9.1}License}{87}
+\contentsline {subsection}{\numberline {9.2}Preferences.sublime-settings}{88}
+\contentsline {section}{\numberline {10}Vim}{88}
