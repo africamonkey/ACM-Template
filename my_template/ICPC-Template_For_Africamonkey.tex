@@ -2705,7 +2705,7 @@ $$S(n) = \sum\limits_{i = 1}^{n} i^p \phi(i) = \sum\limits_{i = 1}^{n} i^{p+1} -
 另外，莫比乌斯函数 $\mu(n)$ 也可以使用杜教筛求前缀和，记 $S'(n) = \sum\limits_{i = 1}^{n} \mu (i)$ ，则 $S'(n) = 1 - \sum\limits_{i = 2}^{n} S'(\lfloor \frac{n}{i} \rfloor)$
 
 
-\begin{lstlisting}
+\begin{lstlisting}[language=C++]
 #include <bits/stdc++.h>
  
 #define N 5000020
