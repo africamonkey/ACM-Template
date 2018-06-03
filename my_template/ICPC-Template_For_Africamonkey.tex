@@ -2998,60 +2998,133 @@ NTT 公式： $$ y_n = \sum\limits_{i = 0}^{d-1} x_i(g^{\frac{P-1}{d}})^{in} \ \
 
 \begin{lstlisting}[language=C++]
 #define mod 998244353
-#define g 3
-LL wi[N], wiv[N];
-LL power(LL base, LL times) {
-	LL ans = 1;
+#define gg 3
+
+int power(int base, int times) {
+	int ans = 1;
 	while (times) {
-		if (times&1) (ans *= base) %= mod;
-		(base *= base) %= mod;
+		if (times & 1) ans = 1ll * ans * base % mod;
+		base = 1ll * base * base % mod;
 		times >>= 1;
 	}
 	return ans;
 }
-void transform(LL *x, int len) {
-	for (int i=1,j=len/2;i<len-1;i++) {
-		if (i<j) swap(x[i], x[j]);
-		int k = len/2;
-		while (j>=k) {
-			j-=k;
-			k/=2;
-		}
-		if (j<k) j+=k;
-	}
-}
-void NTT(LL *x, int len, int reverse) {
-	transform(x, len);
-	for (int h=2;h<=len;h<<=1) {
-		for (int i=0;i<len;i+=h) {
-			LL w = 1, wn;
-			if (reverse==1) wn = wi[h]; else wn = wiv[h];
-			for (int j=i;j<i+h/2;j++) {
-				LL u = x[j];
-				LL v = (w * x[j+h/2]) % mod;
-				x[j	] = (u + v) % mod;
-				x[j+h/2] = (u - v + mod) % mod;
-				(w *= wn) %= mod;
+
+void NTT(int *x, int n, int reverse) {
+	static int rev[N];
+	int m = 1, len = 0;
+	for (; m < n + n; m <<= 1, ++len);
+	for (int i = 0; i < m; ++i) rev[i] = (rev[i >> 1] >> 1) | ((i & 1) << (len - 1));
+	for (int i = 0; i < m; ++i)
+		if (i < rev[i])
+			swap(x[i], x[rev[i]]);
+	for (int h = 2; h <= m; h <<= 1) {
+		int wn = power(gg, (mod - 1) / h);
+		if (reverse == -1) wn = power(wn, mod - 2);
+		for (int i = 0; i < m; i += h) {
+			int w = 1;
+			for (int j = i; j < i + h / 2; ++j) {
+				int u = x[j];
+				int v = 1ll * w * x[j + h / 2] % mod;
+				x[j] = (u + v) % mod;
+				x[j + h / 2] = (u - v + mod) % mod;
+				w = 1ll * w * wn % mod;
 			}
 		}
 	}
 	if (reverse == -1) {
-		LL t = power(len, mod-2);
-		for (int i=0;i<len;i++)
-			(x[i] *= t) %= mod;
+		int t = power(m, mod - 2);
+		for (int i = 0; i < m; ++i)
+			x[i] = 1ll * x[i] * t % mod;
 	}
 }
-LL A[N], B[N];
+
+int A[N], B[N];
 int main() {
-	for (int i=1;i<N;i*=2) {
-		wi[i] = power(g, (mod-1)/i);
-		wiv[i] = power(wi[i], mod-2);
-	}
 	memset(A, 0, sizeof(A));
 	memset(B, 0, sizeof(B));
 	NTT(A, len, 1); NTT(B, len, 1);
-	for (int i=0;i<len;i++) (A[i] *= B[i]) %= mod;
+	for (int i=0;i<len;i++) A[i] = 1ll * A[i] * B[i] % mod;
 	NTT(A, len, -1);
+}
+\end{lstlisting}
+
+\subsubsection{多项式求逆元}
+
+对于一个多项式 $A(x)$ ，如果存在 $B(x)$ 满足 $\text{deg}(B) \leq \text{deg}(A)$ 并且 $A(x)B(x) \equiv 1 (\text{mod } x^n)$ ，那么称 $B(x)$ 为 $A(x)$ 在 $\text{mod } x^n$ 意义下的逆元，记为 $A^{-1}(x)$ 。
+
+\begin{lstlisting}[language=C++]
+// x := 1 / y
+void inverse(int n0, int *x, const int *y) {
+	static int fy[N];
+	x[0] = 1;
+	for (int i = 1; i < n0; i <<= 1) {
+		for (int j = 0; j < 4 * i; ++j) {
+			fy[j] = (j < 2 * i) ? y[j] : 0;
+			if (j >= i) x[j] = 0;
+		}
+		NTT(fy, 2 * i, 1);
+		NTT(x, 2 * i, 1);
+		for (int j = 0; j < 4 * i; ++j) {
+			x[j] = (2 * x[j] - 1ll * x[j] * x[j] % mod * fy[j]) % mod;
+			if (x[j] < 0) x[j] += mod;
+		}
+		NTT(x, 2 * i, -1);
+	}
+}
+\end{lstlisting}
+
+\subsubsection{多项式取对数}
+
+\begin{lstlisting}[language=C++]
+// x := log(y)
+void logarithm(int n0, int *x, int *y) {
+	static int tmp[N];
+	static int invs[N];
+	inverse(n0, x, y);
+	for (int i = 0; i < n0 * 2; ++i) {
+		tmp[i] = i < n0 - 1 ? 1ll * y[i + 1] * (i + 1) % mod : 0;
+		if (i >= n0) x[i] = 0;
+	}
+	NTT(tmp, n0, 1);
+	NTT(x, n0, 1);
+	for (int i = 0; i < n0 * 2; ++i)
+		x[i] = 1ll * x[i] * tmp[i] % mod;
+	NTT(x, n0, -1);
+	invs[1] = 1;
+	for (int i = 2; i < n0; ++i)
+		invs[i] = (mod - 1ll * mod / i * invs[mod % i] % mod) % mod;
+	for (int i = n0 - 1; i; --i)
+		x[i] = 1ll * x[i - 1] * invs[i] % mod;
+	x[0] = 0;
+}
+\end{lstlisting}
+
+\subsubsection{多项式取指数}
+
+\begin{lstlisting}[language=C++]
+// a := exp(b)
+void exponent(int n0, int *a, int *b) {
+	static int fb[N], x[N], y[N];
+	a[0] = 1;
+	for (int i = 1; i < n0; i <<= 1) {
+		for (int j = 0; j < i * 2; ++j)
+			y[j] = (j < i) ? a[j] : 0;
+		logarithm(i * 2, x, y);
+		for (int j = 0; j < 4 * i; ++j) {
+			fb[j] = !j;
+			if (j < 2 * i) {
+				fb[j] = (fb[j] + b[j]) % mod;
+				fb[j] = (fb[j] + mod - x[j]) % mod;
+			}
+			if (j >= i) a[j] = 0;
+		}
+		NTT(a, 2 * i, 1);
+		NTT(fb, 2 * i, 1);
+		for (int j = 0; j < 4 * i; ++j)
+			a[j] = 1ll * a[j] * fb[j] % mod;
+		NTT(a, 2 * i, -1);
+	}
 }
 \end{lstlisting}
 
