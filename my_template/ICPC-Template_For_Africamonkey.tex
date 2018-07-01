@@ -2575,6 +2575,176 @@ namespace lucas {
 	}
 };
 \end{lstlisting}
+
+\subsection{线性规划}
+
+\subsubsection{单纯形法}
+
+单纯形法用于解决线性规划问题：
+
+$$
+\max_{x_1, x_2, \cdots, x_n} x_0 = c_1x_1 + c_2x_2 + \cdots + c_nx_n
+$$
+
+$$
+s.t.
+\left\{
+\begin{array}{ll}
+A_{i1}x_1 + A_{i2}x_2 + \cdots + A_{in}x_n \leq b_i, & i = 1, 2, \cdots, m \\
+x_j \geq 0, & j = 1, 2, \cdots, n \\
+\end{array}
+\right.
+$$
+
+\textbf{小心}：单纯形法通常能解决 $n \leq 500, m \leq 500$ 的数据规模的问题。若规模过大，可能导致精度爆炸。
+
+\textbf{小心}：单纯形法只能解决一般线性规划问题，不能解决整数规划问题（NP Hard）。若要用单纯形法解决整数规划问题，必须先证明一般线性规划的解不比整数规划好。
+
+若 $b_i \geq 0, i = 1, 2, \cdots, n$ ，则不需要执行 init ，因为至少有一组解 $x_1 = x_2 = \cdots = x_n = 0$ 。
+
+\paragraph{输入格式} .
+
+\begin{longtable}{llllll}
+$n$ & $m$ & & & & \\
+$c_1$ & $c_2$ & $c_3$ & $\cdots$ & $c_n$ & \\
+$A_{11}$ & $A_{12}$ & $A_{13}$ & $\cdots$ & $A_{1n}$ & $b_1$ \\
+$A_{21}$ & $A_{22}$ & $A_{23}$ & $\cdots$ & $A_{2n}$ & $b_2$ \\
+$\vdots$ & $\vdots$ & $\vdots$ & $\ddots$ & $\vdots$ & $\vdots$ \\
+$A_{m1}$ & $A_{m2}$ & $A_{m3}$ & $\cdots$ & $A_{mn}$ & $b_m$ \\
+\end{longtable}
+
+\paragraph{输出格式} .
+
+若无解，输出 Infeasible 。
+
+若 $x_0$ 无界，输出 Unbounded 。
+
+第一行输出答案 $x_0$ 。
+
+接下来一行输出 $n$ 个实数表示 $x_1, x_2, \cdots , x_n$ 。
+
+\begin{lstlisting}[language=C++]
+#include <bits/stdc++.h>
+
+#define N 25
+#define M 25
+
+using namespace std;
+
+const double eps = 1e-8, INF = 1e15;
+
+int n, m, type;
+double a[M][N], ans[N + M];
+int id[N + M];
+
+void pivot(int l, int e) {
+	swap(id[n + l], id[e]);
+	double t = a[l][e];
+	a[l][e] = 1;
+	for (int j = 0; j <= n; ++j) a[l][j] /= t;
+	for (int i = 0; i <= m; ++i)
+		if (i != l && abs(a[i][e]) > eps) {
+			t = a[i][e];
+			a[i][e] = 0;
+			for (int j = 0; j <= n; ++j) a[i][j] -= a[l][j] * t;
+		}
+}
+
+bool init() {
+	while (1) {
+		int e = 0, l = 0;
+		for (int i = 1; i <= m; ++i)
+			if (a[i][0] < -eps && (!l || (rand() & 1)))
+				l = i;
+		if (!l) break;
+		for (int j = 1; j <= n; ++j)
+			if (a[l][j] < -eps && (!e || (rand() & 1)))
+				e = j;
+		if (!e) return false; // Infeasible
+		pivot(l, e);
+	}
+	return true;
+}
+
+bool simplex() {
+	while (1) {
+		int l = 0, e = 0;
+		double mn = INF;
+		for (int j = 1; j <= n; ++j)
+			if (a[0][j] > eps) {
+				e = j;
+				break;
+			}
+		if (!e) break;
+		for (int i = 1; i <= m; ++i)
+			if (a[i][e] > eps && a[i][0] / a[i][e] < mn) {
+				mn = a[i][0] / a[i][e];
+				l = i;
+			}
+		if (!l) return false; // Unbounded
+		pivot(l, e);
+	}
+	return true;
+}
+
+int main() {
+	scanf("%d%d", &n, &m);
+	for (int i = 1; i <= n; ++i) scanf("%lf", &a[0][i]);
+	for (int i = 1; i <= m; ++i) {
+		for (int j = 1; j <= n; ++j) scanf("%lf", &a[i][j]);
+		scanf("%lf", &a[i][0]);
+	}
+	for (int i = 1; i <= n; ++i) id[i] = i;
+	if (!init()) {
+		puts("Infeasible");
+		return 0;
+	}
+	if (!simplex()) {
+		puts("Unbounded");
+		return 0;
+	}
+	printf("%.10lf\n", -a[0][0]);
+	for (int i = 1; i <= n + m; ++i) ans[i] = 0;
+	for (int i = 1; i <= m; ++i) ans[id[n + i]] = a[i][0];
+	for (int i = 1; i <= n; ++i) printf("%.10lf ", ans[i]);
+	puts("");
+}
+\end{lstlisting}
+
+\subsubsection{对偶理论}
+
+原始问题：
+
+$$
+\max_{x_1, x_2, \cdots, x_n} x_0 = c_1x_1 + c_2x_2 + \cdots + c_nx_n
+$$
+
+$$
+s.t.
+\left\{
+\begin{array}{ll}
+A_{i1}x_1 + A_{i2}x_2 + \cdots + A_{in}x_n \leq b_i, & i = 1, 2, \cdots, m \\
+x_j \geq 0, & j = 1, 2, \cdots, n \\
+\end{array}
+\right.
+$$
+
+对偶问题：
+
+$$
+\min_{w_1, w_2, \cdots, w_m} w_0 = b_1x_1 + b_2x_2 + \cdots + b_mx_m
+$$
+
+$$
+s.t.
+\left\{
+\begin{array}{ll}
+A^T_{i1}w_1 + A^T_{i2}w_2 + \cdots A^T_{im}w_m \geq c_i, & i = 1, 2, \cdots, n \\
+w_j \geq 0, & j = 1, 2, \cdots, m \\
+\end{array}
+\right.
+$$
+
 \subsection{高斯消元}
 \subsubsection{行列式}
 \begin{lstlisting}[language=C++]
