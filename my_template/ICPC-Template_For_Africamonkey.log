@@ -1,4 +1,4 @@
-This is XeTeX, Version 3.14159265-2.6-0.99996 (TeX Live 2016) (preloaded format=xelatex 2017.12.25)  1 JUL 2018 20:37
+This is XeTeX, Version 3.14159265-2.6-0.99996 (TeX Live 2016) (preloaded format=xelatex 2017.12.25)  2 JUL 2018 19:37
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -1556,9 +1556,6 @@ Overfull \hbox (1.99442pt too wide) in alignment at lines 3507--3512
 (./ICPC-Template_For_Africamonkey.aux)
 
 LaTeX Font Warning: Some font shapes were not available, defaults substituted.
-
-
-LaTeX Warning: Label(s) may have changed. Rerun to get cross-references right.
 
  ) 
 Here is how much of TeX's memory you used:
