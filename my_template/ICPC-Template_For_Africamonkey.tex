@@ -2510,6 +2510,67 @@ int main(){
 	printf("%d",flag?m:-1);//若flag=1,说明有解,解为ki+m,i为任意整数
 }
 \end{lstlisting}
+
+\subsection{类欧几里得算法}
+
+类欧几里得模板有三种形式：
+
+$$f(a, b, c, n) = \sum\limits_{i = 0}^{n} \lfloor \frac{ai+b}{c} \rfloor $$
+
+$$g(a, b, c, n) = \sum\limits_{i = 0}^{n} i \lfloor \frac{ai+b}{c} \rfloor $$
+
+$$h(a, b, c, n) = \sum\limits_{i = 0}^{n} \lfloor \frac{ai+b}{c} \rfloor ^2 $$
+
+
+
+\begin{lstlisting}[language=C++]
+#define LL long long
+
+const int P = 1000000007;
+int Inv(int x) {
+	return x == 1 ? 1 : 1ll * (P - P / x) * Inv(P % x) % P;
+}
+const int i2 = Inv(2);
+const int i6 = Inv(6);
+
+struct ifo {
+	int f, g, h;
+	ifo(int f, int g, int h) : f(f), g(g), h(h) {}
+};
+
+int S1(int n) {
+	return 1ll * n * (n + 1) % P * i2 % P;
+}
+
+int S2(int n) {
+	return 1ll * n * (n + 1) % P * (2 * n + 1) % P * i6 % P;
+}
+
+ifo Get(int n, int A, int B, int C) {
+	if (!A) {
+		int t = B / C;
+		int f = 1ll * (n + 1) * t % P;
+		int g = 1ll * S1(n) * t % P;
+		int h = 1ll * (n + 1) * t % P * t % P;
+		return ifo(f, g, h);
+	} else if (A >= C || B >= C) {
+		ifo Nx = Get(n, A % C, B % C, C);
+		int p = A / C, q = B / C;
+		int f = (1ll * p * S1(n) + 1ll * q * (n + 1) + Nx.f) % P;
+		int g = (1ll * p * S2(n) + 1ll * q * S1(n) + Nx.g) % P;
+		int h = (1ll * p * p % P * S2(n) + 2ll * p * q % P * S1(n) + 1ll * (n + 1) * q % P * q + 2ll * p * Nx.g % P + 2ll * q * Nx.f % P + Nx.h) % P;
+		return ifo(f, g, h);
+	} else {
+		int m = (1ll * A * n + B) / C;
+		ifo Nx = Get(m - 1, C, C - B - 1, A);
+		int f = (1ll * n * m - Nx.f) % P;
+		int g = (1ll * m * S1(n) - 1ll * i2 * Nx.h - 1ll * i2 * Nx.f) % P;
+		int h = (2ll * n * S1(m - 1) % P + 1ll * n * m - 2ll * Nx.g - Nx.f) % P;
+		return ifo(f, g, h);
+	}
+}
+\end{lstlisting}
+
 \subsection{卡特兰数}
 $h_1 = 1, h_n = \frac{h_{n-1}(4n-2)}{n+1} = \frac{C(2n, n)}{n+1} = C(2n, n) - C(2n, n-1)$ 
 

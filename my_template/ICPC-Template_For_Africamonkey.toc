@@ -50,65 +50,66 @@
 \contentsline {section}{\numberline {6}数学}{54}
 \contentsline {subsection}{\numberline {6.1}扩展欧几里得解同余方程}{54}
 \contentsline {subsection}{\numberline {6.2}同余方程组}{54}
-\contentsline {subsection}{\numberline {6.3}卡特兰数}{55}
-\contentsline {subsection}{\numberline {6.4}斯特林数}{55}
-\contentsline {subsubsection}{\numberline {6.4.1}第一类斯特林数}{55}
-\contentsline {subsubsection}{\numberline {6.4.2}第二类斯特林数}{55}
-\contentsline {subsection}{\numberline {6.5}错排公式}{55}
-\contentsline {subsection}{\numberline {6.6}Lucas定理}{55}
-\contentsline {subsection}{\numberline {6.7}线性规划}{56}
-\contentsline {subsubsection}{\numberline {6.7.1}单纯形法}{56}
-\contentsline {paragraph}{输入格式}{56}
-\contentsline {paragraph}{输出格式}{57}
-\contentsline {subsubsection}{\numberline {6.7.2}对偶理论}{59}
-\contentsline {subsection}{\numberline {6.8}高斯消元}{59}
-\contentsline {subsubsection}{\numberline {6.8.1}行列式}{59}
-\contentsline {subsubsection}{\numberline {6.8.2}Matrix-Tree定理}{60}
-\contentsline {subsection}{\numberline {6.9}调和级数}{60}
-\contentsline {subsection}{\numberline {6.10}曼哈顿距离的变换}{60}
-\contentsline {subsection}{\numberline {6.11}数论函数变换}{60}
-\contentsline {subsection}{\numberline {6.12}莫比乌斯反演}{60}
-\contentsline {subsection}{\numberline {6.13}线性筛素数}{61}
-\contentsline {subsection}{\numberline {6.14}杜教筛}{61}
-\contentsline {subsection}{\numberline {6.15}FFT}{63}
-\contentsline {subsubsection}{\numberline {6.15.1}普通FFT}{63}
-\contentsline {subsubsection}{\numberline {6.15.2}模任意素数FFT}{64}
-\contentsline {subsection}{\numberline {6.16}FWT}{66}
-\contentsline {subsection}{\numberline {6.17}求原根}{67}
-\contentsline {subsection}{\numberline {6.18}NTT}{68}
-\contentsline {subsubsection}{\numberline {6.18.1}NTT 常用原根表}{69}
-\contentsline {subsubsection}{\numberline {6.18.2}多项式求逆元}{72}
-\contentsline {subsubsection}{\numberline {6.18.3}多项式取对数}{73}
-\contentsline {subsubsection}{\numberline {6.18.4}多项式取指数}{73}
-\contentsline {subsection}{\numberline {6.19}Berlekamp Messay 算法求线性递推式}{74}
-\contentsline {subsection}{\numberline {6.20}幂和}{77}
-\contentsline {subsection}{\numberline {6.21}蔡勒公式}{77}
-\contentsline {subsection}{\numberline {6.22}皮克定理}{77}
-\contentsline {subsection}{\numberline {6.23}组合数 lcm}{77}
-\contentsline {subsection}{\numberline {6.24}区间 lcm 的维护}{78}
-\contentsline {section}{\numberline {7}几何}{78}
-\contentsline {subsection}{\numberline {7.1}二维计算几何}{78}
-\contentsline {subsubsection}{\numberline {7.1.1}计算几何误差修正}{78}
-\contentsline {subsubsection}{\numberline {7.1.2}计算几何点类}{78}
-\contentsline {subsubsection}{\numberline {7.1.3}计算几何线段类}{79}
-\contentsline {subsection}{\numberline {7.2}凸包}{81}
-\contentsline {subsection}{\numberline {7.3}半平面交}{82}
-\contentsline {section}{\numberline {8}黑科技和杂项}{83}
-\contentsline {subsection}{\numberline {8.1}找规律}{83}
-\contentsline {subsection}{\numberline {8.2}分数类}{86}
-\contentsline {subsection}{\numberline {8.3}取模整数类}{88}
-\contentsline {subsection}{\numberline {8.4}多项式类}{89}
-\contentsline {subsection}{\numberline {8.5}高精度计算}{91}
-\contentsline {subsection}{\numberline {8.6}读入优化}{94}
-\contentsline {subsubsection}{\numberline {8.6.1}普通读入优化}{94}
-\contentsline {subsubsection}{\numberline {8.6.2}HDU 专用读入优化}{95}
-\contentsline {subsection}{\numberline {8.7}O2 优化}{96}
-\contentsline {subsection}{\numberline {8.8}位运算及其运用}{96}
-\contentsline {subsubsection}{\numberline {8.8.1}枚举子集}{96}
-\contentsline {subsubsection}{\numberline {8.8.2}求 1 的个数}{96}
-\contentsline {subsubsection}{\numberline {8.8.3}求前缀 0 的个数}{96}
-\contentsline {subsubsection}{\numberline {8.8.4}求后缀 0 的个数}{96}
-\contentsline {section}{\numberline {9}Sublime Text}{96}
-\contentsline {subsection}{\numberline {9.1}License}{96}
-\contentsline {subsection}{\numberline {9.2}Preferences.sublime-settings}{97}
-\contentsline {section}{\numberline {10}Vim}{97}
+\contentsline {subsection}{\numberline {6.3}类欧几里得算法}{55}
+\contentsline {subsection}{\numberline {6.4}卡特兰数}{56}
+\contentsline {subsection}{\numberline {6.5}斯特林数}{56}
+\contentsline {subsubsection}{\numberline {6.5.1}第一类斯特林数}{56}
+\contentsline {subsubsection}{\numberline {6.5.2}第二类斯特林数}{56}
+\contentsline {subsection}{\numberline {6.6}错排公式}{57}
+\contentsline {subsection}{\numberline {6.7}Lucas定理}{57}
+\contentsline {subsection}{\numberline {6.8}线性规划}{57}
+\contentsline {subsubsection}{\numberline {6.8.1}单纯形法}{57}
+\contentsline {paragraph}{输入格式}{58}
+\contentsline {paragraph}{输出格式}{58}
+\contentsline {subsubsection}{\numberline {6.8.2}对偶理论}{60}
+\contentsline {subsection}{\numberline {6.9}高斯消元}{60}
+\contentsline {subsubsection}{\numberline {6.9.1}行列式}{60}
+\contentsline {subsubsection}{\numberline {6.9.2}Matrix-Tree定理}{61}
+\contentsline {subsection}{\numberline {6.10}调和级数}{61}
+\contentsline {subsection}{\numberline {6.11}曼哈顿距离的变换}{61}
+\contentsline {subsection}{\numberline {6.12}数论函数变换}{61}
+\contentsline {subsection}{\numberline {6.13}莫比乌斯反演}{62}
+\contentsline {subsection}{\numberline {6.14}线性筛素数}{62}
+\contentsline {subsection}{\numberline {6.15}杜教筛}{62}
+\contentsline {subsection}{\numberline {6.16}FFT}{64}
+\contentsline {subsubsection}{\numberline {6.16.1}普通FFT}{64}
+\contentsline {subsubsection}{\numberline {6.16.2}模任意素数FFT}{66}
+\contentsline {subsection}{\numberline {6.17}FWT}{67}
+\contentsline {subsection}{\numberline {6.18}求原根}{68}
+\contentsline {subsection}{\numberline {6.19}NTT}{69}
+\contentsline {subsubsection}{\numberline {6.19.1}NTT 常用原根表}{70}
+\contentsline {subsubsection}{\numberline {6.19.2}多项式求逆元}{74}
+\contentsline {subsubsection}{\numberline {6.19.3}多项式取对数}{74}
+\contentsline {subsubsection}{\numberline {6.19.4}多项式取指数}{75}
+\contentsline {subsection}{\numberline {6.20}Berlekamp Messay 算法求线性递推式}{75}
+\contentsline {subsection}{\numberline {6.21}幂和}{78}
+\contentsline {subsection}{\numberline {6.22}蔡勒公式}{78}
+\contentsline {subsection}{\numberline {6.23}皮克定理}{79}
+\contentsline {subsection}{\numberline {6.24}组合数 lcm}{79}
+\contentsline {subsection}{\numberline {6.25}区间 lcm 的维护}{79}
+\contentsline {section}{\numberline {7}几何}{79}
+\contentsline {subsection}{\numberline {7.1}二维计算几何}{79}
+\contentsline {subsubsection}{\numberline {7.1.1}计算几何误差修正}{79}
+\contentsline {subsubsection}{\numberline {7.1.2}计算几何点类}{79}
+\contentsline {subsubsection}{\numberline {7.1.3}计算几何线段类}{80}
+\contentsline {subsection}{\numberline {7.2}凸包}{82}
+\contentsline {subsection}{\numberline {7.3}半平面交}{83}
+\contentsline {section}{\numberline {8}黑科技和杂项}{84}
+\contentsline {subsection}{\numberline {8.1}找规律}{84}
+\contentsline {subsection}{\numberline {8.2}分数类}{87}
+\contentsline {subsection}{\numberline {8.3}取模整数类}{89}
+\contentsline {subsection}{\numberline {8.4}多项式类}{90}
+\contentsline {subsection}{\numberline {8.5}高精度计算}{92}
+\contentsline {subsection}{\numberline {8.6}读入优化}{95}
+\contentsline {subsubsection}{\numberline {8.6.1}普通读入优化}{95}
+\contentsline {subsubsection}{\numberline {8.6.2}HDU 专用读入优化}{96}
+\contentsline {subsection}{\numberline {8.7}O2 优化}{97}
+\contentsline {subsection}{\numberline {8.8}位运算及其运用}{97}
+\contentsline {subsubsection}{\numberline {8.8.1}枚举子集}{97}
+\contentsline {subsubsection}{\numberline {8.8.2}求 1 的个数}{97}
+\contentsline {subsubsection}{\numberline {8.8.3}求前缀 0 的个数}{97}
+\contentsline {subsubsection}{\numberline {8.8.4}求后缀 0 的个数}{97}
+\contentsline {section}{\numberline {9}Sublime Text}{97}
+\contentsline {subsection}{\numberline {9.1}License}{97}
+\contentsline {subsection}{\numberline {9.2}Preferences.sublime-settings}{98}
+\contentsline {section}{\numberline {10}Vim}{98}

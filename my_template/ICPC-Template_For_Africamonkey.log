@@ -1,4 +1,4 @@
-This is XeTeX, Version 3.14159265-2.6-0.99996 (TeX Live 2016) (preloaded format=xelatex 2017.12.25)  2 JUL 2018 19:59
+This is XeTeX, Version 3.14159265-2.6-0.99996 (TeX Live 2016) (preloaded format=xelatex 2017.12.25)  21 JUL 2018 11:03
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -1507,67 +1507,64 @@ LaTeX Font Warning: Font shape `EU1/FandolFang-Regular(0)/m/it' undefined
 [47] [48] [49] [50]
 File: nwf-1.jpg Graphic file (type QTm)
  <use  "nwf-1.jpg" > [51] [52] [53] [54] [55] [56] [57]
-[58] [59] [60] [61] [62] [63] [64] [65] [66] [67] [68]
-Overfull \hbox (1.99442pt too wide) in alignment at lines 3227--3268
+[58] [59] [60] [61] [62] [63] [64] [65] [66] [67] [68] [69]
+Overfull \hbox (1.99442pt too wide) in alignment at lines 3288--3329
  [] [] [] [] [] [] [] [] [] 
  []
 
 
-Underfull \vbox (badness 10000) detected at line 3268
+Underfull \vbox (badness 10000) detected at line 3329
  []
 
 
-Overfull \hbox (1.99442pt too wide) in alignment at lines 3268--3308
- [] [] [] [] [] [] [] [] [] 
- []
-
-
-Overfull \hbox (1.99442pt too wide) in alignment at lines 3308--3348
- [] [] [] [] [] [] [] [] [] 
- []
-
-[69]
-Overfull \hbox (1.99442pt too wide) in alignment at lines 3348--3388
- [] [] [] [] [] [] [] [] [] 
- []
-
-
-Overfull \hbox (1.99442pt too wide) in alignment at lines 3388--3428
+Overfull \hbox (1.99442pt too wide) in alignment at lines 3329--3369
  [] [] [] [] [] [] [] [] [] 
  []
 
 [70]
-Overfull \hbox (1.99442pt too wide) in alignment at lines 3428--3468
+Overfull \hbox (1.99442pt too wide) in alignment at lines 3369--3409
  [] [] [] [] [] [] [] [] [] 
  []
 
 
-Overfull \hbox (1.99442pt too wide) in alignment at lines 3468--3508
+Overfull \hbox (1.99442pt too wide) in alignment at lines 3409--3449
  [] [] [] [] [] [] [] [] [] 
  []
 
 [71]
-Overfull \hbox (1.99442pt too wide) in alignment at lines 3508--3513
+Overfull \hbox (1.99442pt too wide) in alignment at lines 3449--3489
  [] [] [] [] [] [] [] [] [] 
  []
 
-[72] [73] [74] [75] [76] [77] [78] [79] [80] [81] [82] [83] [84] [85] [86]
-[87] [88] [89] [90] [91] [92] [93] [94] [95] [96] [97]
+
+Overfull \hbox (1.99442pt too wide) in alignment at lines 3489--3529
+ [] [] [] [] [] [] [] [] [] 
+ []
+
+[72]
+Overfull \hbox (1.99442pt too wide) in alignment at lines 3529--3569
+ [] [] [] [] [] [] [] [] [] 
+ []
+
+
+Overfull \hbox (1.99442pt too wide) in alignment at lines 3569--3574
+ [] [] [] [] [] [] [] [] [] 
+ []
+
+[73] [74] [75] [76] [77] [78] [79] [80] [81] [82] [83] [84] [85] [86] [87]
+[88] [89] [90] [91] [92] [93] [94] [95] [96] [97] [98]
 (./ICPC-Template_For_Africamonkey.aux)
 
 LaTeX Font Warning: Some font shapes were not available, defaults substituted.
 
-
-LaTeX Warning: Label(s) may have changed. Rerun to get cross-references right.
-
  ) 
 Here is how much of TeX's memory you used:
- 25712 strings out of 493591
- 494419 string characters out of 6143545
+ 25728 strings out of 493591
+ 494537 string characters out of 6143545
  924192 words of memory out of 5000000
- 28840 multiletter control sequences out of 15000+600000
+ 28856 multiletter control sequences out of 15000+600000
  13684 words of font info for 84 fonts, out of 8000000 for 9000
  1347 hyphenation exceptions out of 8191
  65i,17n,77p,10454b,1680s stack positions out of 5000i,500n,10000p,200000b,80000s
 
-Output written on ICPC-Template_For_Africamonkey.pdf (97 pages).
+Output written on ICPC-Template_For_Africamonkey.pdf (98 pages).
