@@ -37,6 +37,15 @@
 \newpage
 \section{莫队算法}
 \subsection{普通莫队}
+
+分块块数为 $\sqrt{n}$ 是最优的。
+
+记每次进行 add() 操作的复杂度为 $O(A)$ ，del() 操作的复杂度为 $O(D)$ ，查询答案 answer() 的复杂度为 $O(S)$ 。
+
+则总复杂度为 $O(n \sqrt{n} (A + D) + qS)$ 。
+
+$S$ 可以大一点，但必须保证 $A, D$ 尽可能小。
+
 \begin{lstlisting}[language=C++]
 struct Q { int l, r, sqrtl, id; } q[N];
 int n, m, v[N], ans[N], nowans;
@@ -44,24 +53,36 @@ bool cmp(const Q &a, const Q &b) {
 	if (a.sqrtl != b.sqrtl) return a.sqrtl < b.sqrtl;
 	return a.r < b.r;
 }
-void change(int x) { if (!v[x]) checkin(); else checkout(); }
+void change(int x) {
+	if (!v[x]) add(x);
+	else del(x);
+	v[x] ^= 1;
+}
 int main() {
 	......
 	for (int i=1;i<=m;i++) q[i].sqrtl = q[i].l / sqrt(n), q[i].id = i;
 	sort(q+1, q+m+1, cmp);
-	int L=1,R=0; nowans=0;
+	int L=1, R=0;
 	memset(v, 0, sizeof(v));
 	for (int i=1;i<=m;i++) {
 		while (L<q[i].l) change(L++);
 		while (L>q[i].l) change(--L);
 		while (R<q[i].r) change(++R);
 		while (R>q[i].r) change(R--);
-		ans[q[i].id] = nowans;
+		ans[q[i].id] = answer();
 	}
 	......
 }
 \end{lstlisting}
 \subsection{树上莫队}
+
+分块块数为 $\sqrt{n}$ 是最优的。
+
+记每次进行 add() 操作的复杂度为 $O(A)$ ，del() 操作的复杂度为 $O(D)$ ，查询答案 answer() 的复杂度为 $O(S)$ 。
+
+则总复杂度为 $O(n \sqrt{n} (A + D) + qS)$ 。
+
+$S$ 可以大一点，但必须保证 $A, D$ 尽可能小。
 
 \begin{lstlisting}[language=C++]
 struct Query { int l, r, id, l_group; } query[N];
@@ -110,7 +131,13 @@ bool cmp(const Query &a, const Query &b) {
 	return reorder[a.r] < reorder[b.r];
 }
 int v[N], ans[N];
-void upd(int x) { if (!v[x]) checkin(); else checkout(); }
+
+void upd(int x) {
+	if (!v[x]) add(x);
+	else del(x);
+	v[x] ^= 1;
+}
+
 void go(int &u, int taru, int v) {
 	int lca0 = lca(u, taru);
 	int lca1 = lca(u, v);	upd(lca1);
@@ -678,7 +705,7 @@ int main(){
 \subsection{K-D Tree}
 
 \begin{lstlisting}[language=C++]
-int n, cmp_d, root;
+int n, cmp_d, root, id[N];
 
 struct node {
 	int d[2], l, r, Max[2], Min[2], val, sum, f;
@@ -708,6 +735,7 @@ int build(int l, int r, int D, int f) {
 	int mid = (l + r) / 2;
 	cmp_d = D;
 	nth_element(t + l + 1, t + mid + 1, t + r + 1, cmp);
+	id[t[mid].f] = mid;
 	t[mid].f = f;
 	t[mid].Max[0] = t[mid].Min[0] = t[mid].d[0];
 	t[mid].Max[1] = t[mid].Min[1] = t[mid].d[1];
@@ -807,6 +835,17 @@ void ask(int p, int X, int Y, long long &ans) {
 		if (dr > ans) ask(t[p].r, X, Y, ans);
 		if (dl > ans) ask(t[p].l, X, Y, ans);
 	}
+}
+
+// 查询矩形范围内所有点的权值和
+int ask(int p, int x1, int y1, int x2, int y2) {
+	if (t[p].Min[0] > x2 || t[p].Max[0] < x1 || t[p].Min[1] > y2 || t[p].Max[1] < y1) return 0;
+	if (t[p].Min[0] >= x1 && t[p].Max[0] <= x2 && t[p].Min[1] >= y1 && t[p].Max[1] <= y2) return t[p].sum;
+	int s = 0;
+	if (t[p].d[0] >= x1 && t[p].d[0] <= x2 && t[p].d[1] >= y1 && t[p].d[1] <= y2) s += t[p].val;
+	if (t[p].l) s += ask(t[p].l, x1, y1, x2, y2);
+	if (t[p].r) s += ask(t[p].r, x1, y1, x2, y2);
+	return s;
 }
 
 int main() {
