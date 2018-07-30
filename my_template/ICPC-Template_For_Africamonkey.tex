@@ -3620,7 +3620,7 @@ int main() {
 // x := 1 / y
 void inverse(int n0, int *x, const int *y) {
 	static int fy[N];
-	x[0] = 1;
+	x[0] = power(y[0], mod - 2);
 	for (int i = 1; i < n0; i <<= 1) {
 		for (int j = 0; j < 4 * i; ++j) {
 			fy[j] = (j < 2 * i) ? y[j] : 0;
