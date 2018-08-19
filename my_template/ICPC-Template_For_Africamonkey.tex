@@ -2550,6 +2550,58 @@ void cal(ll a,ll b,ll n){//ax=b(mod n)
 	for(ll i=1;i<d;i++)ans[++cnt]=(ans[1]+i*n/d)%n;
 }
 \end{lstlisting}
+
+\subsubsection{扩展欧几里得特殊解和解的个数}
+
+求满足
+$
+\left\{
+\begin{array}{l}
+	ax + by = c \\
+	x_1 \leq x \leq x_2 \\
+	y_1 \leq y \leq y_2 \\
+\end{array}
+\right.
+$
+的二元组 $(x, y)$ 的个数。 \\
+
+\begin{lstlisting}[language=C++]
+int calc(int a, int b, int c, int x1, int x2, int y1, int y2) {
+	if (a == 0 && b == 0) return c == 0 && x1 <= 0 && 0 <= x2 && y1 <= 0 && 0 <= y2;
+	if (a == 0) return c % b == 0 && y1 <= c / b && c / b <= y2;
+	if (b == 0) return c % a == 0 && x1 <= c / a && c / a <= x2;
+	int x, y, t;
+	int g = exgcd(a, b, x, y);
+	if (c % g) return 0;
+	x *= c / g; y *= c / g;
+	int dx = b / g, dy = a / g;
+
+	if (x > x1) t = (x - x1) / dx + 1, x = x - t * dx, y = y + t * dy;
+	t = (x1 - x) / dx; if ((x1 - x) % dx) ++ t;
+	x = x + t * dx, y = y - t * dy;
+	x1 = max(x1, x), y2 = min(y2, y);
+
+	if (x < x2) t = (x2 - x) / dx + 1, x = x + t * dx, y = y - t * dy;
+	t = (x - x2) / dx; if ((x - x2) % dx) ++ t;
+	x = x - t * dx, y = y + t * dy;
+	x2 = min(x2, x), y1 = max(y1, y);
+
+	if (y > y1) t = (y - y1) / dy + 1, x = x + t * dx, y = y - t * dy;
+	t = (y1 - y) / dy; if ((y1 - y) % dy) ++ t;
+	x = x - t * dx, y = y + t * dy;
+	x2 = min(x2, x), y1 = max(y1, y);
+
+	if (y < y2) t = (y2 - y) / dy + 1, x = x - t * dx, y = y + t * dy;
+	t = (y - y2) / dy; if ((y - y2) % dy) ++ t;
+	x = x + t * dx, y = y - t * dy;
+	x1 = max(x1, x), y2 = min(y2, y);
+
+	if (x1 > x2 && y1 > y2) return 0;
+	assert(x2 - x1 == y2 - y1);
+	return x2 - x1 + 1;
+}
+\end{lstlisting}
+
 \subsection{同余方程组}
 \begin{lstlisting} [language=C++]
 int n,flag,k,m,a,r,d,x,y;
