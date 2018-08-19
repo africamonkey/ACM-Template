@@ -638,6 +638,19 @@ topo[s] 为 Parent 树的拓扑序，根（初始状态）在前
 
 \subsection{回文树}
 
+\begin{itemize}
+\item len[i]表示编号为i的节点表示的回文串的长度（一个节点表示一个回文串）
+\item next[i][c]表示编号为i的节点表示的回文串在两边添加字符c以后变成的回文串的编号（和字典树类似）。
+\item fail[i]表示节点i失配以后跳转不等于自身的节点i表示的回文串的最长后缀回文串（和AC自动机类似）。
+\item cnt[i]表示节点i表示的本质不同的串的个数（建树时求出的不是完全的，最后count()函数跑一遍以后才是正确的）
+\item num[i]表示以节点i表示的最长回文串的最右端点为回文串结尾的回文串个数。
+\item last指向新添加一个字母后所形成的最长回文串表示的节点。
+\item st[i]表示第i次添加的字符（一开始设st[0] = -1（可以是任意一个在串S中不会出现的字符））。
+\item tot 表示添加的节点个数。
+\item n 表示添加的字符个数。
+\end{itemize}
+
+
 【URAL2040】Palindromes and Super Abilities 2
 
 逐个添加字符串S里的字符 $S_1, S_2, ..., S_n$ 。每次添加字符后，他想知道添加字符后将出现多少个新的本质不同的回文子串。字符集为 $\{a, b\}$
@@ -651,7 +664,7 @@ int n;
  
 struct PAM {
 	int n, tot, last;
-	int len[N], fail[N], next[N][2];
+	int len[N], fail[N], next[N][2], num[N], cnt[N];
 	void init() {
 		n=0; tot=1;
 		len[1]=-1; fail[1]=0;
@@ -669,12 +682,19 @@ struct PAM {
 			len[tot]=len[cur]+2;
 			fail[tot]=next[get_fail(fail[cur])][c];
 			next[cur][c]=tot;
+			num[now] = num[fail[now]] + 1;
 			answer[n]='1';
 		} else {
 			answer[n]='0';
 		}
 		last=next[cur][c];
+		cnt[last] ++;
 	}
+	void count () {
+		for ( int i = tot - 1 ; i >= 0 ; -- i ) cnt[fail[i]] += cnt[i] ;
+		//父亲累加儿子的cnt，因为如果fail[v]=u，则u一定是v的子回文串！
+	}
+
 } pam;
  
 int main() {
