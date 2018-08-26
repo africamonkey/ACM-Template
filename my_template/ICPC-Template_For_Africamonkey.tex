@@ -2385,6 +2385,8 @@ $T$ 向 $S$ 连容量为正无穷的边，将有源汇转化为无源汇。
 \begin{figure}[htbp]
   \centering
   \includegraphics[scale=0.7]{nwf-1.jpg}
+  \caption{可行流取值范围的讨论}
+  \label{nwf}
 \end{figure}
 \subsubsection{费用流}
 注意： \emph{top 要初始化为 1}
@@ -4865,6 +4867,17 @@ inline int RD(T &x) {
 #define OPTIM __attribute__((optimize("-O2")))
 \end{lstlisting}
 
+\subsection{正方形展开图}
+
+如图\ref{zhengfangti}。
+
+\begin{figure}[!hbp]
+	\centering
+	\includegraphics[scale=0.5]{zhengfangti.jpg}
+	\caption{正方形展开图}
+	\label{zhengfangti}
+\end{figure}
+
 \subsection{位运算及其运用}
 
 \subsubsection{枚举子集}
@@ -4891,36 +4904,6 @@ int __builtin_clz(unsigned int x);
 
 \begin{lstlisting}[language=C++]
 int __builtin_ctz(unsigned int x);
-\end{lstlisting}
-
-\section{Sublime Text}
-
-\subsection{License}
-
-\begin{lstlisting}
--- BEGIN LICENSE --
-TwitterInc
-200 User License
-EA7E-890007
-1D77F72E 390CDD93 4DCBA022 FAF60790
-61AA12C0 A37081C5 D0316412 4584D136
-94D7F7D4 95BC8C1C 527DA828 560BB037
-D1EDDD8C AE7B379F 50C9D69D B35179EF
-2FE898C4 8E4277A8 555CE714 E1FB0E43
-D5D52613 C3D12E98 BC49967F 7652EED2
-9D2D2E61 67610860 6D338B72 5CF95C69
-E36B85CC 84991F19 7575D828 470A92AB
--- END LICENSE --
-\end{lstlisting}
-
-\subsection{Preferences.sublime-settings}
-
-\begin{lstlisting}
-{
-	"font_size": 13, 
-	"show_encoding": true,
-	"update_check": false
-}
 \end{lstlisting}
 
 \section{Vim}

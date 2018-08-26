@@ -105,12 +105,10 @@
 \contentsline {subsubsection}{\numberline {8.6.1}普通读入优化}{98}
 \contentsline {subsubsection}{\numberline {8.6.2}HDU 专用读入优化}{98}
 \contentsline {subsection}{\numberline {8.7}O2 优化}{99}
-\contentsline {subsection}{\numberline {8.8}位运算及其运用}{99}
-\contentsline {subsubsection}{\numberline {8.8.1}枚举子集}{99}
-\contentsline {subsubsection}{\numberline {8.8.2}求 1 的个数}{99}
-\contentsline {subsubsection}{\numberline {8.8.3}求前缀 0 的个数}{99}
-\contentsline {subsubsection}{\numberline {8.8.4}求后缀 0 的个数}{99}
-\contentsline {section}{\numberline {9}Sublime Text}{100}
-\contentsline {subsection}{\numberline {9.1}License}{100}
-\contentsline {subsection}{\numberline {9.2}Preferences.sublime-settings}{100}
-\contentsline {section}{\numberline {10}Vim}{100}
+\contentsline {subsection}{\numberline {8.8}正方形展开图}{99}
+\contentsline {subsection}{\numberline {8.9}位运算及其运用}{99}
+\contentsline {subsubsection}{\numberline {8.9.1}枚举子集}{99}
+\contentsline {subsubsection}{\numberline {8.9.2}求 1 的个数}{100}
+\contentsline {subsubsection}{\numberline {8.9.3}求前缀 0 的个数}{100}
+\contentsline {subsubsection}{\numberline {8.9.4}求后缀 0 的个数}{100}
+\contentsline {section}{\numberline {9}Vim}{100}
