@@ -13,6 +13,7 @@
 \usepackage{fancyvrb}
 \usepackage{etoolbox}
 \usepackage{longtable}
+\usepackage{amsmath}
 
 
 \linespread{1.2}
@@ -2973,6 +2974,10 @@ $\vert x_1 - x_2 \vert + \vert y_1 - y_2 \vert = max(\vert(x_1 + y_1) - (x_2 + y
 \right.
 $
 
+莫比乌斯函数的一次方前缀和见“杜教筛”。
+
+莫比乌斯函数的二次方前缀和 $$\sum\limits_{i=1}^{n} \mu(i)^2 = \sum\limits_{d=1}^{\lfloor \sqrt{n} \rfloor} \mu(d) \lfloor \frac{n}{d^2} \rfloor$$
+
 常见积性函数的性质：
 
 $$n = \sum\limits_{d|n} \phi(d)$$
@@ -3116,6 +3121,277 @@ int main() {
 	}
 }
 \end{lstlisting}
+
+\subsection{洲阁筛}
+
+一种在 $O(\frac{n^{\frac{3}{4}}}{\log n})$ 的时间中求出大多数积性函数的前缀和的方法。
+
+原文链接：http://debug18.com/posts/calculate-the-sum-of-multiplicative-function/
+
+\subsubsection*{引入}
+
+求 $$\sum\limits_{i = 1}^{n} F(i)$$ 其中 $F(x)$ 是一个积性函数，满足当 $p$ 为质数的时候， $F(p^c)$ 是一个关于 $p$ 的低阶多项式。
+
+\subsubsection*{转化}
+
+我们将 $[1,n]$ 的所有数按照是否有 $>\sqrt{n}$ 的质因子分为两类, 那么显然有
+
+$$
+\begin{aligned}
+\sum_{i = 1}^{n} F(i) & = \sum_{\substack{1 \le i \le n \\ i \text{ have no prime factors } > \sqrt{n} }} F(i) \left( 1 + \sum_{\substack{\sqrt{n} < j \le \lfloor \frac{n}{i} \rfloor \\ j \text{ is prime}}} F(j) \right) \\
+& = \sum_{\substack{1 \le i < \sqrt{n} \\ i \text{ have no prime factors } > \sqrt{n} }} F(i) \left( 1 + \sum_{\substack{\sqrt{n} < j \le \lfloor \frac{n}{i} \rfloor \\ j \text{ is prime}}} F(j) \right) +
+ \sum_{\substack{\sqrt{n} \leq i \le n \\ i \text{ have no prime factors } > \sqrt{n} }} F(i)
+\end{aligned}
+$$
+
+现在需要计算两个东西：
+
+1. 对于每个 $1 \leq i < \sqrt{n}$ ，计算 $$\sum_{\substack{\sqrt{n} < j \le \lfloor \frac{n}{i} \rfloor \\ j \text{ is prime}}} F(j)$$
+
+2. $$\sum_{\substack{\sqrt{n} \le i \le n \\ i \text{ have no prime factors } > \sqrt{n} }} F(i)$$
+
+\subsubsection*{Part 1 (calcG)}
+
+设 $g_k(i,j)$ 表示 $[1,j]$ 中与前 $i$ 个质数互质的数的 $k$ 次幂和. 显然有转移
+$$g_k(i, j) = g_k(i - 1, j) - p_i^k g_k(i - 1, \lfloor \frac{j}{p_i} \rfloor)$$
+
+观察到 $j$ 的取值只有 $\sqrt{n}$ 种, 于是直接暴力计算的复杂度为 $O(\frac{n}{\log n})$ .
+
+如果 $p_i > \lfloor \frac{j}{p_i} \rfloor$ 即 $p_i^2 > j$ 时, $g_k(i,j)$ 的转移变为:
+$$g_k(i, j) = g_k(i - 1, j) - p_i^k$$
+
+我们从小到大枚举 $i$, 对于某个 $j$ 一旦 $p_{i_0}^2 > j$ 便可以不再转移, 之后如果其他的值需要使用到它在 $i_1$ 时的值, 直接用 $g_k(i_0, j) - \sum_{l = i_0}^{i_1 - 1} p_l^k$ 即可. 
+
+此时的复杂度可以简单地用积分近似为 $O(\frac{n\frac{3}{4}}{\log n})$ .
+
+\subsubsection*{Part 2 (calcF)}
+
+设 $f(i,j)$ 表示 $[1,j]$ 中仅由小于 $\sqrt{n}$ 的后 $i$ 个质数组成的数的 $F(x)$ 之和. 此时当 $p_i > j$ 时, 一定有 $f(i,j)=1$. 类似地, 当 $p_i^2>j$ 时转移变为:
+$$f(i, j) = f(i - 1, j) + F(p_i)$$
+
+所以可以从大到小枚举 $i$ , 如果对于某个 $j$ 有 $p_i^2>j$ , 可以不转移, 每次用的时候加入 $[p_i, \min(j, \sqrt{n})]$ 这一段的质数的 $F(p)$ 就可以了.
+
+\subsubsection*{应用1}
+
+求 $\sum\limits_{i=1}^{n} d(i^3)$ ，其中 $d(x)$ 表示 $x$ 的约数个数。 $n \leq 10^{11}$ 。
+
+令 $F(p^c) = 3c + 1$ ，上洲阁筛。
+
+sump[i] 表示小于等于 i 的质数之和
+
+d3[i] 表示 $d(i^3)$
+
+g0[i] 表示 $[1, i]$ 中与不超过 $\sqrt{n}$ 都互质的数的 $0$ 次幂和。
+
+g[i] 表示 $[1, \lfloor \frac{n}{i} \rfloor ]$ 中与不超过 $\sqrt{n}$ 都互质的数的 $0$ 次幂和。
+
+\begin{lstlisting}[language=C++]
+LL N;
+int pbnd;
+int vbnd;
+int l0[SIZE], l[SIZE];
+LL g0[SIZE], g[SIZE], f0[SIZE], f[SIZE];
+
+void calcG()
+{
+	for (int i = 1; i < vbnd; ++i) {
+		g0[i] = i;
+	}
+	for (int i = vbnd - 1; i >= 1; --i) {
+		g[i] = N / i;
+	}
+	for (int i = 0; i < pbnd; ++i) {
+		int p = primes[i];
+		for (int j = 1; j < vbnd && i < l[j]; ++j) {
+			LL y = (N / j) / p;
+			g[j] -= (y < vbnd ? g0[y] - std::max(0, i - l0[y]) : g[N / y] - std::max(0, i - l[N / y]));
+		}
+		for (int j = vbnd - 1; j >= 1 && i < l0[j]; --j) {
+			LL y = j / p;
+			g0[j] -= g0[y] - std::max(0, i - l0[y]);
+		}
+	}
+	for (int i = 1; i < vbnd; ++i) {
+		g[i] -= pbnd - l[i];
+	}
+}
+
+void calcF()
+{
+	std::fill(f0 + 1, f0 + vbnd, 1);
+	std::fill(f + 1, f + vbnd, 1);
+	for (int i = pbnd - 1; i >= 0; --i) {
+		int p = primes[i];
+		for (int j = 1; j < vbnd && i < l[j]; ++j) {
+			LL y = (N / j) / p;
+			for (int z = 1; y; ++z, y /= p) {
+				f[j] += (3 * z + 1) * (y < vbnd ?
+						   f0[y] + 4 * std::max(0, sump[y] - std::max(l0[y], i + 1)) :
+						   f[N / y] + 4 * (pbnd - std::max(l[N / y], i + 1)));
+			}
+		}
+		for (int j = vbnd - 1; j >= 1 && i < l0[j]; --j) {
+			int y = j / p;
+			for (int z = 1; y; ++z, y /= p) {
+				f0[j] += (3 * z + 1) * (f0[y] + 4 * std::max(0, sump[y] - std::max(l0[y], i + 1)));
+			}
+		}
+	}
+	for (int i = 1; i < vbnd; ++i) {
+		f[i] += 4 * (pbnd - l[i]);
+	}
+}
+
+LL calcSumS3()
+{
+	for (vbnd = 1; (LL)vbnd * vbnd <= N; ++vbnd) { }
+	for (pbnd = 0; (LL)primes[pbnd] * primes[pbnd] <= N; ++pbnd) { }
+	for (int i = 1; i < vbnd; ++i) {
+		for (l0[i] = l0[i - 1]; (LL)primes[l0[i]] * primes[l0[i]] <= i; ++l0[i]) { }
+	}
+	l[vbnd] = 0;
+	for (int i = vbnd - 1; i >= 1; --i) {
+		LL x = N / i;
+		for (l[i] = l[i + 1]; (LL)primes[l[i]] * primes[l[i]] <= x; ++l[i]) { }
+	}
+
+	calcG();
+	calcF();
+
+	LL ret = f[1];
+	for (int i = 1; i < vbnd; ++i) {
+		ret += d3[i] * 4 * (g[i] - 1);
+		// 取 c = 1, 3c + 1 = 4. g[i] - 1 的原因是除去 F(1).
+	}
+	return ret;
+}
+\end{lstlisting}
+
+\subsubsection*{应用2 求素数的 $k$ 次方前缀和}
+
+我们只需使用洲阁筛的 Part 1 ，计算出来的就是 $(\sqrt{n}, n]$ 中素书的 $k$ 次幂和。
+
+g0[i] 表示 $[1, i]$ 中与不超过 $\sqrt{n}$ 都互质的数的 $0$ 次幂和。
+
+G0[i] 表示 $[1, \lfloor \frac{n}{i} \rfloor ]$ 中与不超过 $\sqrt{n}$ 都互质的数的 $0$ 次幂和。
+
+g1[i] 表示 $[1, i]$ 中与不超过 $\sqrt{n}$ 都互质的数的 $1$ 次幂和。
+
+G1[i] 表示 $[1, \lfloor \frac{n}{i} \rfloor ]$ 中与不超过 $\sqrt{n}$ 都互质的数的 $1$ 次幂和。
+
+\begin{lstlisting}[language=C++]
+#include <bits/stdc++.h>
+
+#define N 1000000 // sqrt(n)
+#define mod 1000000007
+#define LL long long
+
+using namespace std;
+
+int prime[N], sum1[N], v[N], l0[N], L0[N], pbnd, vbnd, top;
+LL g0[N], G0[N];
+int g1[N], G1[N];
+
+void init() {
+	top = 0;
+	for (int i = 2; i < N; ++i) {
+		if (!v[i]) prime[top++] = i;
+		for (int j = 0; j < top && i * prime[j] < N; ++j) {
+			v[i * prime[j]] = 1;
+			if (i % prime[j] == 0) break;
+		}
+	}
+	sum1[0] = 0;
+	for (int i = 1; i <= top; ++i)
+		sum1[i] = (sum1[i - 1] + prime[i - 1]) % mod;
+}
+
+int S1(long long x) {
+	x %= mod;
+	return x * (x + 1) / 2 % mod;
+}
+
+long long calc(long long n) {
+	for (vbnd = 1; 1ll * vbnd * vbnd <= n; ++vbnd);
+	for (pbnd = 0; pbnd < top && 1ll * prime[pbnd] * prime[pbnd] <= n; ++pbnd);
+	l0[0] = 0;
+	for (int i = 1; i < vbnd; ++i)
+		for (l0[i] = l0[i - 1]; l0[i] < top && 1ll * prime[l0[i]] * prime[l0[i]] <= i; ++l0[i]);
+	L0[vbnd] = 0;
+	for (int i = vbnd - 1; i >= 1; --i) {
+		LL x = n / i;
+		for (L0[i] = L0[i + 1]; L0[i] < top && 1ll * prime[L0[i]] * prime[L0[i]] <= x; ++L0[i]);
+	}
+	for (int i = 1; i < vbnd; ++i) {
+		g0[i] = i;
+		g1[i] = S1(i);
+	}
+	for (int i = vbnd - 1; i >= 1; --i) {
+		G0[i] = n / i;
+		G1[i] = S1(n / i);
+	}
+	for (int i = 0; i < pbnd; ++i) {
+		int p = prime[i];
+		for (int j = 1; j < vbnd && i < L0[j]; ++j) {
+			LL y = (n / j) / p;
+			if (y < vbnd) {
+				if (i - l0[y] < 0) {
+					G0[j] -= g0[y];
+					G1[j] -= 1ll * p * g1[y] % mod;
+					if (G1[j] < 0) G1[j] += mod;
+				} else {
+					G0[j] -= g0[y] - (i - l0[y]);
+					G1[j] -= 1ll * p * (g1[y] % mod - (sum1[i] - sum1[l0[y]]) % mod) % mod;
+					G1[j] = ((G1[j] % mod) + mod) % mod;
+				}
+			} else {
+				if (i - L0[n / y] < 0) {
+					G0[j] -= G0[n / y];
+					G1[j] -= 1ll * p * G1[n / y] % mod;
+					if (G1[j] < 0) G1[j] += mod;
+				} else {
+					G0[j] -= G0[n / y] - (i - L0[n / y]);
+					G1[j] -= 1ll * p * (G1[n / y] % mod - (sum1[i] - sum1[L0[n / y]]) % mod) % mod;
+					G1[j] = ((G1[j] % mod) + mod) % mod;
+				}
+			}
+		}
+		for (int j = vbnd - 1; j >= 1 && i < l0[j]; --j) {
+			LL y = j / p;
+			if (i - l0[y] < 0) {
+				g0[j] -= g0[y];
+				g1[j] -= 1ll * p * g1[y] % mod;
+				if (g1[j] < 0) g1[j] += mod;
+			} else {
+				g0[j] -= g0[y] - (i - l0[y]);
+				g1[j] -= 1ll * p * (g1[y] % mod - (sum1[i] - sum1[l0[y]]) % mod) % mod;
+				g1[j] = ((g1[j] % mod) + mod) % mod;
+			}
+		}
+	}
+	for (int i = 1; i < vbnd; ++i) {
+		G0[i] -= pbnd - L0[i];
+		G1[i] -= (sum1[pbnd] - sum1[L0[i]]) % mod;
+		G1[i] = ((G1[i] % mod) + mod) % mod;
+	}
+	return G0[1] - 1 + pbnd; // 不超过 n 的素数个数
+	return ((G1[1] + mod - 1) % mod + sum1[pbnd]) % mod; // 不超过 n 的素数和
+	return ((g1[j] - 1 + sum1[l0[j]]) % mod + mod) % mod; // 不超过 j 的素数和
+	return ((G1[n / j] - 1 + sum1[pbnd]) % mod + mod) % mod; // 不超过 n / j 的素数和
+}
+
+int main() {
+	init();
+	long long n;
+	while (~scanf("%lld", &n)) {
+		long long ans = calc(n);
+		printf("%lld\n", ans);
+	}
+}
+
+// hdu5901
+\end{lstlisting}
+
 \subsection{FFT}
 
 \subsubsection{普通FFT}
