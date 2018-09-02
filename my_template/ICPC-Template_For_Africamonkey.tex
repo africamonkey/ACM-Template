@@ -683,7 +683,7 @@ struct PAM {
 			len[tot]=len[cur]+2;
 			fail[tot]=next[get_fail(fail[cur])][c];
 			next[cur][c]=tot;
-			num[now] = num[fail[now]] + 1;
+			num[tot] = num[fail[tot]] + 1;
 			answer[n]='1';
 		} else {
 			answer[n]='0';
@@ -1486,17 +1486,32 @@ void dc(int x) {
 
 请注意，一开始必须调用 lct.init(0) ，否则求出的最小值一定会是 0 。
 
+minval 维护的是\emph{链上} val 最小值。
+
+sumval2 维护的是\emph{子树} val2 的和。
+
 \begin{lstlisting}[language=C++]
 struct DTree {
-	int f[N], son[N][2], sz[N], rev[N], val[N], minid[N], minval[N];
+	int f[N], son[N][2], sz[N], rev[N];
+	int val[N], minid[N], minval[N];
+	int val2[N], sumval2[N]; // 记得开 long long 。注意两个都要开 long long ，因为 val2 还包含了虚儿子的子树和。
 	int tot;
 	stack<int> s;
 	void init(int i) {
 		tot = max(tot, i);
 		son[i][0] = son[i][1] = 0;
-		f[i] = sz[i] = rev[i] = 0;
-		val[i] = minval[i] = inf;
-		minid[i] = i;
+		f[i] = rev[i] = 0;
+		if (i == 0) {
+			sz[i] = 0;
+			val[i] = minval[i] = inf;
+			minid[i] = i;
+			val2[i] = sumval2[i] = 0;
+		} else {
+			sz[i] = 1;
+			val[i] = minval[i] = VAL;
+			minid[i] = i;
+			val2[i] = sumval2[i] = VAL2;
+		}
 	}
 	bool isroot(int x) {
 		return !f[x] || (son[f[x]][0] != x && son[f[x]][1] != x);
@@ -1517,6 +1532,7 @@ struct DTree {
 		minval[x] = val[x]; minid[x] = x;
 		if (minval[son[x][0]] < minval[x]) minval[x] = minval[son[x][0]], minid[x] = minid[son[x][0]];
 		if (minval[son[x][1]] < minval[x]) minval[x] = minval[son[x][1]], minid[x] = minid[son[x][1]];
+		sumval2[x] = sumval2[son[x][0]] + sumval2[son[x][1]] + val2[x];
 	}
 	void rotate(int x) {
 		int y = f[x], w = son[y][1] == x;
@@ -1550,7 +1566,9 @@ struct DTree {
 	void access(int x) {
 		for (int y = 0; x; y = x, x = f[x]) {
 			splay(x);
+			val2[x] += sumval2[son[x][1]];
 			son[x][1] = y;
+			val2[x] -= sumval2[son[x][1]];
 			up(x);
 		}
 	}
@@ -1569,6 +1587,13 @@ struct DTree {
 		makeroot(x);
 		f[x] = y;
 		access(x);
+		// 如果需要维护子树和 val2, sumval2 ，这样是不够的。因为增加了虚边，所以需要修改 val2 值。将上面的三行代码替换为以下代码：
+		// makeroot(x);
+		// makeroot(y);
+		// f[x] = y;
+		// val2[y] += sumval2[x];
+		// up(y);
+		// access(x);
 	}
 	void cutf(int x) { // 它和父亲的边
 		access(x);
@@ -1600,6 +1625,11 @@ struct DTree {
 		val[tot] = minval[tot] = w;
 		link(x, tot);
 		link(y, tot);
+	}
+	int getsumval2(int x, int y) { // 令 x 为根，求 y 子树的 val2 的和
+		makeroot(x);
+		access(y);
+		return val2[y];
 	}
 } lct;
 \end{lstlisting}
