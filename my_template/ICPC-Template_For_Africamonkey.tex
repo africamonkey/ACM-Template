@@ -4930,6 +4930,50 @@ struct poly {
 };
 \end{lstlisting}
 
+\subsection{求数列中每个位置到前面任意位置的 gcd}
+
+maxgcd[i] 表示从第 $i$ 个位置往前出发，每个 $gcd(a_j, \cdots, a_i)$ 值最靠后的位置（first 表示 gcd 值， second 表示位置）。
+
+例如：
+
+\begin{lstlisting}
+输入数据：
+5
+2 4 2 3 3
+
+maxgcd[1] = {{first = 2, second = 1}}
+maxgcd[2] = {{first = 2, second = 1}, {first = 4, second = 2}}
+maxgcd[3] = {{first = 2, second = 3}}
+maxgcd[4] = {{first = 1, second = 3}, {first = 3, second = 4}}
+maxgcd[5] = {{first = 1, second = 3}, {first = 3, second = 5}}
+
+\end{lstlisting}
+
+\begin{lstlisting}[language=C++]
+int n, a[N];
+vector< pair<int, int> > maxgcd[N];
+
+void insert(int x, int val, int mx) {
+	for (int i = 0; i < (int)maxgcd[x].size(); ++i)
+		if (maxgcd[x][i].first == val) {
+			maxgcd[x][i].second = max(maxgcd[x][i].second, mx);
+			return;
+		}
+	maxgcd[x].push_back( make_pair(val, mx) );
+}
+
+int main() {
+	scanf("%d", &n);
+	for (int i = 1; i <= n; ++i) scanf("%d", &a[i]);
+	for (int i = 0; i <= n + 1; ++i) maxgcd[i].clear();
+	for (int i = 1; i <= n; ++i) {
+		for (int j = 0; j < (int)maxgcd[i - 1].size(); ++j)
+			insert(i, __gcd(maxgcd[i-1][j].first, a[i]), maxgcd[i-1][j].second);
+		insert(i, a[i], i);
+	}
+}
+\end{lstlisting}
+
 \subsection{高精度计算}
 \begin{lstlisting}[language=C++]
 #include<algorithm>
