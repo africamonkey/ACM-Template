@@ -1634,6 +1634,72 @@ struct DTree {
 } lct;
 \end{lstlisting}
 
+
+\subsection{树形DP}
+
+适用于每个点都要求 dp 值的题目。
+
+示例代码的状态转移方程：
+$$f(x) = \sum\limits_{y = son(x)}f(y) + (\sum\limits_{y=son(x)}sz(y))^2 - (\sum\limits_{y=son(x)}sz(y)^2) + (\sum\limits_{y=son(x)}sz(y))$$
+
+\begin{lstlisting}[language=C++]
+#include <bits/stdc++.h>
+
+#define N 1000020
+#define LL long long
+
+using namespace std;
+
+int n;
+LL usz[N], uf[N];
+LL dsz[N], df[N];
+LL dp[N];
+vector<int> g[N];
+
+void dfs1(int x, int root) {
+	if (root) g[x].erase(find(g[x].begin(), g[x].end(), root));
+	LL s1 = 0, s2 = 0;
+	LL sf = 0;
+	uf[x] = 0;
+	for (auto y : g[x]) {
+		dfs1(y, x);
+		s1 += usz[y];
+		s2 += 1ll * usz[y] * usz[y];
+		sf += uf[y];
+	}
+	usz[x] = s1 + 1;
+	uf[x] += sf + (s1 * s1 - s2) + s1;
+}
+
+void dfs2(int x, int root) {
+	LL s1 = dsz[x], s2 = dsz[x] * dsz[x];
+   	LL sf = df[x];
+	for (auto y : g[x]) {
+		s1 += usz[y];
+		s2 += usz[y] * usz[y];
+		sf += uf[y];
+	}
+	for (auto y : g[x]) {
+		dsz[y] = s1 + 1 - usz[y];
+		df[y] = (sf - uf[y]) + (s1 - usz[y]) * (s1 - usz[y]) - (s2 - usz[y] * usz[y]) + (s1 - usz[y]);
+		dfs2(y, x);
+	}
+	dp[x] = min(ans, sf + s1 * s1 - s2 + s1);
+}
+
+int main() {
+	scanf("%d", &n);
+	for (int i = 1; i < n; ++i) {
+		int x, y;
+		scanf("%d%d", &x, &y);
+		g[x].push_back(y);
+		g[y].push_back(x);
+	}
+	dfs1(1, 0);
+	dfs2(1, 0);
+}
+\end{lstlisting}
+
 \subsection{求子树的直径}
 
 树形 DP 。
