@@ -4537,36 +4537,33 @@ int convexHull(point p[],int n,point ch[]) {
 
 \subsection{半平面交}
 
-输入 vec1 表示所有的半平面 y >= kx + b 的参数 k 和 b 。
-
-输出 vec2 表示下凸壳（对应 y >= kx + b）或者上凸壳（对应 y <= kx + b）。
+给定一些直线，求这些直线的构成的下凸壳（开口向上）。
 
 \begin{lstlisting}[language=C++]
-vector< pair< LL, LL > > vec1, vec2;
-
-LL getval(int t, LL x) {
-	return vec2[t].first * x + vec2[t].second;
-}
-
-void solve() {
-	// vec1 stores pair< k, b > for all plane y >=(or <=) kx + b
-	sort(vec1.begin(), vec1.end());
-	// reverse(vec1.begin(), vec1.end()); // if y <= kx + b
-	for (int i = 0; i < vec1.size(); ++i) {
-		while (vec2.size() >= 2) {
-			LL k1 = vec2[vec2.size() - 2].first;
-			LL b1 = vec2[vec2.size() - 2].second;
-			LL k2 = vec2[vec2.size() - 1].first;
-			LL b2 = vec2[vec2.size() - 1].second;
-			LL k3 = vec1[i].first;
-			LL b3 = vec1[i].second;
-			if ((b2 - b1) * (k2 - k3) >= (b3 - b2) * (k1 - k2))
-				vec2.pop_back();
-			else
-				break;
-		}
-		vec2.push_back(vec1[i]);
+struct line {
+	int k, b;
+	line() : k(0), b(0) {}
+	line(int k, int b) : k(k), b(b) {}
+	bool operator < (const line &rhs) const {
+		if (k != rhs.k) return k < rhs.k;
+		return b < rhs.b;
 	}
+	long long val(int x) {
+		return 1ll * k * x + b;
+	}
+};
+
+void insert(vector<line> &a, const line &b) { // 按k从小到大的顺序，开口向上
+	if (a.size() && a.back().k == b.k) a.pop_back();
+	while (a.size() >= 2) {
+		int k = a.size();
+		if (1ll * (a[k - 1].k - b.k) * (a[k - 1].b - a[k - 2].b)
+			>= 1ll * (a[k - 1].b - b.b) * (a[k - 1].k - a[k - 2].k))
+				a.pop_back();
+		else
+			break;
+	}
+	a.push_back(b);
 }
 \end{lstlisting}
 
