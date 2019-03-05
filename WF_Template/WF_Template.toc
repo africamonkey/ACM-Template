@@ -1,0 +1,56 @@
+\contentsline {section}{\numberline {1}莫队算法}{3}
+\contentsline {subsection}{\numberline {1.1}普通莫队}{3}
+\contentsline {subsection}{\numberline {1.2}树上莫队}{3}
+\contentsline {section}{\numberline {2}字符串}{4}
+\contentsline {subsection}{\numberline {2.1}哈希}{4}
+\contentsline {subsection}{\numberline {2.2}KMP}{4}
+\contentsline {subsection}{\numberline {2.3}扩展KMP}{4}
+\contentsline {subsection}{\numberline {2.4}Manacher}{5}
+\contentsline {subsection}{\numberline {2.5}AC自动机}{6}
+\contentsline {subsection}{\numberline {2.6}后缀数组}{6}
+\contentsline {subsection}{\numberline {2.7}后缀自动机}{7}
+\contentsline {subsection}{\numberline {2.8}回文树}{8}
+\contentsline {section}{\numberline {3}数据结构}{9}
+\contentsline {subsection}{\numberline {3.1}ST表}{9}
+\contentsline {subsection}{\numberline {3.2}K-D Tree}{9}
+\contentsline {subsection}{\numberline {3.3}左偏树}{11}
+\contentsline {subsection}{\numberline {3.4}线段树小技巧}{11}
+\contentsline {subsection}{\numberline {3.5}Splay}{12}
+\contentsline {subsection}{\numberline {3.6}可持久化Treap}{13}
+\contentsline {subsection}{\numberline {3.7}可持久化并查集}{14}
+\contentsline {section}{\numberline {4}树}{15}
+\contentsline {subsection}{\numberline {4.1}点分治}{15}
+\contentsline {subsection}{\numberline {4.2}Link Cut Tree}{15}
+\contentsline {subsection}{\numberline {4.3}虚树}{17}
+\contentsline {section}{\numberline {5}图}{17}
+\contentsline {subsection}{\numberline {5.1}Tarjan 有向图强联通分量}{17}
+\contentsline {subsection}{\numberline {5.2}Tarjan 双联通分量}{18}
+\contentsline {subsection}{\numberline {5.3}2-SAT}{19}
+\contentsline {subsection}{\numberline {5.4}网络流}{19}
+\contentsline {subsubsection}{\numberline {5.4.1}最大流}{19}
+\contentsline {subsubsection}{\numberline {5.4.2}上下界有源汇网络流}{20}
+\contentsline {subsubsection}{\numberline {5.4.3}费用流}{20}
+\contentsline {section}{\numberline {6}数学}{21}
+\contentsline {subsection}{\numberline {6.1}扩展欧几里得解同余方程}{21}
+\contentsline {subsection}{\numberline {6.2}同余方程组}{21}
+\contentsline {subsection}{\numberline {6.3}FFT}{22}
+\contentsline {subsubsection}{\numberline {6.3.1}普通FFT}{22}
+\contentsline {subsection}{\numberline {6.4}求原根}{22}
+\contentsline {subsection}{\numberline {6.5}NTT}{23}
+\contentsline {subsection}{\numberline {6.6}线性基}{23}
+\contentsline {subsection}{\numberline {6.7}高斯消元法实数方程}{24}
+\contentsline {subsection}{\numberline {6.8}高斯消元法模方程}{24}
+\contentsline {subsection}{\numberline {6.9}蔡勒公式}{25}
+\contentsline {subsection}{\numberline {6.10}皮克定理}{25}
+\contentsline {section}{\numberline {7}计算几何}{25}
+\contentsline {subsection}{\numberline {7.1}凸包}{25}
+\contentsline {subsection}{\numberline {7.2}定义}{26}
+\contentsline {subsection}{\numberline {7.3}半平面交}{28}
+\contentsline {subsection}{\numberline {7.4}圆与多边形交集}{28}
+\contentsline {subsection}{\numberline {7.5}三角形面积并}{29}
+\contentsline {subsection}{\numberline {7.6}K圆并}{30}
+\contentsline {subsection}{\numberline {7.7}三维计算几何}{32}
+\contentsline {section}{\numberline {8}黑科技和杂项}{32}
+\contentsline {subsection}{\numberline {8.1}读入优化}{32}
+\contentsline {section}{\numberline {9}Vim}{33}
+\contentsline {section}{\numberline {10}Java}{33}
