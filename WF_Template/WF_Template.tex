@@ -1,6 +1,6 @@
 % XeLaTeX
 
-\documentclass{article}
+\documentclass[landscape,a4paper]{article}
 \usepackage{ctex}
 \usepackage{xypic}
 \usepackage{amsfonts,amssymb}
@@ -8,17 +8,28 @@
 \usepackage{geometry}
 \usepackage{graphicx}
 \usepackage{listings}
-\usepackage{lipsum}
 \usepackage{courier}
-\usepackage{fancyvrb}
 \usepackage{etoolbox}
-\usepackage{longtable}
 \usepackage{amsmath}
 \usepackage{pifont}
+% \usepackage{fancyhdr}
+\usepackage{titlesec}
 
 
-\linespread{1.2}
-\geometry{left=3cm,right=2.5cm,top=2.5cm,bottom=2.5cm}
+%\pagestyle{fancy}
+%\fancyhead[L]{Zhongshan (Sun Yat-sen) University}
+%\fancyhead[R]{\thepage}
+
+
+\newpagestyle{main}{            
+    \sethead{Zhongshan (Sun Yat-sen) University}{}{\thepage}
+    \headrule
+}
+\pagestyle{main}
+
+
+% \linespread{1.2}
+\geometry{left=2cm,right=1cm,top=1.5cm,bottom=0.5cm}
 
 \makeatletter
 \patchcmd{\FV@SetupFont}
@@ -27,67 +38,796 @@
   {}{}
 \makeatother
 
-\lstset{basicstyle=\small\fontencoding{T1}\ttfamily,breaklines=true}
+\small
+
+\lstset{basicstyle=\footnotesize\fontencoding{T1}\ttfamily,breaklines=true}
 \lstset{numbers=left,frame=shadowbox,tabsize=4}
 %\lstset{extendedchars=false}
 \begin{document}
 
+\twocolumn
+\setlength{\columnsep}{1.5cm}
+
 \title{ICPC World Finals 2019 Templates}
 \author {SYSU\_Balloon}
 \maketitle
+\thispagestyle{main}
 \tableofcontents
-\newpage
-\section{莫队算法}
-\subsection{普通莫队}
 
-分块块数为 $\sqrt{n}$ 是最优的。记每次进行 add() 操作的复杂度为 $O(A)$ ，del() 操作的复杂度为 $O(D)$ ，查询答案 answer() 的复杂度为 $O(S)$ 。则总复杂度为 $O(n \sqrt{n} (A + D) + qS)$ 。 $S$ 可以大一点，但必须保证 $A, D$ 尽可能小。
+\section{数学}
 
+\subsection{Miller Rabin}
 \begin{lstlisting}[language=C++]
-struct Q { int l, r, sqrtl, id; } q[N];
-int n, m, v[N], ans[N], nowans;
-bool cmp(const Q &a, const Q &b) { if (a.sqrtl != b.sqrtl) return a.sqrtl < b.sqrtl; return a.r < b.r; }
-void change(int x) { if (!v[x]) add(x); else del(x); v[x] ^= 1; }
+// 2,7,61 : < 4759123141
+// 2,3,5,7,11,13,17 : < 341550071728320
+// 2,3,7,61,24251 : < 10^16 only 46856248255981
 
-for (int i=1;i<=m;i++) q[i].sqrtl = q[i].l / sqrt(n), q[i].id = i;
-sort(q+1, q+m+1, cmp);
-int L=1, R=0;
-memset(v, 0, sizeof(v));
-for (int i=1;i<=m;i++) {
-	while (L<q[i].l) change(L++);
-	while (L>q[i].l) change(--L);
-	while (R<q[i].r) change(++R);
-	while (R>q[i].r) change(R--);
-	ans[q[i].id] = answer();
+//BZOJ-3667
+#include<cstdio>
+#include<cstdlib>
+typedef long long ll;
+ll _,n,x,ans,st;
+ll gcd(ll x,ll y){return y==0?x:gcd(y,x%y);}
+#define abs(x) (x>0?x:-(x))
+#define cmax(a,b) (a<b?a=b:1)
+ll mul(ll a,ll b,ll p){
+    ll tmp=(a*b-(ll)((long double)a/p*b+1e-7)*p);
+    return tmp<0?tmp+p:tmp;
+}
+ll power(ll t,ll k,ll p){
+    ll f=1;
+    for(;k;k>>=1,t=mul(t,t,p))if(k&1)f=mul(f,t,p);
+    return f;
+}
+bool check(ll a,int k,ll p,ll q){
+    ll t=power(a,q,p);
+    if(t==1||t==p-1)return 1;
+    for(;k--;){
+        t=mul(t,t,p);
+        if(t==p-1)return 1;
+    }
+    return 0;
+}
+bool mr(ll p){
+    if(p<=1)return 0;
+    if(p==2)return 1;
+    if(~p&1)return 0;
+    ll q=p-1;int i,k=0;
+    while(~q&1)q>>=1,k++;
+    for(i=0;i<5;i++)
+    if(!check(rand()%(p-1)+1,k,p,q))return 0;
+    return 1;
+}
+ll rho(ll n,ll c){
+    ll x=rand()%n,y=x,p=1;
+    while(p==1)
+        x=(mul(x,x,n)+c)%n,
+        y=(mul(y,y,n)+c)%n,
+        y=(mul(y,y,n)+c)%n,
+        p=gcd(n,abs(x-y));
+    return p;
+}
+void solve(ll n){
+    if(n==1)return;
+    if(mr(n)){cmax(ans,n);return;}
+    if(~n&1)cmax(ans,2),solve(n>>1);
+    else{
+        ll t=n;
+        while(t==n)t=rho(n,rand()%(n-1)+1);
+        solve(t),solve(n/t);
+    }
+}
+int main(){
+    for(srand(1626),scanf("%lld",&_);_--;){
+        scanf("%lld",&x),ans=0;solve(x);
+        if(ans==x)puts("Prime");
+        else printf("%lld\n",ans);
+    }
 }
 \end{lstlisting}
-\subsection{树上莫队}
 
+\subsection{同余方程}
 \begin{lstlisting}[language=C++]
-struct Query { int l, r, id, l_group; } query[N];
-int v[N], ans[N];
-bool cmp(const Query &a, const Query &b) { if (a.l_group != b.l_group) return a.l_group < b.l_group; return dfn[a.r] < dfn[b.r]; }
-void upd(int x) { if (!v[x]) add(x); else del(x); v[x] ^= 1; }
-void go(int &u, int taru, int v) {
-	int lca0 = lca(u, taru);
-	int lca1 = lca(u, v); upd(lca1);
-	int lca2 = lca(taru, v); upd(lca2);
-	for (int x=u; x!=lca0; x=father[x]) upd(x);
-	for (int x=taru; x!=lca0; x=father[x]) upd(x);
-	u = taru;
+void gcd(LL a, LL b, LL &d, LL &x, LL &y){
+	if (!b){ d=a; x=1; y=0; return; }
+	gcd(b,a%b,d,y,x); y-=x*(a/b);
 }
-
-for (int i=1;i<=m;i++) {
-	if (dfn[query[i].l] > dfn[query[i].r]) swap(query[i].l, query[i].r);
-	query[i].id = i; query[i].l_group = dfn[query[i].l] / sqrt(n);
+IL void sim(LL &a, LL n) { a%=n; if (a<0) a+=n; }
+IL LL solve(LL a, LL b, LL n){  // a*x==b (mod n)
+	sim(a,n); sim(b,n);  // optional
+	static LL d,x,y;
+	gcd(a,n,d,x,y);
+	if (b%d) return -1;
+	b/=d; n/=d;
+	if (x<0) x+=n;
+	return b*x%n;
 }
-sort(query+1, query+m+1, cmp);
-int L=1,R=1; upd(1);
-for (int i=1;i<=m;i++) {
-	go(L,query[i].l,R);
-	go(R,query[i].r,L);
-	ans[query[i].id] = answer();
+// x==a1 (mod n1); x==a2 (mod n2);
+// passing gcd in solve can reduce time 
+void merge(LL a1, LL n1, LL a2, LL n2, LL &x, LL &n){
+	n=lcm(n1,n2);
+	LL k=solve(n1,a2-a1,n2);
+	if (k==-1) { x=-1; return; }
+	sim(x=n1*k+a1,n);
+}
+// getinv , gcd(a,n) must be 1
+IL LL getinv(LL a, LL n){
+	static LL d,x,y;
+	gcd(a,n,d,x,y);
+	// if (d!=1) return -1;
+	return x<0?x+n:x;
 }
 \end{lstlisting}
+
+\subsection{线性筛法}
+\begin{lstlisting}[language=C++]
+const int N=100050;
+int b[N],a[N],cnt,mx[N],phi[N],mu[N];
+
+void getprime(int n=100000){
+	memset(b+2,1,sizeof(b[0])*(n-1));
+	mu[1]=1;
+	ft(i,2,n){
+		if (b[i]){
+			a[mx[i]=++cnt]=i;
+			phi[i]=i-1; mu[i]=-1;
+		}
+		ft(j,1,mx[i]){
+			int k=i*a[j];
+			if (k>n) break;
+			b[k]=0; mx[k]=j;
+			phi[k]= phi[i]*(a[j]-(j!=mx[i]));
+			mu[k]= j==mx[i] ? 0 : -mu[i];
+		}
+	}
+}
+\end{lstlisting}
+
+\subsection{离散对数}
+\begin{lstlisting}[language=C++]
+// BSGS , a^x==b (mod n) , n is a prime
+LL bsgs(LL a, LL b, LL n){
+	int m=sqrt(n+0.5);
+	LL p=power(a,m,n);
+	LL v=getinv(p,n);
+	static hash_map x;
+	x.clear();
+	LL e=1; x[e]=0;
+	ft(i,1,m){
+		e=e*a%n;
+		if (!x.count(e)) x[e]=i;
+	}
+	for(LL i=0;i<n;i+=m){
+		if (x.count(b)) return i+x[b];
+		b=b*v%n;
+	}
+	return -1;
+}
+
+//BSGS
+//y^x==z (mod p) ->x=?
+scanf("%d%d%d",&y,&z,&p),y%=p,z%=p;j=z;
+if(y==0){puts("Cannot find x");continue;}
+for(k=s=1;k*k<=p;k++);
+std::map<int,int>hash;flag=0;
+for(int i=0;i<k;i++,s=1LL*s*y%p,j=1LL*j*y%p)hash[j]=i;
+for(int i=1,j=s;i<=k&&!flag;i++,j=1LL*j*s%p)
+if(hash.count(j))ans=i*k-hash[j],flag=1;
+if(flag==0)puts("Cannot find x");
+else printf("%d\n",ans);
+
+//exBSGS
+int bsgs(int a,ll b,int p){
+    if(a%=p,b%=p,b==1)return 0;
+    ll t=1;int f,g,delta=0,m=sqrt(p)+1,i;
+    for(g=gcd(a,p);g!=1;g=gcd(a,p)){
+        if(b%g)return -1;
+        b/=g,p/=g,t=t*(a/g)%p,delta++;
+        if(b==t)return delta;
+    }
+    std::map<int,int>hash;
+    for(i=0;i<m;i++,b=b*a%p)hash[b]=i;
+    for(i=1,f=power(a,m);i<=m+1;i++)
+    if(t=t*f%p,hash.count(t))return i*m-hash[t]+delta;
+    return -1;
+}
+\end{lstlisting}
+
+\subsection{Lucas}
+\begin{lstlisting}[language=C++]
+void init_Lucas(){
+	fac[0]=1; ft(i,1,P-1) fac[i]=fac[i-1]*i%P;
+	inv[1]=1; ft(i,2,P-1) inv[i]=(P-P/i)*inv[P%i]%P;
+	inv[0]=1; ft(i,1,P-1) inv[i]=inv[i-1]*inv[i]%P;
+}
+IL LL C(int n, int m){
+	LL ans=1;
+	while (n||m){
+		int a=n%P, b=m%P;
+		if (a<b) return 0;
+		n/=P; m/=P;
+		ans= ans *fac[a]%P *inv[b]%P *inv[a-b]%P;
+	}
+	return ans;
+}
+\end{lstlisting}
+
+\subsection{高斯消元}
+\begin{lstlisting}[language=C++]
+int i=1, j=1;
+while (i<=n && j<=m){
+	int k=i;
+	while (k<=n && a[k][j].x==0) k++;
+	if (k>n) { j++; continue; }
+	if (k!=i) ft(t,j,m) swap(a[i][t],a[k][t]);
+	
+	ft(p,j+1,m) a[i][p]=a[i][p]/a[i][j];
+	a[i][j]=(R){1,1};
+	
+	ft(t,1,n) if (t!=i && a[t][j].x){
+		ft(p,j+1,m) a[t][p]=a[t][p]-a[i][p]*a[t][j];
+		a[t][j]=(R){0,1};
+	}
+	i++; j++;
+}
+
+// xor equations
+int n,m;
+bitset<N> a[N];
+bool solve(){
+	int i=1, j=1;	
+	while (i<=n && j<=m){
+		int k=i;
+		while (k<=n && !a[k][j]) k++;
+		if (k>n) { j++; continue; }
+		if (j==m) return false;  // no solution
+		if (k!=i) swap(a[i],a[k]);
+		ft(t,1,n) if (t!=i && a[t][j]) a[t]^=a[i];
+		i++; j++;
+	}
+	return true; // have solution (but may have 0==0)
+}
+// no solution : have 1==0
+// have solution : no 1==0 (but may have 0==0)
+// have solution can be dependent or independent
+\end{lstlisting}
+
+\subsection{瀚之的莫比乌斯}
+\begin{lstlisting}[language=C++]
+void getprime(int n){
+	miu[1]=pre[1]=b[1]=1;
+	for(int i=2;i<=n;i++){
+		if(!b[i]) p[mx[i]=++cnt]=i, miu[i]=-1;
+		for(int j=1;j<=mx[i];j++){
+			int k=i*p[j]; if(k>n) break;
+			b[k]=1; mx[k]=j;
+			if(j==mx[i]) miu[k]=0;
+				else miu[k]=miu[i]*miu[p[j]];
+		}
+		pre[i]=pre[i-1]+i*miu[i];
+	}
+}
+ll f(int n,int m){return 1ll*n*m*(n+m+2)/2;} 
+ll calc(int n,int m){ // sigma{ i+j | i<=n,j<=m,gcd(i,j)==1 }
+	if(n>m) swap(n,m); ll ans=0;
+	for(int i=1,j=0,k=0;i<=n;i=min(j,k)+1)
+		ans+=(pre[min(j=n/(n/i),k=m/(m/i))]-pre[i-1])*f(n/i,m/i);
+	return ans;
+}
+\end{lstlisting}
+
+\subsection{FFT|NTT}
+
+\begin{lstlisting}[language=C++]
+typedef complex<double> comp;
+comp A[N], B[N];
+int rev[N], m, len;
+inline void init(int n) {
+	for (m = 1, len = 0; m < n + n; m <<= 1 , len ++);
+	for (int i = 0; i < m; ++i) rev[i]=(rev[i>>1]>>1) | ((i&1)<<(len-1));
+	for (int i = 0; i < m; ++i) A[i] = B[i] = comp(0, 0);
+}
+inline void dft(comp *a, int v) {
+	for (int i = 0; i < m; ++i) if (i < rev[i]) swap(a[i] , a[rev[i]]);
+	for (int s = 2; s <= m; s <<= 1) {
+		comp g(cos(2 * pi / s) , v * sin(2 * pi / s));
+		// NTT: int g = power(gg, (mod - 1) / s);
+		// NTT: if (v == -1) g = power(g, mod - 2);
+		for (int k = 0; k < m; k += s) {
+			comp w(1, 0);
+			// NTT: int w = 1;
+			for (int j = 0; j < s / 2; ++j) {
+				comp &u = a[k + j + s / 2], &v = a[k + j];
+				comp t = w * u; u = v - t; v = v + t; w = w * g;
+				// NTT: be aware of "+-*"
+			}
+		}
+	}
+	if (v == -1) for (int i = 0; i < m; ++i) a[i] /= m;
+	// NTT: be aware of "/"
+}
+\end{lstlisting}
+
+\subsection{求原根}
+\begin{lstlisting}[language=C++]
+vector <LL> a;
+bool g_test(LL g, LL p) { for (LL i = 0; i < a.size(); ++i) if (pow_mod(g, (p-1)/a[i], p) == 1) return 0; return 1; }
+LL p_root(LL p) {
+	LL tmp = p - 1;
+	for (LL i = 2; i <= tmp / i; ++i)
+		if (tmp % i == 0) { a.push_back(i); while (tmp % i == 0) tmp /= i; }
+	if (tmp != 1) a.push_back(tmp);
+	LL g = 1; while (1) { if (g_test(g, p)) return g; ++g; }
+}
+\end{lstlisting}
+
+\subsection{线性基}
+
+\begin{lstlisting}[language=C++]
+#define B 30
+const int allset=(1<<B)-1;
+struct LB {
+	int mat[B],cnt;
+	multiset<int> st;
+	LB(){}
+	void clear() { st.clear(); cnt=0; memset(mat,0,sizeof(mat)); }
+	void add(int x) {
+		for (int i=B-1;i>=0;i--) if ((x>>i)&1) {
+		    if (mat[i]) x^=mat[i]; 
+		    else { cnt++; mat[i]=x; break; }
+		}
+	}
+	void fix() {
+		for (int i=0;i<B;i++) if (mat[i])
+		    for (int j=i+1;j<B;j++) if ((mat[j]>>i)&1) mat[j]^=mat[i];
+	}
+	void preset() { //正确性待定
+		fix(); for (int i=0;i<B;i++) if (mat[i]) st.insert(mat[i]);
+	}
+	int kth(int k) { //正确性待定
+		int i=0,ans=0; if (k<=0||k>(1<<cnt)-1) return 0;//无解
+		for (multiset<int>::iterator it=st.begin();it!=st.end();it++,i++)
+			if ((k>>i)&1) ans^=(*it);
+		return ans;
+	}
+	int getmax() {
+		fix(); int ans=0;
+		for (int i=B-1;i>=0;i--) if (ans^mat[i]>ans) ans^=mat[i];
+		return ans;
+	}
+} tree[N*10];
+\end{lstlisting}
+
+\subsection{高斯消元法实数方程}
+\begin{lstlisting}[language=C++]
+void Gauss(int n,int m) {
+	int i,j,k,t;
+	double mul;
+	for (i=j=1;i<=n&&j<=m;i++,j++) {
+		for (k=i+1;k<=n;k++)
+			if (abs(mat[k][j])>abs(mat[i][j]))
+				for (t=1;t<=m+1;t++) swap(mat[i][t],mat[k][t]);
+		if (abs(mat[i][j])<eps) { i--; continue; }
+		for (k=i+1;k<=n;k++) {
+			mul=mat[k][j]/mat[i][j];
+			for (t=1;t<=m+1;t++) mat[k][t]-=mat[i][t]*mul;
+		}
+	}
+	for (i=n;i>=1;i--) { //solved表示那个变量是否确定
+		for (j=1;j<=m;j++) if (abs(mat[i][j])>eps) break;
+		if  (j>m) continue; solved[j]=true; ans[j]=mat[i][m+1];
+		for (k=j+1;k<=m;k++)
+			if (abs(mat[i][k])>eps&&!solved[k]) solved[j]=false;
+		for (k=j+1;k<=m;k++) ans[j]-=ans[k]*mat[i][k];
+		ans[j]/=mat[i][j];
+	}
+}
+\end{lstlisting}
+\subsection{高斯消元法模方程}
+\begin{lstlisting}
+void Gauss(LL n,LL m) {
+	LL i,j,k,t,lcm,muli,mulk;
+	for (i=j=1;i<=n&&j<=m;i++,j++) {
+		for (k=i;k<=n;k++) if (mat[k][j]) {
+			for (t=1;t<=m+1;t++) swap(mat[k][t],mat[i][t]);
+			break;
+		}
+		if (mat[i][j]==0) { i--; continue; }
+		for (k=i+1;k<=n;k++) if (mat[k][j]) {
+			lcm=mat[k][j]*mat[i][j]/__gcd(mat[k][j],mat[i][j]);
+			muli=lcm/mat[i][j]; mulk=lcm/mat[k][j];
+			for (t=1;t<=m+1;t++) {
+				mat[k][t]=mat[k][t]*mulk-mat[i][t]*muli;
+				mat[k][t]=(mat[k][t]%mod+mod)%mod;
+			}
+		}
+	}
+	for (i=n;i>=1;i--) {
+		for (j=1;j<=m;j++) if (mat[i][j]) break;
+		if  (j>m) continue; ans[j]=mat[i][m+1];
+		for (k=j+1;k<=m;k++) ans[j]-=ans[k]*mat[i][k];
+		ans[j]=(ans[j]*power(mat[i][j],mod-2)%mod+mod)%mod;
+	}
+}
+\end{lstlisting}
+
+\subsection{蔡勒公式}
+
+$$w = (\lfloor \frac{c}{4} \rfloor - 2c + y + \lfloor \frac{y}{4} \rfloor + \lfloor \frac{13(m+1)}{5} \rfloor + d - 1) \text{ mod } 7$$
+
+\ding{172} $w$ ： 0星期日，1星期一，$\cdots$，6星期六；
+\ding{173} $c$ ： 年份前两位数；
+\ding{174} $y$ ： 年份后两位数；
+\ding{175} $m$ ： 月（ $3 \leq m \leq 14$ ，即在蔡勒公式中，1、2月要看作上一年的13、14月来计算 ）；
+\ding{176} $d$ ： 日。
+
+\subsection{皮克定理}
+
+给定顶点坐标均是整点（或正方形格点）的简单多边形（凸多边形），皮克定理说明了其面积 $S$ 和内部格点数目 $n$ 、边上格点数目 $s$ 的关系： $S = n + \frac{s}{2} + 1$ 。
+
+
+\section{计算几何}
+
+\subsection{凸包}
+\begin{lstlisting}[language=C++]
+bool cmp(const Point &a,const Point &b) {
+	return F(a.x-b.x)<0||F(a.x-b.x)==0&&a.y<b.y; }
+void Gram(int id[], int n) {
+	int i,mid; sort(id,id+n,cmp); tp=0; //凸包从x最小的点出发，逆时针方向
+     for (i=0;i<n;i++) {
+         for (;tp>=2&&Cross(p[sk[tp-1]]-p[sk[tp-2]],p[id[i]]-p[sk[tp-1]])<=0;tp--); 
+		//有重点必须用<=不留共线点，无重点用<=不留共线点，无重点用<留共线点
+         sk[tp++]=id[i];
+     }
+     mid=tp;
+     for (i=n-2;i>=0;i--) {
+         for (;tp>mid&&Cross(p[sk[tp-1]]-p[sk[tp-2]],p[id[i]]-p[sk[tp-1]])<=0;tp--); 
+		//有重点必须用<=不留共线点，无重点用<=不留共线点，无重点用<留共线点
+         sk[tp++]=id[i];
+     }
+     if  (n>1) tp--;
+}
+\end{lstlisting}
+
+\subsection{定义}
+\begin{lstlisting}[language=C++]
+struct Point { double x,y; Point(){} Point(double _x,double _y):x(_x),y(_y){} };
+struct Seg { Point a,b; Seg(){} Seg(Point _a,Point _b):a(_a),b(_b){} };
+struct Circle { double x,y,r;
+	Point pt() { return Point(x,y); }
+	double Area() { return pi*r*r; }
+};
+Point operator +(const Point &a,const Point &b);
+Point operator -(const Point &a,const Point &b);
+Point operator *(const Point &a,double b);
+Point operator /(const Point &a,double b);
+int F(double x) { if (x>eps) return 1; if (x<-eps) return -1; return 0; }
+bool operator ==(const Point &a,const Point &b) {
+	return F(a.x-b.x)==0&&F(a.y-b.y)==0; }
+double Dist(const Point &a) { return sqrt(a.x*a.x+a.y*a.y); }
+double Dot(const Point &a,const Point &b) { return a.x*b.x+a.y*b.y; }
+double Cross(const Point &a,const Point &b) { return a.x*b.y-a.y*b.x; }
+Point Rotate(const Point &p,double a) { // 逆时针旋转
+	return Point(p.x*cos(a)-p.y*sin(a),p.x*sin(a)+p.y*cos(a)); }
+Point Inter(Seg a,Seg b) { // 两线段相交（前提有交点）
+	double s=Cross(a.b-a.a,b.a-a.a),t=Cross(a.b-a.a,b.b-a.a);
+	return b.a+(b.b-b.a)*s/(s-t); }
+vector<Point> SegCir(Seg seg,Point pt,double r) { //线圆
+	vector<Point> ans; double mul; Point vec,mid;
+	ans.clear(); vec=Rotate(seg.b-seg.a,pi/2);
+	mid=Inter(seg,Seg(pt,pt+vec));
+	if (F(Dist(pt-mid)-r)>0) return ans;
+	if (F(Dist(pt-mid)-r)==0) {
+		ans.push_back(mid); ans.push_back(mid); return ans;
+	}
+	vec=seg.b-seg.a; mul=sqrt(r*r-Dist2(mid-pt))/Dist(vec);
+	ans.push_back(mid+vec*mul); ans.push_back(mid-vec*mul);
+	return ans;
+}
+vector<Point> Circir(Circle a,Circle b) { //圆圆相交
+	vector<Point> ans; double dis,dis2,alpha; Point pa,pb,vec;
+	ans.clear(); if (a.r<b.r) swap(a,b);
+	pa=a.pt(); pb=b.pt(); vec=pb-pa;
+	dis=Dist(vec); dis2=Dist2(vec);
+	if (F(dis-(a.r+b.r))>0||F(dis-(a.r-b.r))<0) return ans;
+	if (F(dis-(a.r+b.r))==0) {
+		ans.push_back(pa+vec*a.r/(a.r+b.r)); return ans;
+    }
+	if (F(dis-(a.r-b.r))==0) {
+		ans.push_back(pa+vec*a.r/(a.r-b.r)); return ans;
+	}
+	alpha=acos((a.r*a.r+dis2-b.r*b.r)/2/a.r/dis);
+	ans.push_back(pa+Rotate(vec,alpha)*a.r/dis);
+	ans.push_back(pa+Rotate(vec,-alpha)*a.r/dis);
+	return ans;
+}
+double Bing(double ra,double rb,double dis) {
+	double alpha,beta; if (ra<rb) swap(ra,rb);
+	if (F(dis-(ra-rb))<=0) return pi*ra*ra;
+	if (F(dis-(ra+rb))>=0) return pi*ra*ra+pi*rb*rb;
+	alpha=acos((ra*ra+dis*dis-rb*rb)/2/dis/ra);
+	beta=acos((rb*rb+dis*dis-ra*ra)/2/dis/rb);
+	return (pi-alpha)*ra*ra+(pi-beta)*rb*rb+ra*dis*sin(alpha);
+}
+double Jiao(double ra,double rb,double dis) {
+	return pi*ra*ra+pi*rb*rb-Bing(ra,rb,dis); }
+Point Gongmid(Circle a,Circle b) { //正确性待定
+	Point pa=a.pt(),pb=b.pt();
+	return pa+(pb-pa)*a.r/(a.r+b.r); }
+Point Gongright(Circle a,Circle b) {
+	Point pa=a.pt(),pb=b.pt();
+	return pa+(pb-pa)*a.r/(a.r-b.r); }
+int Ptinpol(Point pt) {
+	int wn=0;
+    for(int i=0;i<n;i++) {
+        if(Ins(pt,Seg(p[i],p[(i+1)%n]))) return 2;
+        int k=F(Cross(p[(i+1)%n]-p[i],pt-p[i]));
+        int d1=F(p[i].y-pt.y), d2=F(p[(i+1)%n].y-pt.y);
+        if(k>0&&d1<=0&&d2>0)wn++;
+        if(k<0&&d2<=0&&d1>0)wn--;
+    }
+    return wn!=0;
+}
+bool Cirinpol(Point pt) { //需要点在多边形内的前提
+	double nearest=inf;
+	for (int i=0;i<n;i++) {
+		nearest=min(nearest,Dist(p[i]-pt));
+		if  (F(Dot(pt-p[i],p[(i+1)%n]-p[i]))>0&&
+			F(Dot(pt-p[(i+1)%n],p[i]-p[(i+1)%n]))>0)
+		nearest=min(nearest,abs(Cross(p[i]-pt,p[(i+1)%n]-pt))/dis[i]);
+	}
+	return F(nearest-r)>=0;
+}
+bool Ins(const Point &p,const Seg &s) {
+	return F(Cross(s.a-p,s.b-p))==0&&F(p.x-min(s.a.x,s.b.x))>=0&&
+		F(p.x-max(s.a.x,s.b.x))<=0&&F(p.y-min(s.a.y,s.b.y))>=0&&
+		F(p.y-max(s.a.y,s.b.y))<=0; }
+double PS(const Point &p,const Seg &s) { // 点到线段最短距离
+	if (F(Dot(p-s.a,s.b-s.a))<0||F(Dot(p-s.b,s.a-s.b))<0)
+		return min(Dist(p-s.a),Dist(p-s.b));
+	return abs(Cross(s.a-p,s.b-p))/Dist(s.a-s.b); }
+double SS(const Seg &a,const Seg &b) { // 线段到线段最短距离
+	return min(min(PS(a.a,b),PS(a.b,b)),min(PS(b.a,a),PS(b.b,a))); }
+double Alpha(Point a,Point b) {
+	double ans=atan2(b.y,b.x)-atan2(a.y,a.x);
+	if (ans<0) ans=-ans; if (ans>pi) ans=2*pi-ans; return ans; }
+double Shan(Circle c,double a) { return c.r*c.r*a/2; }
+\end{lstlisting}
+
+\subsection{半平面交}
+\begin{lstlisting}[language=C++]
+bool Cmphp(Seg a,Seg b) {
+	Point va=a.b-a.a, vb=b.b-b.a;
+    double dega=atan2(va.y,va.x), degb=atan2(vb.y,vb.x);
+	return F(dega-degb)<0||F(dega-degb)==0&&Cross(a.b-a.a,b.a-a.a)<0;
+}
+void HalfPlane(Seg hp[], int n, Point pol[], int &pols) {
+	Point mid;
+	hp[n++]=Seg(Point(-oo,-oo),Point(oo,-oo));
+	hp[n++]=Seg(Point(oo,-oo),Point(oo,oo));
+	hp[n++]=Seg(Point(oo,oo),Point(-oo,oo));
+	hp[n++]=Seg(Point(-oo,oo),Point(-oo,-oo));
+	sort(hp,hp+n,Cmphp);
+	int tp=0, low=0, high=-1; //sk 0~tp-1
+	for (int i=0;i<n;i++)
+	if (high-low+1==0||F(Cross(sk[high].b-sk[high].a,hp[i].b-hp[i].a))) {
+		for (;low<high;high--) {
+			mid=Inter(sk[high],sk[high-1]);
+			if (F(Cross(hp[i].b-hp[i].a,mid-hp[i].a))>0) break;
+		}
+		for (;low<high;low++) {
+			mid=Inter(sk[low],sk[low+1]);
+			if (F(Cross(hp[i].b-hp[i].a,mid-hp[i].a))>0) break;
+		}
+		sk[++high]=hp[i];
+	}
+	for (;low<high;high--) {
+		mid=Inter(sk[high],sk[high-1]);
+		if (Cross(sk[low].b-sk[low].a,mid-sk[low].a)>0) break;
+	}
+	tp=high-low+1; for (int i=0;i<tp;i++) sk[i]=sk[low+i];
+	pols=0; if  (tp<=2) return;
+	for (int i=0;i<tp;i++) pol[pols++]=Inter(sk[i],sk[(i+1)%tp]);
+}
+\end{lstlisting}
+
+\subsection{圆与多边形交集}
+\begin{lstlisting}[language=C++]
+double CT(Circle c,Point a,Point b) { // 圆与三角形交（多边形）
+	double da=Dist(a-c.pt()), db=Dist(b-c.pt());
+	if (da>db) { swap(a,b); swap(da,db); }
+	Seg s=Seg(a,b);
+	vector<Point> temp=CS(c,s);
+	if (F(db-c.r)<=0) return 0.5*abs(Cross(a-c.pt(),b-c.pt()));
+	if (F(da-c.r)<0) {
+		if (F(Dot(a-temp[1],b-temp[1]))<0) swap(temp[0],temp[1]);
+		return Shan(c,Alpha(temp[0]-c.pt(),b-c.pt()))+
+			0.5*abs(Cross(a-c.pt(),temp[0]-c.pt()));
+	}
+	if (!temp.size()) return Shan(c,Alpha(a-c.pt(),b-c.pt()));
+	if (Ins(temp[1],s)&&Dist2(a-temp[1])<Dist2(a-temp[0])) swap(temp[0],temp[1]);
+	if (Ins(temp[0],s)&&Ins(temp[1],s)) {
+		return Shan(c,Alpha(a-c.pt(),temp[0]-c.pt()))+
+			Shan(c,Alpha(b-c.pt(),temp[1]-c.pt()))+
+			0.5*abs(Cross(temp[0]-c.pt(),temp[1]-c.pt()));
+	}
+	return Shan(c,Alpha(a-c.pt(),b-c.pt()));
+}
+\end{lstlisting}
+
+\subsection{三角形面积并}
+\begin{lstlisting}[language=C++]
+#define pr pair<ld,ld>
+typedef long double ld;
+const ld EPS=1e-8, INF=1e100;
+struct Point {
+	ld x,y; Point(){} Point(ld _,ld __):x(_),y(__){}
+	void read() { double _x,_y; scanf("%lf%lf",&_x,&_y); x=_x,y=_y; }
+	friend bool operator<(Point a,Point b) {
+		if(fabs(a.x-b.x)<EPS) return a.y<b.y;
+        return a.x<b.x;
+    }
+	friend Point operator +(Point a,Point b) { return Point(a.x+b.x,a.y+b.y); }
+	friend Point operator -(Point a,Point b) { return Point(a.x-b.x,a.y-b.y); }
+	friend Point operator *(ld a,Point b) { return Point(a*b.x,a*b.y); }
+	friend ld operator *(Point a,Point b) { return a.x*b.x+a.y*b.y; }
+	friend ld operator ^(Point a,Point b) { return a.x*b.y-a.y*b.x; }
+} a[N][3],Poi[N*N];
+struct Line {
+    Point p,v; Line(){} Line(Point x,Point y){p=x,v=y-x;}
+	Point operator [](int k) { if(k) return p+v; else return p; }
+	friend bool Cross(Line a,Line b) {
+		return (a.v^b[0]-a.p)*(a.v^b[1]-a.p)<-EPS &&
+			(b.v^a[0]-b.p)*(b.v^a[1]-b.p)<-EPS;
+	}
+	friend Point getP(Line a,Line b) {
+		Point u=a.p-b.p; ld temp=(b.v^u)/(a.v^b.v);
+		return a.p+temp*a.v;
+	}
+}l[N][3],T;
+pr p[N];
+int main() {
+	int n,m,i,j,k,x,y,cnt,tot;
+	ld ans,last,A,B,sum;
+	scanf("%d",&n);
+	for(i=1,tot=0;i<=n;i++) {
+		a[i][0].read(),a[i][1].read(),a[i][2].read();
+		Poi[++tot]=a[i][0],Poi[++tot]=a[i][1],Poi[++tot]=a[i][2];
+		sort(a[i],a[i]+3);
+		if((a[i][2]-a[i][0]^a[i][1]-a[i][0])>EPS)
+			l[i][0]=Line(a[i][0],a[i][2]),l[i][1]=Line(a[i][2],a[i][1]),l[i][2]=Line(a[i][1],a[i][0]);
+		else
+			l[i][0]=Line(a[i][2],a[i][0]),l[i][1]=Line(a[i][1],a[i][2]),l[i][2]=Line(a[i][0],a[i][1]);
+    }
+	for(i=1;i<=n;i++) for(j=1;j<i;j++) for(x=0;x<3;x++) for(y=0;y<3;y++)
+		if(Cross(l[i][x],l[j][y])) Poi[++tot]=getP(l[i][x],l[j][y]);
+	sort(Poi+1,Poi+tot+1);
+	ans=0,last=Poi[1].x; T=Line(Point(0,-INF),Point(0,INF));
+	for(i=2;i<=tot;i++) {
+        T.p.x=(last+Poi[i].x)/2;
+        for(j=1,cnt=0;j<=n;j++)
+            if(Cross(l[j][0],T)) {
+                if(Cross(l[j][1],T)) B=getP(l[j][1],T).y;
+                else B=getP(l[j][2],T).y;
+                A=getP(l[j][0],T).y; if (A>B) swap(A,B);
+                p[++cnt]=pr(A,B);
+            }
+        sort(p+1,p+cnt+1);
+        for(j=1,sum=0,A=-INF;j<=cnt;j++) {
+            if(p[j].first>A) sum+=p[j].second-p[j].first, A=p[j].second;
+            else if(p[j].second>A) sum+=p[j].second-A, A=p[j].second;
+        }
+		ans+=(Poi[i].x-last)*sum; last=Poi[i].x;
+	}
+	printf("%.2lf\n",(double)ans);
+}
+\end{lstlisting}
+
+\subsection{K圆并}
+\begin{lstlisting}[language=C++]
+#define sqr(x) ((x)*(x))
+const double eps = 1e-8;
+double area[N]; int n;
+int dcmp(double x) { if (x < -eps) return -1; else return x > eps; }
+struct cp { double x, y, r, angle; int d;
+	cp(){} cp(double xx, double yy, double ang = 0, int t = 0) {
+		x = xx;  y = yy;  angle = ang;  d = t; }
+	void get() { scanf("%lf%lf%lf", &x, &y, &r); d = 1; }
+}cir[N], tp[N * 2];
+double dis(cp a, cp b) { return sqrt(sqr(a.x - b.x) + sqr(a.y - b.y)); }
+double cross(cp p0, cp p1, cp p2) {
+	return (p1.x - p0.x) * (p2.y - p0.y) - (p1.y - p0.y) * (p2.x - p0.x); 
+}
+int CirCrossCir(cp p1, double r1, cp p2, double r2, cp &cp1, cp &cp2) {
+    double mx = p2.x - p1.x, sx = p2.x + p1.x, mx2 = mx * mx;
+    double my = p2.y - p1.y, sy = p2.y + p1.y, my2 = my * my;
+    double sq = mx2 + my2, d = -(sq - sqr(r1 - r2)) * (sq - sqr(r1 + r2));
+    if (d + eps < 0) return 0; if (d < eps) d = 0; else d = sqrt(d);
+    double x = mx * ((r1 + r2) * (r1 - r2) + mx * sx) + sx * my2;
+    double y = my * ((r1 + r2) * (r1 - r2) + my * sy) + sy * mx2;
+    double dx = mx * d, dy = my * d; sq *= 2;
+    cp1.x = (x - dy) / sq; cp1.y = (y + dx) / sq;
+    cp2.x = (x + dy) / sq; cp2.y = (y - dx) / sq;
+    if (d > eps) return 2; else return 1;
+}
+bool circmp(const cp& u, const cp& v) { return dcmp(u.r - v.r) < 0; }
+bool cmp(const cp& u, const cp& v) {
+    if (dcmp(u.angle - v.angle)) return u.angle < v.angle;
+    return u.d > v.d;
+}
+double calc(cp cir, cp cp1, cp cp2) {
+    double ans = (cp2.angle - cp1.angle) * sqr(cir.r)
+        - cross(cir, cp1, cp2) + cross(cp(0, 0), cp1, cp2);
+    return ans / 2;
+}
+void CirUnion(cp cir[], int n) {
+    cp cp1, cp2; sort(cir, cir + n, circmp);
+    for (int i = 0; i < n; ++i) for (int j = i + 1; j < n; ++j)
+        if (dcmp(dis(cir[i], cir[j]) + cir[i].r - cir[j].r) <= 0) cir[i].d++;
+	for (int i = 0; i < n; ++i) {
+		int tn = 0, cnt = 0;
+		for (int j = 0; j < n; ++j) {
+			if (i == j) continue;
+            if (CirCrossCir(cir[i],cir[i].r,cir[j],cir[j].r,cp2,cp1)<2) continue;
+            cp1.angle = atan2(cp1.y - cir[i].y, cp1.x - cir[i].x);
+            cp2.angle = atan2(cp2.y - cir[i].y, cp2.x - cir[i].x);
+            cp1.d = 1; tp[tn++] = cp1; cp2.d = -1; tp[tn++] = cp2;
+            if (dcmp(cp1.angle - cp2.angle) > 0) cnt++;
+        }
+        tp[tn++] = cp(cir[i].x - cir[i].r, cir[i].y, pi, -cnt);
+        tp[tn++] = cp(cir[i].x - cir[i].r, cir[i].y, -pi, cnt);
+        sort(tp, tp + tn, cmp);
+        int p, s = cir[i].d + tp[0].d;
+        for (int j = 1; j < tn; ++j) {
+            p = s;  s += tp[j].d;
+            area[p] += calc(cir[i], tp[j - 1], tp[j]);
+        }
+    }
+}
+void solve() {
+    for (int i = 0; i < n; ++i) cir[i].get();
+    memset(area, 0, sizeof(area));
+    CirUnion(cir, n);
+    for (int i = 1; i <= n; ++i) {
+        area[i] -= area[i + 1];
+        printf("[%d] = %.3lf\n", i, area[i]);
+    }
+}
+\end{lstlisting}
+
+\subsection{三维计算几何}
+\begin{lstlisting}[language=C++]
+Point Cross(Point a,Point b) {
+	return Point(a.y*b.z-a.z*b.y,a.z*b.x-a.x*b.z,a.x*b.y-a.y*b.x); }
+double Crossxy(Point a,Point b) { return a.x*b.y-a.y*b.x; }
+vector<Point> SegPlane(Seg seg,Plane p) {
+	vector<Point> ans; ans.clear();
+	Point fa=Cross(p.b-p.a,p.c-p.a);
+	if  (F(Dot(fa,seg.b-seg.a))==0) return ans;
+	double s=Dot(p.a-seg.a,fa)/Dist(fa), t=Dot(p.a-seg.b,fa)/Dist(fa);
+	ans.push_back(seg.a+(seg.b-seg.a)*s/(s-t));
+	return ans;
+}
+// mixed product
+double Mix(Point3 a,Point3 b,Point3 c) { return Dot(Cross(a,b),c); }
+double PP(Point3 pt,Plane pl) { // distance from point to plane
+	Point3 fa=Cross(pl.b-pl.a,pl.c-pl.a);
+	return abs(Dot(fa,pt-pl.a))/Dist(fa);
+}
+// get the center point from 3D(need plane well prepared)
+Point3 Getcenter(Point3 p[],int n,Plane pp[],int nn) {
+	double sumv=0;
+	Point3 sum=Point3(0,0,0);
+	for (int i=0;i<nn;i++)
+	{
+		double tempv=Mix(pp[i].b-pp[i].a,pp[i].c-pp[i].a,Point3(0,0,0)-pp[i].a);
+		sum=sum+(pp[i].a+pp[i].b+pp[i].c)*tempv/4.0;
+		sumv+=tempv;
+	}
+	return sum/sumv;
+}
+\end{lstlisting}
+
 
 \section{字符串}
 \subsection{哈希}
@@ -643,6 +1383,57 @@ void merge(int x, int y, int time) {
 }
 \end{lstlisting}
 
+\subsection{普通莫队}
+
+分块块数为 $\sqrt{n}$ 是最优的。记每次进行 add() 操作的复杂度为 $O(A)$ ，del() 操作的复杂度为 $O(D)$ ，查询答案 answer() 的复杂度为 $O(S)$ 。则总复杂度为 $O(n \sqrt{n} (A + D) + qS)$ 。 $S$ 可以大一点，但必须保证 $A, D$ 尽可能小。
+
+\begin{lstlisting}[language=C++]
+struct Q { int l, r, sqrtl, id; } q[N];
+int n, m, v[N], ans[N], nowans;
+bool cmp(const Q &a, const Q &b) { if (a.sqrtl != b.sqrtl) return a.sqrtl < b.sqrtl; return a.r < b.r; }
+void change(int x) { if (!v[x]) add(x); else del(x); v[x] ^= 1; }
+
+for (int i=1;i<=m;i++) q[i].sqrtl = q[i].l / sqrt(n), q[i].id = i;
+sort(q+1, q+m+1, cmp);
+int L=1, R=0;
+memset(v, 0, sizeof(v));
+for (int i=1;i<=m;i++) {
+	while (L<q[i].l) change(L++);
+	while (L>q[i].l) change(--L);
+	while (R<q[i].r) change(++R);
+	while (R>q[i].r) change(R--);
+	ans[q[i].id] = answer();
+}
+\end{lstlisting}
+\subsection{树上莫队}
+
+\begin{lstlisting}[language=C++]
+struct Query { int l, r, id, l_group; } query[N];
+int v[N], ans[N];
+bool cmp(const Query &a, const Query &b) { if (a.l_group != b.l_group) return a.l_group < b.l_group; return dfn[a.r] < dfn[b.r]; }
+void upd(int x) { if (!v[x]) add(x); else del(x); v[x] ^= 1; }
+void go(int &u, int taru, int v) {
+	int lca0 = lca(u, taru);
+	int lca1 = lca(u, v); upd(lca1);
+	int lca2 = lca(taru, v); upd(lca2);
+	for (int x=u; x!=lca0; x=father[x]) upd(x);
+	for (int x=taru; x!=lca0; x=father[x]) upd(x);
+	u = taru;
+}
+
+for (int i=1;i<=m;i++) {
+	if (dfn[query[i].l] > dfn[query[i].r]) swap(query[i].l, query[i].r);
+	query[i].id = i; query[i].l_group = dfn[query[i].l] / sqrt(n);
+}
+sort(query+1, query+m+1, cmp);
+int L=1,R=1; upd(1);
+for (int i=1;i<=m;i++) {
+	go(L,query[i].l,R);
+	go(R,query[i].r,L);
+	ans[query[i].id] = answer();
+}
+\end{lstlisting}
+
 \section{树}
 
 \subsection{点分治}
@@ -817,7 +1608,7 @@ for (i=1;i<=n;i++) if (!vis[i]) {
 \end{lstlisting}
 
 \subsection{欧拉回路}
-\begin{lstlisting}
+\begin{lstlisting}[language=C++]
 struct E { int to,ne; } e[M<<1];
 int t,n,m,la[N],e_top;
 int in[N],out[N];
@@ -849,7 +1640,7 @@ int main(){
 \end{lstlisting}
 
 \subsection{带花树}
-\begin{lstlisting}
+\begin{lstlisting}[language=C++]
 const int N=550;
 struct E { int to,ne; } e[N*N];
 int n,m,la[N],e_top,f[N];
@@ -897,7 +1688,7 @@ int main(){
 \end{lstlisting}
 
 \subsection{KM算法}
-\begin{lstlisting}
+\begin{lstlisting}[language=C++]
 const int N=500, inf=0x7fffffff;
 int n,fx[N],fy[N],pre[N];
 LL w[N][N],lx[N],ly[N],sla[N];
@@ -1040,781 +1831,7 @@ while (spfa()) {
 return ans;
 \end{lstlisting}
 
-\section{数学}
-
-\subsection{Miller Rabin}
-\begin{lstlisting}
-// 2,7,61 : < 4759123141
-// 2,3,5,7,11,13,17 : < 341550071728320
-// 2,3,7,61,24251 : < 10^16 only 46856248255981
-
-//BZOJ-3667
-#include<cstdio>
-#include<cstdlib>
-typedef long long ll;
-ll _,n,x,ans,st;
-ll gcd(ll x,ll y){return y==0?x:gcd(y,x%y);}
-#define abs(x) (x>0?x:-(x))
-#define cmax(a,b) (a<b?a=b:1)
-ll mul(ll a,ll b,ll p){
-    ll tmp=(a*b-(ll)((long double)a/p*b+1e-7)*p);
-    return tmp<0?tmp+p:tmp;
-}
-ll power(ll t,ll k,ll p){
-    ll f=1;
-    for(;k;k>>=1,t=mul(t,t,p))if(k&1)f=mul(f,t,p);
-    return f;
-}
-bool check(ll a,int k,ll p,ll q){
-    ll t=power(a,q,p);
-    if(t==1||t==p-1)return 1;
-    for(;k--;){
-        t=mul(t,t,p);
-        if(t==p-1)return 1;
-    }
-    return 0;
-}
-bool mr(ll p){
-    if(p<=1)return 0;
-    if(p==2)return 1;
-    if(~p&1)return 0;
-    ll q=p-1;int i,k=0;
-    while(~q&1)q>>=1,k++;
-    for(i=0;i<5;i++)
-    if(!check(rand()%(p-1)+1,k,p,q))return 0;
-    return 1;
-}
-ll rho(ll n,ll c){
-    ll x=rand()%n,y=x,p=1;
-    while(p==1)
-        x=(mul(x,x,n)+c)%n,
-        y=(mul(y,y,n)+c)%n,
-        y=(mul(y,y,n)+c)%n,
-        p=gcd(n,abs(x-y));
-    return p;
-}
-void solve(ll n){
-    if(n==1)return;
-    if(mr(n)){cmax(ans,n);return;}
-    if(~n&1)cmax(ans,2),solve(n>>1);
-    else{
-        ll t=n;
-        while(t==n)t=rho(n,rand()%(n-1)+1);
-        solve(t),solve(n/t);
-    }
-}
-int main(){
-    for(srand(1626),scanf("%lld",&_);_--;){
-        scanf("%lld",&x),ans=0;solve(x);
-        if(ans==x)puts("Prime");
-        else printf("%lld\n",ans);
-    }
-}
-\end{lstlisting}
-
-\subsection{同余方程}
-\begin{lstlisting}
-void gcd(LL a, LL b, LL &d, LL &x, LL &y){
-	if (!b){ d=a; x=1; y=0; return; }
-	gcd(b,a%b,d,y,x); y-=x*(a/b);
-}
-IL void sim(LL &a, LL n) { a%=n; if (a<0) a+=n; }
-IL LL solve(LL a, LL b, LL n){  // a*x==b (mod n)
-	sim(a,n); sim(b,n);  // optional
-	static LL d,x,y;
-	gcd(a,n,d,x,y);
-	if (b%d) return -1;
-	b/=d; n/=d;
-	if (x<0) x+=n;
-	return b*x%n;
-}
-// x==a1 (mod n1); x==a2 (mod n2);
-// passing gcd in solve can reduce time 
-void merge(LL a1, LL n1, LL a2, LL n2, LL &x, LL &n){
-	n=lcm(n1,n2);
-	LL k=solve(n1,a2-a1,n2);
-	if (k==-1) { x=-1; return; }
-	sim(x=n1*k+a1,n);
-}
-// getinv , gcd(a,n) must be 1
-IL LL getinv(LL a, LL n){
-	static LL d,x,y;
-	gcd(a,n,d,x,y);
-	// if (d!=1) return -1;
-	return x<0?x+n:x;
-}
-\end{lstlisting}
-
-\subsection{线性筛法}
-\begin{lstlisting}
-const int N=100050;
-int b[N],a[N],cnt,mx[N],phi[N],mu[N];
-
-void getprime(int n=100000){
-	memset(b+2,1,sizeof(b[0])*(n-1));
-	mu[1]=1;
-	ft(i,2,n){
-		if (b[i]){
-			a[mx[i]=++cnt]=i;
-			phi[i]=i-1; mu[i]=-1;
-		}
-		ft(j,1,mx[i]){
-			int k=i*a[j];
-			if (k>n) break;
-			b[k]=0; mx[k]=j;
-			phi[k]= phi[i]*(a[j]-(j!=mx[i]));
-			mu[k]= j==mx[i] ? 0 : -mu[i];
-		}
-	}
-}
-\end{lstlisting}
-
-\subsection{离散对数}
-\begin{lstlisting}
-// BSGS , a^x==b (mod n) , n is a prime
-LL bsgs(LL a, LL b, LL n){
-	int m=sqrt(n+0.5);
-	LL p=power(a,m,n);
-	LL v=getinv(p,n);
-	static hash_map x;
-	x.clear();
-	LL e=1; x[e]=0;
-	ft(i,1,m){
-		e=e*a%n;
-		if (!x.count(e)) x[e]=i;
-	}
-	for(LL i=0;i<n;i+=m){
-		if (x.count(b)) return i+x[b];
-		b=b*v%n;
-	}
-	return -1;
-}
-
-//BSGS
-//y^x==z (mod p) ->x=?
-scanf("%d%d%d",&y,&z,&p),y%=p,z%=p;j=z;
-if(y==0){puts("Cannot find x");continue;}
-for(k=s=1;k*k<=p;k++);
-std::map<int,int>hash;flag=0;
-for(int i=0;i<k;i++,s=1LL*s*y%p,j=1LL*j*y%p)hash[j]=i;
-for(int i=1,j=s;i<=k&&!flag;i++,j=1LL*j*s%p)
-if(hash.count(j))ans=i*k-hash[j],flag=1;
-if(flag==0)puts("Cannot find x");
-else printf("%d\n",ans);
-
-//exBSGS
-int bsgs(int a,ll b,int p){
-    if(a%=p,b%=p,b==1)return 0;
-    ll t=1;int f,g,delta=0,m=sqrt(p)+1,i;
-    for(g=gcd(a,p);g!=1;g=gcd(a,p)){
-        if(b%g)return -1;
-        b/=g,p/=g,t=t*(a/g)%p,delta++;
-        if(b==t)return delta;
-    }
-    std::map<int,int>hash;
-    for(i=0;i<m;i++,b=b*a%p)hash[b]=i;
-    for(i=1,f=power(a,m);i<=m+1;i++)
-    if(t=t*f%p,hash.count(t))return i*m-hash[t]+delta;
-    return -1;
-}
-\end{lstlisting}
-
-\subsection{Lucas}
-\begin{lstlisting}
-void init_Lucas(){
-	fac[0]=1; ft(i,1,P-1) fac[i]=fac[i-1]*i%P;
-	inv[1]=1; ft(i,2,P-1) inv[i]=(P-P/i)*inv[P%i]%P;
-	inv[0]=1; ft(i,1,P-1) inv[i]=inv[i-1]*inv[i]%P;
-}
-IL LL C(int n, int m){
-	LL ans=1;
-	while (n||m){
-		int a=n%P, b=m%P;
-		if (a<b) return 0;
-		n/=P; m/=P;
-		ans= ans *fac[a]%P *inv[b]%P *inv[a-b]%P;
-	}
-	return ans;
-}
-\end{lstlisting}
-
-\subsection{高斯消元}
-\begin{lstlisting}
-int i=1, j=1;
-while (i<=n && j<=m){
-	int k=i;
-	while (k<=n && a[k][j].x==0) k++;
-	if (k>n) { j++; continue; }
-	if (k!=i) ft(t,j,m) swap(a[i][t],a[k][t]);
-	
-	ft(p,j+1,m) a[i][p]=a[i][p]/a[i][j];
-	a[i][j]=(R){1,1};
-	
-	ft(t,1,n) if (t!=i && a[t][j].x){
-		ft(p,j+1,m) a[t][p]=a[t][p]-a[i][p]*a[t][j];
-		a[t][j]=(R){0,1};
-	}
-	i++; j++;
-}
-
-// xor equations
-int n,m;
-bitset<N> a[N];
-bool solve(){
-	int i=1, j=1;	
-	while (i<=n && j<=m){
-		int k=i;
-		while (k<=n && !a[k][j]) k++;
-		if (k>n) { j++; continue; }
-		if (j==m) return false;  // no solution
-		if (k!=i) swap(a[i],a[k]);
-		ft(t,1,n) if (t!=i && a[t][j]) a[t]^=a[i];
-		i++; j++;
-	}
-	return true; // have solution (but may have 0==0)
-}
-// no solution : have 1==0
-// have solution : no 1==0 (but may have 0==0)
-// have solution can be dependent or independent
-\end{lstlisting}
-
-\subsection{瀚之的莫比乌斯}
-\begin{lstlisting}
-void getprime(int n){
-	miu[1]=pre[1]=b[1]=1;
-	for(int i=2;i<=n;i++){
-		if(!b[i]) p[mx[i]=++cnt]=i, miu[i]=-1;
-		for(int j=1;j<=mx[i];j++){
-			int k=i*p[j]; if(k>n) break;
-			b[k]=1; mx[k]=j;
-			if(j==mx[i]) miu[k]=0;
-				else miu[k]=miu[i]*miu[p[j]];
-		}
-		pre[i]=pre[i-1]+i*miu[i];
-	}
-}
-ll f(int n,int m){return 1ll*n*m*(n+m+2)/2;} 
-ll calc(int n,int m){ // sigma{ i+j | i<=n,j<=m,gcd(i,j)==1 }
-	if(n>m) swap(n,m); ll ans=0;
-	for(int i=1,j=0,k=0;i<=n;i=min(j,k)+1)
-		ans+=(pre[min(j=n/(n/i),k=m/(m/i))]-pre[i-1])*f(n/i,m/i);
-	return ans;
-}
-\end{lstlisting}
-
-\subsection{FFT|NTT}
-
-\begin{lstlisting}[language=C++]
-typedef complex<double> comp;
-comp A[N], B[N];
-int rev[N], m, len;
-inline void init(int n) {
-	for (m = 1, len = 0; m < n + n; m <<= 1 , len ++);
-	for (int i = 0; i < m; ++i) rev[i]=(rev[i>>1]>>1) | ((i&1)<<(len-1));
-	for (int i = 0; i < m; ++i) A[i] = B[i] = comp(0, 0);
-}
-inline void dft(comp *a, int v) {
-	for (int i = 0; i < m; ++i) if (i < rev[i]) swap(a[i] , a[rev[i]]);
-	for (int s = 2; s <= m; s <<= 1) {
-		comp g(cos(2 * pi / s) , v * sin(2 * pi / s));
-		// NTT: int g = power(gg, (mod - 1) / s);
-		// NTT: if (v == -1) g = power(g, mod - 2);
-		for (int k = 0; k < m; k += s) {
-			comp w(1, 0);
-			// NTT: int w = 1;
-			for (int j = 0; j < s / 2; ++j) {
-				comp &u = a[k + j + s / 2], &v = a[k + j];
-				comp t = w * u; u = v - t; v = v + t; w = w * g;
-				// NTT: be aware of "+-*"
-			}
-		}
-	}
-	if (v == -1) for (int i = 0; i < m; ++i) a[i] /= m;
-	// NTT: be aware of "/"
-}
-\end{lstlisting}
-
-\subsection{求原根}
-\begin{lstlisting}[language=C++]
-vector <LL> a;
-bool g_test(LL g, LL p) { for (LL i = 0; i < a.size(); ++i) if (pow_mod(g, (p-1)/a[i], p) == 1) return 0; return 1; }
-LL p_root(LL p) {
-	LL tmp = p - 1;
-	for (LL i = 2; i <= tmp / i; ++i)
-		if (tmp % i == 0) { a.push_back(i); while (tmp % i == 0) tmp /= i; }
-	if (tmp != 1) a.push_back(tmp);
-	LL g = 1; while (1) { if (g_test(g, p)) return g; ++g; }
-}
-\end{lstlisting}
-
-\subsection{线性基}
-
-\begin{lstlisting}[language=C++]
-#define B 30
-const int allset=(1<<B)-1;
-struct LB {
-	int mat[B],cnt;
-	multiset<int> st;
-	LB(){}
-	void clear() { st.clear(); cnt=0; memset(mat,0,sizeof(mat)); }
-	void add(int x) {
-		for (int i=B-1;i>=0;i--) if ((x>>i)&1) {
-		    if (mat[i]) x^=mat[i]; 
-		    else { cnt++; mat[i]=x; break; }
-		}
-	}
-	void fix() {
-		for (int i=0;i<B;i++) if (mat[i])
-		    for (int j=i+1;j<B;j++) if ((mat[j]>>i)&1) mat[j]^=mat[i];
-	}
-	void preset() { //正确性待定
-		fix(); for (int i=0;i<B;i++) if (mat[i]) st.insert(mat[i]);
-	}
-	int kth(int k) { //正确性待定
-		int i=0,ans=0; if (k<=0||k>(1<<cnt)-1) return 0;//无解
-		for (multiset<int>::iterator it=st.begin();it!=st.end();it++,i++)
-			if ((k>>i)&1) ans^=(*it);
-		return ans;
-	}
-	int getmax() {
-		fix(); int ans=0;
-		for (int i=B-1;i>=0;i--) if (ans^mat[i]>ans) ans^=mat[i];
-		return ans;
-	}
-} tree[N*10];
-\end{lstlisting}
-
-\subsection{高斯消元法实数方程}
-\begin{lstlisting}
-void Gauss(int n,int m) {
-	int i,j,k,t;
-	double mul;
-	for (i=j=1;i<=n&&j<=m;i++,j++) {
-		for (k=i+1;k<=n;k++)
-			if (abs(mat[k][j])>abs(mat[i][j]))
-				for (t=1;t<=m+1;t++) swap(mat[i][t],mat[k][t]);
-		if (abs(mat[i][j])<eps) { i--; continue; }
-		for (k=i+1;k<=n;k++) {
-			mul=mat[k][j]/mat[i][j];
-			for (t=1;t<=m+1;t++) mat[k][t]-=mat[i][t]*mul;
-		}
-	}
-	for (i=n;i>=1;i--) { //solved表示那个变量是否确定
-		for (j=1;j<=m;j++) if (abs(mat[i][j])>eps) break;
-		if  (j>m) continue; solved[j]=true; ans[j]=mat[i][m+1];
-		for (k=j+1;k<=m;k++)
-			if (abs(mat[i][k])>eps&&!solved[k]) solved[j]=false;
-		for (k=j+1;k<=m;k++) ans[j]-=ans[k]*mat[i][k];
-		ans[j]/=mat[i][j];
-	}
-}
-\end{lstlisting}
-\subsection{高斯消元法模方程}
-\begin{lstlisting}
-void Gauss(LL n,LL m) {
-	LL i,j,k,t,lcm,muli,mulk;
-	for (i=j=1;i<=n&&j<=m;i++,j++) {
-		for (k=i;k<=n;k++) if (mat[k][j]) {
-			for (t=1;t<=m+1;t++) swap(mat[k][t],mat[i][t]);
-			break;
-		}
-		if (mat[i][j]==0) { i--; continue; }
-		for (k=i+1;k<=n;k++) if (mat[k][j]) {
-			lcm=mat[k][j]*mat[i][j]/__gcd(mat[k][j],mat[i][j]);
-			muli=lcm/mat[i][j]; mulk=lcm/mat[k][j];
-			for (t=1;t<=m+1;t++) {
-				mat[k][t]=mat[k][t]*mulk-mat[i][t]*muli;
-				mat[k][t]=(mat[k][t]%mod+mod)%mod;
-			}
-		}
-	}
-	for (i=n;i>=1;i--) {
-		for (j=1;j<=m;j++) if (mat[i][j]) break;
-		if  (j>m) continue; ans[j]=mat[i][m+1];
-		for (k=j+1;k<=m;k++) ans[j]-=ans[k]*mat[i][k];
-		ans[j]=(ans[j]*power(mat[i][j],mod-2)%mod+mod)%mod;
-	}
-}
-\end{lstlisting}
-
-\subsection{蔡勒公式}
-
-$$w = (\lfloor \frac{c}{4} \rfloor - 2c + y + \lfloor \frac{y}{4} \rfloor + \lfloor \frac{13(m+1)}{5} \rfloor + d - 1) \text{ mod } 7$$
-
-\ding{172} $w$ ： 0星期日，1星期一，$\cdots$，6星期六；
-\ding{173} $c$ ： 年份前两位数；
-\ding{174} $y$ ： 年份后两位数；
-\ding{175} $m$ ： 月（ $3 \leq m \leq 14$ ，即在蔡勒公式中，1、2月要看作上一年的13、14月来计算 ）；
-\ding{176} $d$ ： 日。
-
-\subsection{皮克定理}
-
-给定顶点坐标均是整点（或正方形格点）的简单多边形（凸多边形），皮克定理说明了其面积 $S$ 和内部格点数目 $n$ 、边上格点数目 $s$ 的关系： $S = n + \frac{s}{2} + 1$ 。
-
-
-\section{计算几何}
-
-\subsection{凸包}
-\begin{lstlisting}
-bool cmp(const Point &a,const Point &b) {
-	return F(a.x-b.x)<0||F(a.x-b.x)==0&&a.y<b.y; }
-void Gram(int id[], int n) {
-	int i,mid; sort(id,id+n,cmp); tp=0; //凸包从x最小的点出发，逆时针方向
-     for (i=0;i<n;i++) {
-         for (;tp>=2&&Cross(p[sk[tp-1]]-p[sk[tp-2]],p[id[i]]-p[sk[tp-1]])<=0;tp--); 
-		//有重点必须用<=不留共线点，无重点用<=不留共线点，无重点用<留共线点
-         sk[tp++]=id[i];
-     }
-     mid=tp;
-     for (i=n-2;i>=0;i--) {
-         for (;tp>mid&&Cross(p[sk[tp-1]]-p[sk[tp-2]],p[id[i]]-p[sk[tp-1]])<=0;tp--); 
-		//有重点必须用<=不留共线点，无重点用<=不留共线点，无重点用<留共线点
-         sk[tp++]=id[i];
-     }
-     if  (n>1) tp--;
-}
-\end{lstlisting}
-
-\subsection{定义}
-\begin{lstlisting}
-struct Point { double x,y; Point(){} Point(double _x,double _y):x(_x),y(_y){} };
-struct Seg { Point a,b; Seg(){} Seg(Point _a,Point _b):a(_a),b(_b){} };
-struct Circle { double x,y,r;
-	Point pt() { return Point(x,y); }
-	double Area() { return pi*r*r; }
-};
-Point operator +(const Point &a,const Point &b);
-Point operator -(const Point &a,const Point &b);
-Point operator *(const Point &a,double b);
-Point operator /(const Point &a,double b);
-int F(double x) { if (x>eps) return 1; if (x<-eps) return -1; return 0; }
-bool operator ==(const Point &a,const Point &b) {
-	return F(a.x-b.x)==0&&F(a.y-b.y)==0; }
-double Dist(const Point &a) { return sqrt(a.x*a.x+a.y*a.y); }
-double Dot(const Point &a,const Point &b) { return a.x*b.x+a.y*b.y; }
-double Cross(const Point &a,const Point &b) { return a.x*b.y-a.y*b.x; }
-Point Rotate(const Point &p,double a) { // 逆时针旋转
-	return Point(p.x*cos(a)-p.y*sin(a),p.x*sin(a)+p.y*cos(a)); }
-Point Inter(Seg a,Seg b) { // 两线段相交（前提有交点）
-	double s=Cross(a.b-a.a,b.a-a.a),t=Cross(a.b-a.a,b.b-a.a);
-	return b.a+(b.b-b.a)*s/(s-t); }
-vector<Point> SegCir(Seg seg,Point pt,double r) { //线圆
-	vector<Point> ans; double mul; Point vec,mid;
-	ans.clear(); vec=Rotate(seg.b-seg.a,pi/2);
-	mid=Inter(seg,Seg(pt,pt+vec));
-	if (F(Dist(pt-mid)-r)>0) return ans;
-	if (F(Dist(pt-mid)-r)==0) {
-		ans.push_back(mid); ans.push_back(mid); return ans;
-	}
-	vec=seg.b-seg.a; mul=sqrt(r*r-Dist2(mid-pt))/Dist(vec);
-	ans.push_back(mid+vec*mul); ans.push_back(mid-vec*mul);
-	return ans;
-}
-vector<Point> Circir(Circle a,Circle b) { //圆圆相交
-	vector<Point> ans; double dis,dis2,alpha; Point pa,pb,vec;
-	ans.clear(); if (a.r<b.r) swap(a,b);
-	pa=a.pt(); pb=b.pt(); vec=pb-pa;
-	dis=Dist(vec); dis2=Dist2(vec);
-	if (F(dis-(a.r+b.r))>0||F(dis-(a.r-b.r))<0) return ans;
-	if (F(dis-(a.r+b.r))==0) {
-		ans.push_back(pa+vec*a.r/(a.r+b.r)); return ans;
-    }
-	if (F(dis-(a.r-b.r))==0) {
-		ans.push_back(pa+vec*a.r/(a.r-b.r)); return ans;
-	}
-	alpha=acos((a.r*a.r+dis2-b.r*b.r)/2/a.r/dis);
-	ans.push_back(pa+Rotate(vec,alpha)*a.r/dis);
-	ans.push_back(pa+Rotate(vec,-alpha)*a.r/dis);
-	return ans;
-}
-double Bing(double ra,double rb,double dis) {
-	double alpha,beta; if (ra<rb) swap(ra,rb);
-	if (F(dis-(ra-rb))<=0) return pi*ra*ra;
-	if (F(dis-(ra+rb))>=0) return pi*ra*ra+pi*rb*rb;
-	alpha=acos((ra*ra+dis*dis-rb*rb)/2/dis/ra);
-	beta=acos((rb*rb+dis*dis-ra*ra)/2/dis/rb);
-	return (pi-alpha)*ra*ra+(pi-beta)*rb*rb+ra*dis*sin(alpha);
-}
-double Jiao(double ra,double rb,double dis) {
-	return pi*ra*ra+pi*rb*rb-Bing(ra,rb,dis); }
-Point Gongmid(Circle a,Circle b) { //正确性待定
-	Point pa=a.pt(),pb=b.pt();
-	return pa+(pb-pa)*a.r/(a.r+b.r); }
-Point Gongright(Circle a,Circle b) {
-	Point pa=a.pt(),pb=b.pt();
-	return pa+(pb-pa)*a.r/(a.r-b.r); }
-int Ptinpol(Point pt) {
-	int wn=0;
-    for(int i=0;i<n;i++) {
-        if(Ins(pt,Seg(p[i],p[(i+1)%n]))) return 2;
-        int k=F(Cross(p[(i+1)%n]-p[i],pt-p[i]));
-        int d1=F(p[i].y-pt.y), d2=F(p[(i+1)%n].y-pt.y);
-        if(k>0&&d1<=0&&d2>0)wn++;
-        if(k<0&&d2<=0&&d1>0)wn--;
-    }
-    return wn!=0;
-}
-bool Cirinpol(Point pt) { //需要点在多边形内的前提
-	double nearest=inf;
-	for (int i=0;i<n;i++) {
-		nearest=min(nearest,Dist(p[i]-pt));
-		if  (F(Dot(pt-p[i],p[(i+1)%n]-p[i]))>0&&
-			F(Dot(pt-p[(i+1)%n],p[i]-p[(i+1)%n]))>0)
-		nearest=min(nearest,abs(Cross(p[i]-pt,p[(i+1)%n]-pt))/dis[i]);
-	}
-	return F(nearest-r)>=0;
-}
-bool Ins(const Point &p,const Seg &s) {
-	return F(Cross(s.a-p,s.b-p))==0&&F(p.x-min(s.a.x,s.b.x))>=0&&
-		F(p.x-max(s.a.x,s.b.x))<=0&&F(p.y-min(s.a.y,s.b.y))>=0&&
-		F(p.y-max(s.a.y,s.b.y))<=0; }
-double PS(const Point &p,const Seg &s) { // 点到线段最短距离
-	if (F(Dot(p-s.a,s.b-s.a))<0||F(Dot(p-s.b,s.a-s.b))<0)
-		return min(Dist(p-s.a),Dist(p-s.b));
-	return abs(Cross(s.a-p,s.b-p))/Dist(s.a-s.b); }
-double SS(const Seg &a,const Seg &b) { // 线段到线段最短距离
-	return min(min(PS(a.a,b),PS(a.b,b)),min(PS(b.a,a),PS(b.b,a))); }
-double Alpha(Point a,Point b) {
-	double ans=atan2(b.y,b.x)-atan2(a.y,a.x);
-	if (ans<0) ans=-ans; if (ans>pi) ans=2*pi-ans; return ans; }
-double Shan(Circle c,double a) { return c.r*c.r*a/2; }
-\end{lstlisting}
-
-\subsection{半平面交}
-\begin{lstlisting}
-bool Cmphp(Seg a,Seg b) {
-	Point va=a.b-a.a, vb=b.b-b.a;
-    double dega=atan2(va.y,va.x), degb=atan2(vb.y,vb.x);
-	return F(dega-degb)<0||F(dega-degb)==0&&Cross(a.b-a.a,b.a-a.a)<0;
-}
-void HalfPlane(Seg hp[], int n, Point pol[], int &pols) {
-	Point mid;
-	hp[n++]=Seg(Point(-oo,-oo),Point(oo,-oo));
-	hp[n++]=Seg(Point(oo,-oo),Point(oo,oo));
-	hp[n++]=Seg(Point(oo,oo),Point(-oo,oo));
-	hp[n++]=Seg(Point(-oo,oo),Point(-oo,-oo));
-	sort(hp,hp+n,Cmphp);
-	int tp=0, low=0, high=-1; //sk 0~tp-1
-	for (int i=0;i<n;i++)
-	if (high-low+1==0||F(Cross(sk[high].b-sk[high].a,hp[i].b-hp[i].a))) {
-		for (;low<high;high--) {
-			mid=Inter(sk[high],sk[high-1]);
-			if (F(Cross(hp[i].b-hp[i].a,mid-hp[i].a))>0) break;
-		}
-		for (;low<high;low++) {
-			mid=Inter(sk[low],sk[low+1]);
-			if (F(Cross(hp[i].b-hp[i].a,mid-hp[i].a))>0) break;
-		}
-		sk[++high]=hp[i];
-	}
-	for (;low<high;high--) {
-		mid=Inter(sk[high],sk[high-1]);
-		if (Cross(sk[low].b-sk[low].a,mid-sk[low].a)>0) break;
-	}
-	tp=high-low+1; for (int i=0;i<tp;i++) sk[i]=sk[low+i];
-	pols=0; if  (tp<=2) return;
-	for (int i=0;i<tp;i++) pol[pols++]=Inter(sk[i],sk[(i+1)%tp]);
-}
-\end{lstlisting}
-
-\subsection{圆与多边形交集}
-\begin{lstlisting}
-double CT(Circle c,Point a,Point b) { // 圆与三角形交（多边形）
-	double da=Dist(a-c.pt()), db=Dist(b-c.pt());
-	if (da>db) { swap(a,b); swap(da,db); }
-	Seg s=Seg(a,b);
-	vector<Point> temp=CS(c,s);
-	if (F(db-c.r)<=0) return 0.5*abs(Cross(a-c.pt(),b-c.pt()));
-	if (F(da-c.r)<0) {
-		if (F(Dot(a-temp[1],b-temp[1]))<0) swap(temp[0],temp[1]);
-		return Shan(c,Alpha(temp[0]-c.pt(),b-c.pt()))+
-			0.5*abs(Cross(a-c.pt(),temp[0]-c.pt()));
-	}
-	if (!temp.size()) return Shan(c,Alpha(a-c.pt(),b-c.pt()));
-	if (Ins(temp[1],s)&&Dist2(a-temp[1])<Dist2(a-temp[0])) swap(temp[0],temp[1]);
-	if (Ins(temp[0],s)&&Ins(temp[1],s)) {
-		return Shan(c,Alpha(a-c.pt(),temp[0]-c.pt()))+
-			Shan(c,Alpha(b-c.pt(),temp[1]-c.pt()))+
-			0.5*abs(Cross(temp[0]-c.pt(),temp[1]-c.pt()));
-	}
-	return Shan(c,Alpha(a-c.pt(),b-c.pt()));
-}
-\end{lstlisting}
-
-\subsection{三角形面积并}
-\begin{lstlisting}
-#define pr pair<ld,ld>
-typedef long double ld;
-const ld EPS=1e-8, INF=1e100;
-struct Point {
-	ld x,y; Point(){} Point(ld _,ld __):x(_),y(__){}
-	void read() { double _x,_y; scanf("%lf%lf",&_x,&_y); x=_x,y=_y; }
-	friend bool operator<(Point a,Point b) {
-		if(fabs(a.x-b.x)<EPS) return a.y<b.y;
-        return a.x<b.x;
-    }
-	friend Point operator +(Point a,Point b) { return Point(a.x+b.x,a.y+b.y); }
-	friend Point operator -(Point a,Point b) { return Point(a.x-b.x,a.y-b.y); }
-	friend Point operator *(ld a,Point b) { return Point(a*b.x,a*b.y); }
-	friend ld operator *(Point a,Point b) { return a.x*b.x+a.y*b.y; }
-	friend ld operator ^(Point a,Point b) { return a.x*b.y-a.y*b.x; }
-} a[N][3],Poi[N*N];
-struct Line {
-    Point p,v; Line(){} Line(Point x,Point y){p=x,v=y-x;}
-	Point operator [](int k) { if(k) return p+v; else return p; }
-	friend bool Cross(Line a,Line b) {
-		return (a.v^b[0]-a.p)*(a.v^b[1]-a.p)<-EPS &&
-			(b.v^a[0]-b.p)*(b.v^a[1]-b.p)<-EPS;
-	}
-	friend Point getP(Line a,Line b) {
-		Point u=a.p-b.p; ld temp=(b.v^u)/(a.v^b.v);
-		return a.p+temp*a.v;
-	}
-}l[N][3],T;
-pr p[N];
-int main() {
-	int n,m,i,j,k,x,y,cnt,tot;
-	ld ans,last,A,B,sum;
-	scanf("%d",&n);
-	for(i=1,tot=0;i<=n;i++) {
-		a[i][0].read(),a[i][1].read(),a[i][2].read();
-		Poi[++tot]=a[i][0],Poi[++tot]=a[i][1],Poi[++tot]=a[i][2];
-		sort(a[i],a[i]+3);
-		if((a[i][2]-a[i][0]^a[i][1]-a[i][0])>EPS)
-			l[i][0]=Line(a[i][0],a[i][2]),l[i][1]=Line(a[i][2],a[i][1]),l[i][2]=Line(a[i][1],a[i][0]);
-		else
-			l[i][0]=Line(a[i][2],a[i][0]),l[i][1]=Line(a[i][1],a[i][2]),l[i][2]=Line(a[i][0],a[i][1]);
-    }
-	for(i=1;i<=n;i++) for(j=1;j<i;j++) for(x=0;x<3;x++) for(y=0;y<3;y++)
-		if(Cross(l[i][x],l[j][y])) Poi[++tot]=getP(l[i][x],l[j][y]);
-	sort(Poi+1,Poi+tot+1);
-	ans=0,last=Poi[1].x; T=Line(Point(0,-INF),Point(0,INF));
-	for(i=2;i<=tot;i++) {
-        T.p.x=(last+Poi[i].x)/2;
-        for(j=1,cnt=0;j<=n;j++)
-            if(Cross(l[j][0],T)) {
-                if(Cross(l[j][1],T)) B=getP(l[j][1],T).y;
-                else B=getP(l[j][2],T).y;
-                A=getP(l[j][0],T).y; if (A>B) swap(A,B);
-                p[++cnt]=pr(A,B);
-            }
-        sort(p+1,p+cnt+1);
-        for(j=1,sum=0,A=-INF;j<=cnt;j++) {
-            if(p[j].first>A) sum+=p[j].second-p[j].first, A=p[j].second;
-            else if(p[j].second>A) sum+=p[j].second-A, A=p[j].second;
-        }
-		ans+=(Poi[i].x-last)*sum; last=Poi[i].x;
-	}
-	printf("%.2lf\n",(double)ans);
-}
-\end{lstlisting}
-
-\subsection{K圆并}
-\begin{lstlisting}
-#define sqr(x) ((x)*(x))
-const double eps = 1e-8;
-double area[N]; int n;
-int dcmp(double x) { if (x < -eps) return -1; else return x > eps; }
-struct cp { double x, y, r, angle; int d;
-	cp(){} cp(double xx, double yy, double ang = 0, int t = 0) {
-		x = xx;  y = yy;  angle = ang;  d = t; }
-	void get() { scanf("%lf%lf%lf", &x, &y, &r); d = 1; }
-}cir[N], tp[N * 2];
-double dis(cp a, cp b) { return sqrt(sqr(a.x - b.x) + sqr(a.y - b.y)); }
-double cross(cp p0, cp p1, cp p2) {
-	return (p1.x - p0.x) * (p2.y - p0.y) - (p1.y - p0.y) * (p2.x - p0.x); 
-}
-int CirCrossCir(cp p1, double r1, cp p2, double r2, cp &cp1, cp &cp2) {
-    double mx = p2.x - p1.x, sx = p2.x + p1.x, mx2 = mx * mx;
-    double my = p2.y - p1.y, sy = p2.y + p1.y, my2 = my * my;
-    double sq = mx2 + my2, d = -(sq - sqr(r1 - r2)) * (sq - sqr(r1 + r2));
-    if (d + eps < 0) return 0; if (d < eps) d = 0; else d = sqrt(d);
-    double x = mx * ((r1 + r2) * (r1 - r2) + mx * sx) + sx * my2;
-    double y = my * ((r1 + r2) * (r1 - r2) + my * sy) + sy * mx2;
-    double dx = mx * d, dy = my * d; sq *= 2;
-    cp1.x = (x - dy) / sq; cp1.y = (y + dx) / sq;
-    cp2.x = (x + dy) / sq; cp2.y = (y - dx) / sq;
-    if (d > eps) return 2; else return 1;
-}
-bool circmp(const cp& u, const cp& v) { return dcmp(u.r - v.r) < 0; }
-bool cmp(const cp& u, const cp& v) {
-    if (dcmp(u.angle - v.angle)) return u.angle < v.angle;
-    return u.d > v.d;
-}
-double calc(cp cir, cp cp1, cp cp2) {
-    double ans = (cp2.angle - cp1.angle) * sqr(cir.r)
-        - cross(cir, cp1, cp2) + cross(cp(0, 0), cp1, cp2);
-    return ans / 2;
-}
-void CirUnion(cp cir[], int n) {
-    cp cp1, cp2; sort(cir, cir + n, circmp);
-    for (int i = 0; i < n; ++i) for (int j = i + 1; j < n; ++j)
-        if (dcmp(dis(cir[i], cir[j]) + cir[i].r - cir[j].r) <= 0) cir[i].d++;
-	for (int i = 0; i < n; ++i) {
-		int tn = 0, cnt = 0;
-		for (int j = 0; j < n; ++j) {
-			if (i == j) continue;
-            if (CirCrossCir(cir[i],cir[i].r,cir[j],cir[j].r,cp2,cp1)<2) continue;
-            cp1.angle = atan2(cp1.y - cir[i].y, cp1.x - cir[i].x);
-            cp2.angle = atan2(cp2.y - cir[i].y, cp2.x - cir[i].x);
-            cp1.d = 1; tp[tn++] = cp1; cp2.d = -1; tp[tn++] = cp2;
-            if (dcmp(cp1.angle - cp2.angle) > 0) cnt++;
-        }
-        tp[tn++] = cp(cir[i].x - cir[i].r, cir[i].y, pi, -cnt);
-        tp[tn++] = cp(cir[i].x - cir[i].r, cir[i].y, -pi, cnt);
-        sort(tp, tp + tn, cmp);
-        int p, s = cir[i].d + tp[0].d;
-        for (int j = 1; j < tn; ++j) {
-            p = s;  s += tp[j].d;
-            area[p] += calc(cir[i], tp[j - 1], tp[j]);
-        }
-    }
-}
-void solve() {
-    for (int i = 0; i < n; ++i) cir[i].get();
-    memset(area, 0, sizeof(area));
-    CirUnion(cir, n);
-    for (int i = 1; i <= n; ++i) {
-        area[i] -= area[i + 1];
-        printf("[%d] = %.3lf\n", i, area[i]);
-    }
-}
-\end{lstlisting}
-
-\subsection{三维计算几何}
-\begin{lstlisting}
-Point Cross(Point a,Point b) {
-	return Point(a.y*b.z-a.z*b.y,a.z*b.x-a.x*b.z,a.x*b.y-a.y*b.x); }
-double Crossxy(Point a,Point b) { return a.x*b.y-a.y*b.x; }
-vector<Point> SegPlane(Seg seg,Plane p) {
-	vector<Point> ans; ans.clear();
-	Point fa=Cross(p.b-p.a,p.c-p.a);
-	if  (F(Dot(fa,seg.b-seg.a))==0) return ans;
-	double s=Dot(p.a-seg.a,fa)/Dist(fa), t=Dot(p.a-seg.b,fa)/Dist(fa);
-	ans.push_back(seg.a+(seg.b-seg.a)*s/(s-t));
-	return ans;
-}
-// mixed product
-double Mix(Point3 a,Point3 b,Point3 c) { return Dot(Cross(a,b),c); }
-double PP(Point3 pt,Plane pl) { // distance from point to plane
-	Point3 fa=Cross(pl.b-pl.a,pl.c-pl.a);
-	return abs(Dot(fa,pt-pl.a))/Dist(fa);
-}
-// get the center point from 3D(need plane well prepared)
-Point3 Getcenter(Point3 p[],int n,Plane pp[],int nn) {
-	double sumv=0;
-	Point3 sum=Point3(0,0,0);
-	for (int i=0;i<nn;i++)
-	{
-		double tempv=Mix(pp[i].b-pp[i].a,pp[i].c-pp[i].a,Point3(0,0,0)-pp[i].a);
-		sum=sum+(pp[i].a+pp[i].b+pp[i].c)*tempv/4.0;
-		sumv+=tempv;
-	}
-	return sum/sumv;
-}
-\end{lstlisting}
-
-\section{黑科技和杂项}
+\section{杂项}
 
 \subsection{读入优化}
 
@@ -1840,7 +1857,7 @@ inline int RD(T &x) {
 }
 \end{lstlisting}
 
-\section{Vim}
+\subsection{Vim}
 
 \begin{lstlisting}
 syntax on
@@ -1856,7 +1873,7 @@ inoremap <C-h> <left>
 inoremap <C-l> <right>
 \end{lstlisting}
 
-\section{Java}
+\subsection{Java}
 
 \begin{lstlisting}[language=java]
 头文件
