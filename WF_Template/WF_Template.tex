@@ -29,7 +29,7 @@
 
 
 % \linespread{1.2}
-\geometry{left=2cm,right=1cm,top=1.5cm,bottom=0.5cm}
+\geometry{left=1.5cm,right=1cm,top=1.5cm,bottom=0.5cm}
 
 \makeatletter
 \patchcmd{\FV@SetupFont}
@@ -38,13 +38,14 @@
   {}{}
 \makeatother
 
-\small
-
 \lstset{basicstyle=\footnotesize\fontencoding{T1}\ttfamily,breaklines=true}
 \lstset{numbers=left,frame=shadowbox,tabsize=4}
 %\lstset{extendedchars=false}
 \begin{document}
 
+\small
+\titleformat{\section}{\normalsize\bfseries}{\thesection}{1em} {}
+\titleformat{\subsection}{\normalsize\bfseries}{\thesubsection}{1em} {}
 \twocolumn
 \setlength{\columnsep}{1.5cm}
 
@@ -391,6 +392,36 @@ LL p_root(LL p) {
 		if (tmp % i == 0) { a.push_back(i); while (tmp % i == 0) tmp /= i; }
 	if (tmp != 1) a.push_back(tmp);
 	LL g = 1; while (1) { if (g_test(g, p)) return g; ++g; }
+}
+\end{lstlisting}
+
+\subsection{FWT}
+给定长度为 $2^n$ 的序列 $A[0 \cdots 2^n-1], B[0 \cdots 2^n-1]$ ，求这两序列的
+\ding{172} $or$ 卷积： $C_k = \sum\limits_{i \ or \ j=k} A_iB_j$；
+\ding{173} $and$ 卷积： $C_k = \sum\limits_{i \ and \ j=k} A_iB_j$；
+\ding{174} $xor$ 卷积： $C_k = \sum\limits_{i \ xor \ j=k} A_iB_j$。
+\begin{lstlisting}[language=C++]
+void FWT(int *a, int n) {
+    for (int d = 1; d < n; d <<= 1)
+        for (int m = d << 1, i = 0; i < n; i += m)
+            for (int j = 0; j < d; ++j) {
+                int x = a[i + j], y = a[i + j + d];
+                //or: a[i + j + d] = x + y;
+                //and: a[i + j] = x + y;
+                //xor: a[i + j] = x + y, a[i + j + d] = x - y;
+                // 如答案要求取模，此处记得取模
+            }
+}
+void UFWT(int *a, int n) {
+    for (int d = 1; d < n; d <<= 1)
+        for (int m = d << 1, i = 0; i < n; i += m)
+            for (int j = 0; j < d; ++j) {
+                int x = a[i + j], y = a[i + j + d];
+                //or: a[i + j + d] = y - x;
+                //and: a[i + j] = x - y;
+                //xor: a[i + j] = (x + y) * 2^(-1), a[i + j + d] = (x - y) * 2^(-1);
+                // 如答案要求取模，此处记得取模；2^(-1)表示2的逆元。
+            }
 }
 \end{lstlisting}
 
