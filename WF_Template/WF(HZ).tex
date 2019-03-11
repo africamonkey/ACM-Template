@@ -1,0 +1,2171 @@
+\documentclass{article}
+\usepackage[UTF8]{ctex}
+
+\usepackage{geometry}
+\geometry{a4paper,scale=0.8}
+
+\usepackage{fontspec}
+\setmainfont{Consolas}
+
+\usepackage{listings}
+\lstset{
+	language=c++,
+	numbers=left,
+	frame=single,
+	tabsize=4,
+	breaklines=true,
+	basicstyle=\small
+}
+
+\usepackage{titletoc}
+\usepackage[toc]{multitoc}
+
+\titlecontents{section}
+  [1cm]{\bf\contentslabel{0.5cm}}{}{}
+  {\hspace{0.3cm}\itshape\contentspage}
+  
+\titlecontents{subsection}
+  [2.2cm]{\contentslabel{1.2cm}}{}{}
+  {\titlerule*[0.5pc]{$\cdot$}
+	\contentspage\hspace*{0.5cm}}
+
+\begin{document}
+
+\title{HZ的acm模板}
+\author{HZ}
+\maketitle
+\tableofcontents
+
+\section{基本内容}
+
+\subsection{debug}
+\begin{lstlisting}
+#define hz_debug
+#ifdef hz_debug
+	#define DB(x) cout<<"DB "#x" "<<(x)<<endl
+	#define readfile freopen("hz.in","r",stdin)
+#else
+	#define DB(x) {}
+	#define readfile {}
+#endif
+\end{lstlisting}
+
+\subsection{快速输入输出}
+\begin{lstlisting}
+// Fast getchar
+char B[1<<20],*S=B,*T=B;
+#define getchar() (S==T&&(T=(S=B)+fread(B,1,1<<20,stdin),S==T)?0:*S++)
+
+// Fast putchar
+char U[1<<20],*O=U,*W=U+(1<<20);
+#define putchar(c) (O==W?fwrite(U,1,1<<20,stdout),O=U,1:1,*O++=(c))
+#define clr_buf() (fwrite(U,1,O-U,stdout),O=U)
+// remember to clr_buf() before return 0 in the end
+
+// Fast Input
+#define isd(c) ((c)>='0'&&(c)<='9')
+IL char read(int &x){
+	static char c; static bool f;
+	x=0; c=getchar(); f=false;
+	while (!isd(c) && c!='-') c=getchar();
+	if (c=='-') { f=true; c=getchar(); }
+	while (isd(c)) { x=x*10+c-'0'; c=getchar(); }
+	if (f) x=-x;
+	return c;
+}
+IL char read(D &x){
+	static char c; static bool f;
+	x=0; c=getchar(); f=false;
+	while (!isd(c) && c!='-' && c!='.') c=getchar();
+	if (c=='-') { f=true; c=getchar(); }
+	while (isd(c)) { x=x*10+c-'0'; c=getchar(); }
+	if (c=='.') {
+		static D t; t=1; c=getchar();
+		while (isd(c)) { x+=(t/=10)*(c-'0'); c=getchar(); }
+	}
+	if (f) x=-x;
+	return c;
+}
+IL void read(char s[]){
+	*s=getchar();
+	while (*s==' '||*s=='\n') *s=getchar();
+	while (*s!=' '&&*s!='\n') *++s=getchar();
+	*s=0;
+}
+
+// Fast Output
+IL void write(int x){
+	if (x<0) { putchar('-'); x=-x; }
+	if (!x) { putchar('0'); return; }
+	static char c[64]; static int top; top=0;
+	while (x) { c[top++]='0'+x%10; x/=10; }
+	while (top) putchar(c[--top]);
+}
+IL void write(D x){
+	static LL t; t=LL(x*1e6+(x>=0?0.5:-0.5));
+	if (t<0) { putchar('-'); t=-t; }
+	static char c[64]; static int top; top=0;
+	while (t) { c[top++]='0'+t%10; t/=10; }
+	while (top<=6) c[top++]='0';
+	while (top>6) putchar(c[--top]);
+	putchar('.');
+	while (top) putchar(c[--top]);
+}
+IL void write(char s[]){
+	while (*s) putchar(*s++);
+}
+\end{lstlisting}
+
+\section{数学基础}
+
+\subsection{Miller Rabin}
+\begin{lstlisting}
+// 2,7,61 : < 4759123141
+// 2,3,5,7,11,13,17 : < 341550071728320
+// 2,3,7,61,24251 : < 10^16 only 46856248255981
+
+//BZOJ-3667
+#include<cstdio>
+#include<cstdlib>
+typedef long long ll;
+ll _,n,x,ans,st;
+ll gcd(ll x,ll y){return y==0?x:gcd(y,x%y);}
+#define abs(x) (x>0?x:-(x))
+#define cmax(a,b) (a<b?a=b:1)
+ll mul(ll a,ll b,ll p){
+    ll tmp=(a*b-(ll)((long double)a/p*b+1e-7)*p);
+    return tmp<0?tmp+p:tmp;
+}
+ll power(ll t,ll k,ll p){
+    ll f=1;
+    for(;k;k>>=1,t=mul(t,t,p))if(k&1)f=mul(f,t,p);
+    return f;
+}
+bool check(ll a,int k,ll p,ll q){
+    ll t=power(a,q,p);
+    if(t==1||t==p-1)return 1;
+    for(;k--;){
+        t=mul(t,t,p);
+        if(t==p-1)return 1;
+    }
+    return 0;
+}
+bool mr(ll p){
+    if(p<=1)return 0;
+    if(p==2)return 1;
+    if(~p&1)return 0;
+    ll q=p-1;int i,k=0;
+    while(~q&1)q>>=1,k++;
+    for(i=0;i<5;i++)
+    if(!check(rand()%(p-1)+1,k,p,q))return 0;
+    return 1;
+}
+ll rho(ll n,ll c){
+    ll x=rand()%n,y=x,p=1;
+    while(p==1)
+        x=(mul(x,x,n)+c)%n,
+        y=(mul(y,y,n)+c)%n,
+        y=(mul(y,y,n)+c)%n,
+        p=gcd(n,abs(x-y));
+    return p;
+}
+void solve(ll n){
+    if(n==1)return;
+    if(mr(n)){cmax(ans,n);return;}
+    if(~n&1)cmax(ans,2),solve(n>>1);
+    else{
+        ll t=n;
+        while(t==n)t=rho(n,rand()%(n-1)+1);
+        solve(t),solve(n/t);
+    }
+}
+int main(){
+    for(srand(1626),scanf("%lld",&_);_--;){
+        scanf("%lld",&x),ans=0;solve(x);
+        if(ans==x)puts("Prime");
+        else printf("%lld\n",ans);
+    }
+}
+\end{lstlisting}
+
+\subsection{同余方程}
+\begin{lstlisting}
+void gcd(LL a, LL b, LL &d, LL &x, LL &y){
+	if (!b){ d=a; x=1; y=0; return; }
+	gcd(b,a%b,d,y,x); y-=x*(a/b);
+}
+IL void sim(LL &a, LL n) { a%=n; if (a<0) a+=n; }
+IL LL solve(LL a, LL b, LL n){  // a*x==b (mod n)
+	sim(a,n); sim(b,n);  // optional
+	static LL d,x,y;
+	gcd(a,n,d,x,y);
+	if (b%d) return -1;
+	b/=d; n/=d;
+	if (x<0) x+=n;
+	return b*x%n;
+}
+// x==a1 (mod n1); x==a2 (mod n2);
+// passing gcd in solve can reduce time 
+void merge(LL a1, LL n1, LL a2, LL n2, LL &x, LL &n){
+	n=lcm(n1,n2);
+	LL k=solve(n1,a2-a1,n2);
+	if (k==-1) { x=-1; return; }
+	sim(x=n1*k+a1,n);
+}
+// getinv , gcd(a,n) must be 1
+IL LL getinv(LL a, LL n){
+	static LL d,x,y;
+	gcd(a,n,d,x,y);
+	// if (d!=1) return -1;
+	return x<0?x+n:x;
+}
+\end{lstlisting}
+
+\subsection{线性筛法}
+\begin{lstlisting}
+const int N=100050;
+int b[N],a[N],cnt,mx[N],phi[N],mu[N];
+
+void getprime(int n=100000){
+	memset(b+2,1,sizeof(b[0])*(n-1));
+	mu[1]=1;
+	ft(i,2,n){
+		if (b[i]){
+			a[mx[i]=++cnt]=i;
+			phi[i]=i-1; mu[i]=-1;
+		}
+		ft(j,1,mx[i]){
+			int k=i*a[j];
+			if (k>n) break;
+			b[k]=0; mx[k]=j;
+			phi[k]= phi[i]*(a[j]-(j!=mx[i]));
+			mu[k]= j==mx[i] ? 0 : -mu[i];
+		}
+	}
+}
+\end{lstlisting}
+
+\subsection{离散对数}
+\begin{lstlisting}
+// BSGS , a^x==b (mod n) , n is a prime
+LL bsgs(LL a, LL b, LL n){
+	int m=sqrt(n+0.5);
+	LL p=power(a,m,n);
+	LL v=getinv(p,n);
+	static hash_map x;
+	x.clear();
+	LL e=1; x[e]=0;
+	ft(i,1,m){
+		e=e*a%n;
+		if (!x.count(e)) x[e]=i;
+	}
+	for(LL i=0;i<n;i+=m){
+		if (x.count(b)) return i+x[b];
+		b=b*v%n;
+	}
+	return -1;
+}
+
+//BSGS
+//y^x==z (mod p) ->x=?
+scanf("%d%d%d",&y,&z,&p),y%=p,z%=p;j=z;
+if(y==0){puts("Cannot find x");continue;}
+for(k=s=1;k*k<=p;k++);
+std::map<int,int>hash;flag=0;
+for(int i=0;i<k;i++,s=1LL*s*y%p,j=1LL*j*y%p)hash[j]=i;
+for(int i=1,j=s;i<=k&&!flag;i++,j=1LL*j*s%p)
+if(hash.count(j))ans=i*k-hash[j],flag=1;
+if(flag==0)puts("Cannot find x");
+else printf("%d\n",ans);
+
+//exBSGS
+int bsgs(int a,ll b,int p){
+    if(a%=p,b%=p,b==1)return 0;
+    ll t=1;int f,g,delta=0,m=sqrt(p)+1,i;
+    for(g=gcd(a,p);g!=1;g=gcd(a,p)){
+        if(b%g)return -1;
+        b/=g,p/=g,t=t*(a/g)%p,delta++;
+        if(b==t)return delta;
+    }
+    std::map<int,int>hash;
+    for(i=0;i<m;i++,b=b*a%p)hash[b]=i;
+    for(i=1,f=power(a,m);i<=m+1;i++)
+    if(t=t*f%p,hash.count(t))return i*m-hash[t]+delta;
+    return -1;
+}
+\end{lstlisting}
+
+\subsection{Lucas}
+\begin{lstlisting}
+void init_Lucas(){
+	fac[0]=1; ft(i,1,P-1) fac[i]=fac[i-1]*i%P;
+	inv[1]=1; ft(i,2,P-1) inv[i]=(P-P/i)*inv[P%i]%P;
+	inv[0]=1; ft(i,1,P-1) inv[i]=inv[i-1]*inv[i]%P;
+}
+IL LL C(int n, int m){
+	LL ans=1;
+	while (n||m){
+		int a=n%P, b=m%P;
+		if (a<b) return 0;
+		n/=P; m/=P;
+		ans= ans *fac[a]%P *inv[b]%P *inv[a-b]%P;
+	}
+	return ans;
+}
+\end{lstlisting}
+
+\subsection{高斯消元}
+\begin{lstlisting}
+int i=1, j=1;
+while (i<=n && j<=m){
+	int k=i;
+	while (k<=n && a[k][j].x==0) k++;
+	if (k>n) { j++; continue; }
+	if (k!=i) ft(t,j,m) swap(a[i][t],a[k][t]);
+	
+	ft(p,j+1,m) a[i][p]=a[i][p]/a[i][j];
+	a[i][j]=(R){1,1};
+	
+	ft(t,1,n) if (t!=i && a[t][j].x){
+		ft(p,j+1,m) a[t][p]=a[t][p]-a[i][p]*a[t][j];
+		a[t][j]=(R){0,1};
+	}
+	i++; j++;
+}
+
+// xor equations
+int n,m;
+bitset<N> a[N];
+bool solve(){
+	int i=1, j=1;	
+	while (i<=n && j<=m){
+		int k=i;
+		while (k<=n && !a[k][j]) k++;
+		if (k>n) { j++; continue; }
+		if (j==m) return false;  // no solution
+		if (k!=i) swap(a[i],a[k]);
+		ft(t,1,n) if (t!=i && a[t][j]) a[t]^=a[i];
+		i++; j++;
+	}
+	return true; // have solution (but may have 0==0)
+}
+// no solution : have 1==0
+// have solution : no 1==0 (but may have 0==0)
+// have solution can be dependent or independent
+\end{lstlisting}
+
+\subsection{数论前缀和}
+\begin{lstlisting}
+LL sdx(LL n){
+	LL s=0, i=1;
+	while (i<=n){
+		LL j=n/(n/i);
+		s+=(j-i+1)*(n/i);
+		i=j+1;
+	}
+	return s;
+}
+LL ssx(LL n){
+	LL s=0, i=1;
+	while (i<=n){
+		LL j=n/(n/i);
+		s += (i+j)*(j-i+1)/2 * (n/i);
+		i=j+1;
+	}
+	return s;
+}
+\end{lstlisting}
+
+\subsection{瀚之的莫比乌斯}
+\begin{lstlisting}
+void getprime(int n){
+	miu[1]=pre[1]=b[1]=1;
+	for(int i=2;i<=n;i++){
+		if(!b[i]) p[mx[i]=++cnt]=i, miu[i]=-1;
+		for(int j=1;j<=mx[i];j++){
+			int k=i*p[j]; if(k>n) break;
+			b[k]=1; mx[k]=j;
+			if(j==mx[i]) miu[k]=0;
+				else miu[k]=miu[i]*miu[p[j]];
+		}
+		pre[i]=pre[i-1]+i*miu[i];
+	}
+}
+ll f(int n,int m){return 1ll*n*m*(n+m+2)/2;} 
+ll calc(int n,int m){ // sigma{ i+j | i<=n,j<=m,gcd(i,j)==1 }
+	if(n>m) swap(n,m); ll ans=0;
+	for(int i=1,j=0,k=0;i<=n;i=min(j,k)+1)
+		ans+=(pre[min(j=n/(n/i),k=m/(m/i))]-pre[i-1])*f(n/i,m/i);
+	return ans;
+}
+\end{lstlisting}
+
+\subsection{FFT和NTT}
+\begin{lstlisting}
+#define PP const P &
+struct P { double x,y; };
+P OP+ (PP a, PP b) { return (P){a.x+b.x, a.y+b.y}; }
+P OP- (PP a, PP b) { return (P){a.x-b.x, a.y-b.y}; }
+P OP* (PP a, PP b) { return (P){a.x*b.x-a.y*b.y, a.x*b.y+a.y*b.x}; }
+P w1[N],w2[N];
+int rev[N];
+void initfft(int n){
+	int k=0, nn=n>>1;
+	while (nn){ nn>>=1; k++; }
+	double t=pi*2/n;
+	ft(i,0,n-1){
+		rev[i]=(rev[i>>1]>>1)+((i&1)<<(k-1));
+		w1[i]=w2[(n-i)%n]=(P){cos(t*i),sin(t*i)};
+	}
+}
+void fft(int n, P a[], P w[]){
+	ft(i,0,n-1) if (i<rev[i]) swap(a[i],a[rev[i]]);
+	for(int k=1;k<n;k<<=1)
+	for(int i=0;i<n;i+=k<<1)
+	for(int j=0;j<k;j++){
+		P t1=a[i+j], t2=a[i+j+k]*w[n/(k<<1)*j];
+		a[i+j]=t1+t2; a[i+j+k]=t1-t2;
+	}
+}
+// rdft : a[i]/=n;
+// NTT : g=power(3,(P-1)/n); w1[0]=1; w1[i]=w1[i-1]*g%P;
+\end{lstlisting}
+
+\subsection{FFT模任意质数}
+\begin{lstlisting}
+//luoguP4245 【模板】MTT
+给定2个多项式F(x),G(x)，请求出F(x)*G(x)F(x)。
+系数对p取模，且不保证p可以分解成p=a*2^k+1之形式。
+输入格式：
+输入共3行。
+第一行3个整数n,m,p，分别表示F(x),G(x)的次数以及模数p。
+第二行为n+1个整数，第i个整数a_i表示F(x)的i-1次项的系数。
+第三行为m+1个整数，第i个整数b_i表示G(x)的i-1次项的系数。
+输出格式：
+输出n+m+1个整数，第i个整数c_i表示F(x)*G(x)的i-1次项的系数。
+
+#include <...>
+const int N = 262144 + 10, M = 32767;
+const double pi = acos(-1.0);
+typedef long long LL;
+int read() { ... }
+struct cp {
+	double r, i;
+	cp(double _r = 0, double _i = 0) : r(_r), i(_i) {}
+	cp operator * (const cp &a) {return cp(r * a.r - i * a.i, r * a.i + i * a.r);}
+	cp operator + (const cp &a) {return cp(r + a.r, i + a.i);}
+	cp operator - (const cp &a) {return cp(r - a.r, i - a.i);}
+} w[N], nw[N], da[N], db[N];
+cp conj(cp a) { return cp(a.r, -a.i); }
+int L, n, m, a[N], b[N], c[N], R[N], P;
+void Pre() {
+	int x = 0; for(L = 1; (L <<= 1) <= n + m; ++x) ;
+	for(int i = 1;i < L; ++i) R[i] = (R[i >> 1] >> 1) | (i & 1) << x;
+	for(int i = 0;i < L; ++i) w[i] = cp(cos(2 * pi * i / L), sin(2 * pi * i / L));
+}
+void FFT(cp *F) {
+	for(int i = 0;i < L; ++i) if(i < R[i]) std::swap(F[i], F[R[i]]);
+	for(int i = 2, d = L >> 1;i <= L; i <<= 1, d >>= 1) 
+	for(int j = 0;j < L; j += i) {
+		cp *l = F + j, *r = F + j + (i >> 1), *p = w, tp;
+		for(int k = 0;k < (i >> 1); ++k, ++l, ++r, p += d) 
+		tp = *r * *p, *r = *l - tp, *l = *l + tp;
+	}
+}
+void Mul(int *A, int *B, int *C) {
+	for(int i = 0;i < L; ++i) (A[i] += P) %= P, (B[i] += P) %= P;
+	static cp a[N], b[N], Da[N], Db[N], Dc[N], Dd[N];
+	for(int i = 0;i < L; ++i) a[i] = cp(A[i] & M, A[i] >> 15);
+	for(int i = 0;i < L; ++i) b[i] = cp(B[i] & M, B[i] >> 15);
+	FFT(a); FFT(b);
+	for(int i = 0;i < L; ++i) {
+		int j = (L - i) & (L - 1); static cp da, db, dc, dd;
+		da = (a[i] + conj(a[j])) * cp(0.5, 0);
+		db = (a[i] - conj(a[j])) * cp(0, -0.5);
+		dc = (b[i] + conj(b[j])) * cp(0.5, 0);
+		dd = (b[i] - conj(b[j])) * cp(0, -0.5);
+		Da[j] = da * dc; Db[j] = da * dd; Dc[j] = db * dc; Dd[j] = db * dd; //顺便区间反转，方便等会直接用DFT代替IDFT 
+	}
+	for(int i = 0;i < L; ++i) a[i] = Da[i] + Db[i] * cp(0, 1);
+	for(int i = 0;i < L; ++i) b[i] = Dc[i] + Dd[i] * cp(0, 1);
+	FFT(a); FFT(b);
+	for(int i = 0;i < L; ++i) {
+		int da = (LL) (a[i].r / L + 0.5) % P; //直接取实部和虚部 
+		int db = (LL) (a[i].i / L + 0.5) % P;
+		int dc = (LL) (b[i].r / L + 0.5) % P;
+		int dd = (LL) (b[i].i / L + 0.5) % P;
+		C[i] = (da + ((LL)(db + dc) << 15) + ((LL)dd << 30)) % P; 
+	}
+}
+int main() {
+	n = read(); m = read(); P = read();
+	for(int i = 0;i <= n; ++i) a[i] = read();
+	for(int j = 0;j <= m; ++j) b[j] = read();
+	Pre(); Mul(a, b, c); 
+	for(int i = 0;i <= n + m; ++i) printf("%d ", (c[i] + P) % P); puts("");
+	return 0;
+}
+
+//三模数
+#include <...>
+#define LL long long
+const int MAXN = 3 * 1e6 + 10;
+using namespace std;
+inline int read() { ... }
+const int P1 = 469762049, P2 = 998244353, P3 = 1004535809, g = 3; 
+const LL PP = 1ll * P1 * P2;
+int N, M, P, limit = 1, L;
+int A[MAXN], B[MAXN], C[MAXN], D[MAXN], Ans[3][MAXN], r[MAXN];
+LL fastmul(LL a, LL b, LL mod) {
+	a %= mod, b %= mod;
+	return ((a * b - (LL)((LL)((long double)a / mod * b + 1e-3) * mod)) % mod + mod) % mod;
+}
+int fastpow(int a, int p, int mod) {
+	int base = 1;
+	while(p) {
+		if(p & 1) base = 1ll * a * base % mod;
+		a = 1ll * a * a % mod; p >>= 1;
+	}
+	return base % mod;
+} 
+void NTT(int *A, const int n, const int type, const int mod) {
+	for(int i = 0; i < n; i++)
+		if(i < r[i]) swap(A[i], A[r[i]]);
+	for(int mid = 1; mid < n; mid <<= 1) {
+		int W = fastpow(type == 1 ? g : fastpow(g, mod - 2, mod) , (mod - 1) / (mid << 1), mod);
+		for(int j = 0; j < n; j += (mid << 1)) {
+			int w = 1;
+			for(int k = 0; k <mid; k++, w = 1ll * w * W % mod) {
+				int x = A[j + k], y = 1ll * w * A[j + k + mid] % mod;
+				A[j + k] = (x + y) % mod,
+				A[j + k + mid] = (x - y + mod) % mod;
+			}
+		}
+	}
+	if(type == -1) {
+		int inv = fastpow(n, mod - 2, mod);
+		for(int i = 0; i < n; i++) 
+			A[i] = 1ll * A[i] * inv % mod;
+	}
+}
+int main() {
+	N = read(), M = read(), P = read();
+	for(int i = 0; i <= N; i++) A[i] = read();
+	for(int i = 0; i <= M; i++) B[i] = read();
+	
+	while(limit <= N + M) limit <<= 1, L++;
+	for(int i = 0; i <= limit; i++) r[i] = (r[i >> 1] >> 1) | ((i & 1) << (L - 1));
+	
+	copy(A, A + N + 1, C); copy(B, B + M + 1, D);
+	NTT(C, limit, 1, P1); NTT(D, limit, 1, P1);
+	for(int i = 0; i <= limit; i++) Ans[0][i] = 1ll * C[i] * D[i] % P1;
+	
+	memset(C, 0, sizeof(C)); memset(D, 0, sizeof(D));
+	copy(A, A + N + 1, C); copy(B, B + M + 1, D);
+	NTT(C, limit, 1, P2); NTT(D, limit, 1, P2);
+	for(int i = 0; i <= limit; i++) Ans[1][i] = 1ll * C[i] * D[i] % P2;
+	
+	memset(C, 0, sizeof(C)); memset(D, 0, sizeof(D));
+	copy(A, A + N + 1, C); copy(B, B + M + 1, D);
+	NTT(C, limit, 1, P3); NTT(D, limit, 1, P3);
+	for(int i = 0; i <= limit; i++) Ans[2][i] = 1ll * C[i] * D[i] % P3;
+	
+	NTT(Ans[0], limit, -1, P1);
+	NTT(Ans[1], limit, -1, P2);
+	NTT(Ans[2], limit, -1, P3);
+	
+	for(int i = 0; i <= N + M; i++) {
+		LL A = (fastmul(1ll * Ans[0][i] * P2 % PP, fastpow(P2 % P1, P1 - 2, P1), PP) + 
+				fastmul(1ll * Ans[1][i] * P1 % PP, fastpow(P1 % P2, P2 - 2, P2), PP) ) % PP;
+		LL K = ((Ans[2][i] - A) % P3 + P3) % P3 * fastpow(PP % P3, P3 - 2, P3) % P3;
+		printf("%lld ",(A % P + ((K % P) * (PP % P)) % P ) % P);		 
+	}
+	return 0;
+}
+\end{lstlisting}
+
+\subsection{线性递推(bzoj)}
+\begin{lstlisting}
+//BZOJ-4161
+给定数列 {hn} 前 k 项，其后每一项满足
+hn = a1*h(n-1) + a2*h(n-2) + ... + ak*h(n-k)
+其中 a1,a2...ak 为给定数列。请计算 h(n)，并将结果对 1000000007 取模输出。
+
+#include<cstdio>
+#define p 1000000007
+long long c[4010];
+int n,k,u[2010],ans,x;int cnt;
+struct P{int s[2010];}f,t;
+void mult(P&a,const P&b){
+    for(int i=0;i<k+k-1;i++)c[i]=0;
+    for(int i=0;i<k;i++)
+    for(int j=0;j<k;j++){
+        c[i+j]+=1LL*a.s[i]*b.s[j];
+        if(c[i+j]>=1LL<<62)c[i+j]%=p;
+    }
+    for(int i=k+k-2;~i;i--)
+    if(c[i]%=p,i>=k){
+        for(int j=0;j<k;j++){
+            c[i-1-j]+=c[i]*u[j];
+            if(c[i-1-j]>=1LL<<62)c[i-1-j]%=p;
+        }
+        c[i]=0;
+    }
+    for(int i=0;i<k;i++)a.s[i]=c[i];
+}
+int main(){
+    scanf("%d%d",&n,&k);
+    for(int i=0;i<k;i++)scanf("%d",u+i),u[i]%=p,u[i]<0?u[i]+=p:1;
+    for(t.s[1]=f.s[0]=1;n;n>>=1,mult(t,t))if(n&1)mult(f,t);
+    for(int i=0;i<k;i++)scanf("%d",&x),x%=p,x<0?x+=p:1,ans=(ans+1LL*x*f.s[i])%p;
+    printf("%d\n",ans);
+}
+\end{lstlisting}
+
+\subsection{求phi/mu前缀和}
+\begin{lstlisting}
+时间复杂度：O(n^{2/3})
+//BZOJ-3944（多组数据）
+#include <...>
+typedef long long ll;
+typedef unsigned U;
+const ll oo=1LL<<60;
+#define N 1<<22
+const int M=(1<<18)-1;
+int n,k,p[N],t,vis[N],T,a[20];ll phi[N],miu[N];
+class map{public:
+    int et,la[M+1];
+    struct E{int nxt;U x;ll ans;}e[1<<18];
+    inline ll find(U x){
+        for(int i=la[x&M];i;i=e[i].nxt)
+        if(e[i].x==x)return e[i].ans;
+        return -oo;
+    }
+    inline void ins(U x,ll ans){
+        e[++et]=(E){la[x&M],x,ans},la[x&M]=et;
+    }
+}_phi,_miu;
+ll getphi(U n){
+    if(n<=k)return phi[n];
+    ll ans=_phi.find(n);
+    if(ans!=-oo)return ans;ans=n*(n+1LL)/2;
+    for(U l=2,r;l<=n;l=r+1)r=n/(n/l),ans-=(r-l+1)*getphi(n/l);
+    return _phi.ins(n,ans),ans;
+}
+ll getmiu(U n){
+    if(n<=k)return miu[n];
+    ll ans=_miu.find(n);
+    if(ans!=-oo)return ans;ans=1;
+    for(U l=2,r;l<=n;l=r+1)r=n/(n/l),ans-=(r-l+1)*getmiu(n/l);
+    return _miu.ins(n,ans),ans;
+}
+int main(){
+    scanf("%d",&T);
+    for(int i=1;i<=T;i++)scanf("%d",a+i),n<a[i]?n=a[i]:1;
+    k=2.5*pow(n,2.0/3)+1;phi[1]=miu[1]=1;
+    for(int i=2;i<=k;i++){
+        if(!vis[i])p[++t]=i,phi[i]=i-1,miu[i]=-1;
+        for(int j=1;j<=t&&i*p[j]<=k;j++){
+            vis[i*p[j]]=1;
+            if(i%p[j]==0){
+                phi[i*p[j]]=phi[i]*p[j];
+                break;
+            }
+            phi[i*p[j]]=phi[i]*phi[p[j]],miu[i*p[j]]=-miu[i];
+        }
+    }
+    for(int i=2;i<=k;i++)phi[i]+=phi[i-1],miu[i]+=miu[i-1];
+    for(int i=1;i<=T;i++)printf("%lld %lld\n",getphi(a[i]),getmiu(a[i]));
+}
+\end{lstlisting}
+
+\section{字符串}
+
+\subsection{(扩展)KMP}
+\begin{lstlisting}
+// ne[1]=0; kmp(s+1, ne+1, s, ne);
+void kmp(char s1[], int ne1[], char s2[], int ne2[]){
+	for(int i=1,j=0; s1[i]; i++){
+        while (j && s1[i]!=s2[j+1]) j=ne2[j];
+        if (s1[i]==s2[j+1]) j++;
+        ne1[i]=j;
+    }
+}
+// extkmp(s+1, ext+1, s, ext);
+void extkmp(char s1[], int ext1[], char s2[], int ext2[]){
+	int k=1, j=0, len1=strlen(s1+1), len2=strlen(s2+1);
+	while (j<len1 && s1[j+1]==s2[j+1]) j++;
+	ext1[1]=j;
+	ft(i,2,len1){
+		int len=ext2[i-k+1];
+		if (i+len-1<j) ext1[i]=len;
+		else {
+			len=max(j-i+1,0);
+			while (len<len2 && s1[i+len]==s2[len+1]) len++;
+			ext1[i]=len;
+			k=i; j=i+len-1;
+		}
+	}
+}
+\end{lstlisting}
+
+\subsection{后缀数组}
+\begin{lstlisting}
+char s[N];
+int n,sa[N],rk[N<<1],c[N],x[N],h1[N],h2[N];
+#define CMP1 rk[sa[i]]==rk[sa[i-1]]
+#define CMP2 rk[sa[i]+k]==rk[sa[i-1]+k]
+void suffix_array(){
+	ft(i,1,n){ sa[i]=i; rk[i]=s[i]; }
+	for(int m=300,k=0; k<n; k?k<<=1:k++){
+		ft(i,1,m) c[i]=0;
+		ft(i,1,n) c[rk[i]]++;
+		ft(i,2,m) c[i]+=c[i-1];
+		int p=0;
+		ft(i,n-k+1,n) x[++p]=i;
+		ft(i,1,n) if (sa[i]>k) x[++p]=sa[i]-k;
+		fd(i,n,1) sa[c[rk[x[i]]]--]=x[i];
+		m=1; x[sa[1]]=1;
+		ft(i,2,n) x[sa[i]]= CMP1 && CMP2 ?m:++m;
+		ft(i,1,n) rk[i]=x[i];
+		if (m==n) break;
+	}
+	ft(i,1,n) if (rk[i]!=n){
+		int j=sa[rk[i]+1];
+		h1[i]=h1[i-1]?h1[i-1]-1:0;
+		while (s[i+h1[i]]==s[j+h1[i]]) h1[i]++;
+	}
+	ft(i,1,n-1) h2[i]=h1[sa[i]];
+	// h1[i]==lca(i,sa[rk[i]+1]);
+	// h2[i]==lca(sa[i],sa[i+1]);
+}
+void init_rmq(){
+	ft(i,1,n) f[0][i]=h2[i]=h1[sa[i]];
+	for(int i=0,k=1; k+k<=n; i++,k<<=1)
+		ft(j,1,n-k-k+1) f[i+1][j]=min(f[i][j],f[i][j+k]);
+	ft(len,1,n){
+		int i=0,k=1;
+		while (k+k<len) i++, k<<=1;
+		fi[len]=i; fk[len]=k;
+	}
+}
+int get_rmq(int l, int r){
+	int i=fi[r-l+1], k=fk[r-l+1];
+	return min(f[i][l],f[i][r-k+1]);
+}
+int lcp(int x, int y){
+	if (x==y) return n-x+1;
+	x=rk[x]; y=rk[y];
+	if (x>y) swap(x,y);
+	return get_rmq(x,y-1);
+}
+struct name {
+	int l,r;
+	int len() const { return r-l+1; }
+	char operator[] (int p) const {
+		return 1<=p && p<=len() ? s[l+p-1] : 0;
+	}
+	void pri(int mx=N) const {
+		int rr=min(r,l+mx-1);
+		ft(i,l,rr) putchar(s[i]);
+		putchar('\n');
+	}
+} a[N];
+int lcp(const name &x, const name &y){
+	return min(lcp(x.l,y.l), min(x.len(),y.len()));
+}
+bool comp(const name &x, const name &y){
+	int t=lcp(x,y);
+	return x[t+1]<y[t+1];
+}
+\end{lstlisting}
+
+\subsection{manacher}
+\begin{lstlisting}
+char str[N],s[N<<1];
+int f[N<<1];
+
+void manacher(){
+	int n=0;
+	for(int i=0;str[i];i++){
+		s[++n]='#';
+		s[++n]=str[i];
+	}
+	s[++n]='#';
+
+	int mx=1,mr=1;
+	forto(i,2,n){
+		int t = i<mr ? min(f[2*mx-i],mr-i) : 0;
+		while (i-t-1 && s[i-t-1]==s[i+t+1]) t++;
+		f[i]=t; if (i+t>mr) { mx=i; mr=i+t; }
+	}
+}
+\end{lstlisting}
+
+\subsection{回文自动机}
+\begin{lstlisting}
+const int N=300000+100, alpha=26;
+int n,s[N],num[N];
+int p,last,next[N][alpha],fail[N],len[N],cnt[N];
+void init(){
+	s[n=0]=len[p=2]=-1;
+	fail[fail[last=1]=2]=2;
+}
+int getfail(int x){
+	while (s[n-len[x]-1]!=s[n]) x=fail[x];
+	return x;
+}
+void add(int c){
+	s[++n]=c;
+	int cur=getfail(last);
+	if (!next[cur][c]){
+		len[++p]=len[cur]+2;
+		fail[p]=next[getfail(fail[cur])][c];
+		if (!fail[p]) fail[p]=1;
+		next[cur][c]=p;
+	}
+	last=next[cur][c];
+	cnt[last]++;
+}
+\end{lstlisting}
+
+\subsection{后缀自动机}
+\begin{lstlisting}
+#include <bits/stdc++.h>
+#define ft(i,a,b) for(int i=(a);i<=(b);i++)
+#define fd(i,a,b) for(int i=(a);i>=(b);i--)
+using namespace std;
+
+const int N=200200, alpha=26;
+
+char s[N];
+int S,cnt,last;
+int a[N],fa[N],l[N],ch[N][alpha];
+
+void add(int x){
+	int c=a[x];
+	int p=last,np=++cnt;last=np;
+	l[np]=x;
+	for(;p&&!ch[p][c];p=fa[p])ch[p][c]=np;
+	if(!p)fa[np]=S;
+	else {
+		int q=ch[p][c];
+		if(l[p]+1==l[q])fa[np]=q;
+		else {
+			int nq=++cnt;l[nq]=l[p]+1;
+			memcpy(ch[nq],ch[q],sizeof ch[q]);
+			fa[nq]=fa[q];
+			fa[np]=fa[q]=nq;
+			for(;ch[p][c]==q;p=fa[p])ch[p][c]=nq;
+		}
+	}
+}
+
+int sg[N];
+bool vis[N];
+
+int get(int x){
+	if (vis[x]) return sg[x];
+	bool a[30]={false};
+	ft(i,0,alpha-1) if (ch[x][i]) a[get(ch[x][i])]=true;
+	int i=0; while (a[i]) i++;
+	vis[x]=true;
+	return sg[x]=i;
+}
+
+int main(){
+	while (scanf("%s",s+1)>0){
+		S=cnt=last=0;
+		last=S=++cnt;
+		int len=strlen(s+1);
+		ft(i,0,len*2){
+			fa[i]=l[i]=0; vis[i]=false;
+			memset(ch[i],0,sizeof(ch[i]));
+		}
+		ft(i,1,len) a[i]=s[i]-'a';
+		ft(i,1,len) add(i);
+		get(1);
+		
+		int ans=0;
+		int m; scanf("%d",&m);
+		while (m--){
+			scanf("%s",s+1);
+			int x=1;
+			for(int i=1; s[i]; i++) x=ch[x][s[i]-'a'];
+			ans^=sg[x];
+		}
+		printf(ans?"Alice\n":"Bob\n");
+	}
+	return 0;
+}
+\end{lstlisting}
+
+\section{图论}
+
+\subsection{强连通分量}
+\begin{lstlisting}
+int dfn[N],low[N],clk;
+int scc[N],cnt;
+int sta[N],top;
+int size[N];
+void dfs(int x){
+    dfn[x]=low[x]=++clk;
+    sta[++top]=x;
+    fv(i,g[x]){
+        int y=g[x][i];
+        if (!scc[y]){
+            if (!dfn[y]) dfs(y);
+            cmin(low[x],low[y]);
+        }
+    }
+    if (dfn[x]==low[x]){
+        cnt++;
+        while (!scc[x]){
+            scc[sta[top--]]=cnt;
+            size[cnt]++;
+        }
+    }
+}
+ft(i,1,n) if (!dfn[i]) dfs(i);
+\end{lstlisting}
+
+\subsection{割顶和桥}
+\begin{lstlisting}
+int dfn[N],low[N],clk;
+int sta[N],top;
+int scc[N],cnt;
+void dfs(int x, int fa){
+	dfn[x]=low[x]=++clk;
+	sta[++top]=x;
+	fv(i,g[x]){
+		int y=g[x][i];
+		if (y==fa) continue; // can't solve multi edge
+			// multi edge : pass the index of the edge
+		if (low[y]==0){
+			dfs(y,x);
+			cmin(low[x],low[y]);
+		} else cmin(low[x],dfn[y]);
+	}
+	if (dfn[x]==low[x]){
+		cnt++;
+		while (!scc[x]) scc[sta[top--]]=cnt;
+	}
+}
+dfs(1,0);
+\end{lstlisting}
+
+\subsection{网络流}
+\begin{lstlisting}
+int n,la[N],top,q[N],cur[N],dis[N];
+struct E {int to,cap,next;} e[M*2];
+void init(int _n){
+	n=_n; top=1; // remember to set top=1
+	memset(la,0,sizeof(la[0])*(n+1));
+}
+void add(int a, int b, int c){
+	e[++top]=(E){b,c,la[a]}; la[a]=top;
+	e[++top]=(E){a,0,la[b]}; la[b]=top;
+}
+bool bfs(){
+	ft(i,1,n) dis[i]=inf; dis[1]=0;
+	int l=1, r=1; q[1]=1;
+	while (l<=r){
+		int t=q[l++];
+		for(int i=la[t];i;i=e[i].next)
+		if (e[i].cap && dis[e[i].to]==inf)
+			dis[ q[++r]=e[i].to ]=dis[t]+1;
+	}
+	return dis[n]!=inf;
+}
+int dinic(int x, int a){
+	if (x==n||a==0) return a;
+	int flow=0;
+	for(int &i=cur[x];i;i=e[i].next)
+	if (dis[e[i].to]==dis[x]+1 && e[i].cap){
+		int t=dinic(e[i].to,MIN(a,e[i].cap));
+		flow+=t; a-=t;
+		e[i].cap-=t; e[i^1].cap+=t;
+		if (a==0) return flow;
+	}
+	return flow;
+}
+int maxflow(){
+	int flow=0;
+	while (bfs()){
+		ft(i,1,n) cur[i]=la[i];
+		flow+=dinic(1,inf);
+	}
+	return flow;
+}
+\end{lstlisting}
+
+\subsection{费用流}
+\begin{lstlisting}
+struct E { int to,cap,dis,ne; } e[M<<1];
+int n,la[N],e_top;
+void init(int _n){
+	n=_n; e_top=1; // remember to set e_top=1
+	memset(la,0,sizeof(la[0])*(n+1));
+}
+void add(int x, int y, int cap, int dis){
+	e[++e_top]=(E){y,cap,dis,la[x]}; la[x]=e_top;
+	e[++e_top]=(E){x,0,-dis,la[y]}; la[y]=e_top;
+}
+int dis[N],q[N],l,r,s,prex[N],prei[N],low[N];
+bool vis[N];
+bool spfa(){
+	ft(i,1,n) { dis[i]=inf; vis[i]=false; }
+	dis[1]=0; vis[1]=true; low[1]=inf;
+	q[l=r=s=1]=1;
+	while (s){
+		int x=q[l++]; vis[x]=false;
+		s--; if (l==N) l=0;
+		for(int i=la[x]; i; i=e[i].ne){
+			int y=e[i].to, z=e[i].dis;
+			if (!e[i].cap || dis[x]+z>dis[y]) continue;
+			dis[y]=dis[x]+z; prex[y]=x; prei[y]=i;
+			low[y]=min(low[x],e[i].cap);
+			if (!vis[y]) s+=(vis[q[(++r)%=N]=y]=true);
+		}
+	}
+	return dis[n]!=inf;
+}
+int flow,cost;
+void mcmf(){
+	while (spfa()){
+		for(int x=n;x!=1;x=prex[x]){
+			int i=prei[x];
+			e[i].cap-=low[n];
+			e[i^1].cap+=low[n];
+		}
+		flow+=low[n];
+		cost+=low[n]*dis[n];
+	}
+}
+\end{lstlisting}
+
+\subsection{欧拉回路}
+\begin{lstlisting}
+struct E { int to,ne; } e[M<<1];
+int t,n,m,la[N],e_top;
+int in[N],out[N];
+void add(int x, int y){
+	out[x]++; in[y]++;
+	e[++e_top]=(E){y,la[x]}; la[x]=e_top;
+}
+int sta[M],top;
+bool vis[M<<1];
+void dfs(int x){
+	for(int i=la[x]; i; i=la[x]){
+		la[x]=e[i].ne;
+		if (vis[i]) continue;
+		vis[i]=true; if (t==1) vis[i^1]=true;		
+		dfs(e[i].to);
+		if (t==2) sta[++top]=i;
+			else sta[++top]=(i&1)?(-(i>>1)):(i>>1);
+	}
+}
+int main(){
+	scanf("%d%d%d",&t,&n,&m);
+	if (m==0){
+		printf("YES");
+		return 0;
+	}
+	if (t==1) e_top=1;
+	ft(i,1,m){
+		int x,y; scanf("%d%d",&x,&y);
+		add(x,y); if (t==1) add(y,x);
+	}
+	if (t==1) ft(i,1,n) if (in[i]&1){
+		printf("NO");
+		return 0;
+	}
+	if (t==2) ft(i,1,n) if (in[i]!=out[i]){
+		printf("NO");
+		return 0;
+	}
+	dfs(e[3-t].to);
+	if (top!=m){
+		printf("NO");
+		return 0;
+	}
+	printf("YES\n");
+	fd(i,top,1) printf("%d ",sta[i]);
+	return 0;
+}
+\end{lstlisting}
+
+\subsection{带花树}
+\begin{lstlisting}
+const int N=550;
+struct E { int to,ne; } e[N*N];
+int n,m,la[N],e_top,f[N];
+int find(int x) { return f[x]=f[x]==x?x:find(f[x]); }
+int mat[N],pre[N],cond[N],q[N],l,r,vis[N],vt;
+int lca(int x, int y){
+	vt++; x=find(x); y=find(y);
+	while (vis[x]!=vt){
+		if (x){ vis[x]=vt; x=find(pre[mat[x]]); }
+		int z=x; x=y; y=z;
+	}
+	return x;
+}
+void blossom(int x, int y, int g){
+	while (find(x)!=g){
+		pre[x]=y;
+		if (cond[mat[x]]==1) cond[q[++r]=mat[x]]=0;
+		if (f[x]==x) f[x]=g;
+		if (f[mat[x]]==mat[x]) f[mat[x]]=g;
+		y=mat[x]; x=pre[y];
+	}
+}
+int match(int s){
+	forto(i,1,n){ cond[i]=-1; pre[i]=0; f[i]=i; }
+	cond[q[l=r=1]=s]=0;
+	while (l<=r){
+		int x=q[l++];
+		forE(i,x){
+			int y=e[i].to;
+			if (cond[y]==-1){
+				if (mat[y]==0){
+					while (x){
+						int t=mat[x];
+						mat[x]=y; mat[y]=x;
+						y=t; x=pre[y];
+					}
+					return true;
+				}
+				cond[y]=1; pre[y]=x;
+				cond[q[++r]=mat[y]]=0;
+			} else if (find(x)!=find(y) && cond[y]==0){
+				int g=lca(x,y);
+				blossom(x,y,g); blossom(y,x,g);
+			}
+		}
+	}
+	return false;
+}
+int main(){
+	scanf("%d%d",&n,&m);
+	int ans=0;
+	while (m--){
+		int x,y; scanf("%d%d",&x,&y);
+		add(x,y); add(y,x);
+	}
+	forto(i,1,n) if (!mat[i] && match(i)) ans++;
+	printf("%d\n",ans);
+	forto(i,1,n) printf("%d ",mat[i]);
+	return 0;
+}
+\end{lstlisting}
+
+\subsection{KM算法}
+\begin{lstlisting}
+const int N=500, inf=0x7fffffff;
+int n,fx[N],fy[N],pre[N];
+LL w[N][N],lx[N],ly[N],sla[N];
+bool vx[N],vy[N],a[N][N];
+int q[N],l,r;
+
+bool check(int x, int y){
+	if (!fy[y]){
+		while (x){
+			int t=fx[x];
+			fx[x]=y; fy[y]=x;
+			y=t; x=pre[y];
+		}
+		return true;
+	}
+	vy[y]=true; pre[y]=x;
+	vx[q[++r]=fy[y]]=true;
+	return false;
+}
+void bfs(int s){
+	ft(i,1,n) { vx[i]=vy[i]=false; sla[i]=inf; }
+	vx[q[l=r=1]=s]=true;
+	while (true){
+		while (l<=r){
+			int x=q[l++];
+			ft(y,1,n) if (!vy[y]){
+				LL t=lx[x]+ly[y]-w[x][y];
+				if (t==0 && check(x,y)) return;
+				if (t && t<sla[y]) { sla[y]=t; pre[y]=x; }
+			}
+		}
+		int d=inf;
+		ft(y,1,n) if (!vy[y]) cmin(d,sla[y]);
+		ft(x,1,n) if (vx[x]) lx[x]-=d;
+		ft(y,1,n) if (vy[y]) ly[y]+=d; else sla[y]-=d;
+		ft(y,1,n) if (!vy[y] && !sla[y] && check(pre[y],y)) return;
+	}
+}
+void KM(){
+	ft(x,1,n){
+		lx[x]=w[x][1];
+		ft(y,2,n) cmax(lx[x],w[x][y]);
+	}
+	ft(s,1,n) bfs(s);
+}
+int main(){
+	int nl,nr,m;
+	scanf("%d%d%d",&nl,&nr,&m);
+	while (m--){
+		int x,y,z; scanf("%d%d%d",&x,&y,&z);
+		w[x][y]=z; a[x][y]=true;
+	}
+	n=MAX(nl,nr);
+	KM();
+	LL ans=0;
+	ft(i,1,n) ans+=lx[i];
+	ft(j,1,n) ans+=ly[j];
+	printf("%lld\n",ans);
+	ft(i,1,nl) printf("%d ",a[i][fx[i]]?fx[i]:0);
+	return 0;
+}
+\end{lstlisting}
+
+\subsection{最小树形图}
+\begin{lstlisting}
+#define fe(i,x) for(int i=la[x]; i; i=e[i].ne)
+const int N=110, M=40000, inf=0x7fffffff;
+struct E { int to,ne; double dis; } e[M];
+int n,m,la[N],g[N],e_top;
+
+void add1(int x, int y, double z){
+	e[++e_top]=(E){y,g[x],z}; g[x]=e_top;
+	e[++e_top]=(E){x,la[y],z}; la[y]=e_top;
+}
+void add2(int x, int y, double z){
+	e[++e_top]=(E){y,la[x],z}; la[x]=e_top;
+}
+void build_graph(){
+	... // using add1
+}
+
+int q[N],l,r;
+bool vis[N];
+
+bool check(){
+	forto(i,1,n) vis[i]=false;
+	q[l=r=1]=1; vis[1]=true;
+	while (l<=r){
+		int x=q[l++];
+		for(int i=g[x];i;i=e[i].ne){
+			int y=e[i].to;
+			if (vis[y]==false){
+				vis[y]=true;
+				q[++r]=y;
+			}
+		}
+	}
+	return r==n;
+}
+
+int f[N];
+int find(int x) { return f[x]=f[x]==x?x:find(f[x]); }
+
+bool ok[N];
+int sta[N],top;
+double cho[N];
+
+double solve(){
+	double ans=0;
+	forto(i,1,n) f[i]=i;
+	forto(i,1,n) ok[i]=vis[i]=false;
+	ok[1]=true;
+	
+	forto(t,1,n){
+		vis[sta[top=1]=find(t)]=true;
+		while (ok[sta[top]]==false){
+			int x=sta[top], y=0; double z=1e100;
+			fe(i,x) if (find(e[i].to)!=x && e[i].dis<z){
+				z=e[i].dis; y=e[i].to;
+			}
+			y=find(y); cho[x]=z; ans+=z;
+			if (vis[y]){
+				fe(i,y) e[i].dis-=cho[y];
+				while (sta[top]!=y){
+					vis[ x=sta[top--] ]=false;
+					fe(i,x) add2(y,e[i].to,e[i].dis-cho[x]);
+					f[x]=y;
+				}
+			} else vis[sta[++top]=y]=true;
+		}
+		while (top){
+			ok[sta[top]]=true;
+			vis[sta[top--]]=false;
+		}
+	}
+	return ans;
+}
+
+int main(){
+	while (scanf("%d%d",&n,&m)>0){
+		build_graph();	
+		if (check()) printf("%.2f\n",solve());
+			else printf("poor snoopy\n");
+	}
+	return 0;
+}
+\end{lstlisting}
+
+\subsection{2-SAT}
+\begin{lstlisting}
+struct twosat {
+	int n;
+	vector<int> g[maxn*2];
+	bool mark[maxn*2];
+	stack<int> s;
+	void add(int x,int xx,int y,int yy){
+		x=x*2+xx;
+		y=y*2+yy;
+		g[x^1].push_back(y);
+		g[y^1].push_back(x);
+	}
+	bool dfs(int x){
+		if (mark[x^1]) return false;
+		if (mark[x]) return true;
+		mark[x]=true;
+		s.push(x);
+		for (int i=0; i<g[x].size(); i++)
+			if (!dfs(g[x][i])) return false;
+		return true;
+	}
+	bool solve(){
+		for (int i=0;i<n*2;i+=2)
+		if (!mark[i] && !mark[i+1]){
+			while (!s.empty()) s.pop();
+			if (!dfs(i)){
+				while (!s.empty()){
+					mark[s.top()]=false;
+					s.pop();
+				}
+				if (!dfs(i+1)) return false;
+			}
+		}
+		return true;
+	}
+} g;
+int a[maxn],b[maxn];
+int main(){
+	int n,m;
+	scanf("%d %d",&n,&m);
+	for (int i=1;i<=m;i++){
+		scanf("%d %d",&a[i],&b[i]);
+		if (a[i]>b[i]) swap(a[i],b[i]);
+	}	
+	g.n=m;	
+	for (int i=1;i<=m;i++)
+	for (int j=1;j<=m;j++)
+	if ( a[i]<a[j] && a[j]<b[i] && b[i]<b[j] ){	
+		g.add(i,0,j,0);
+		g.add(i,1,j,1);
+	}
+	if (g.solve()) printf("panda is telling the truth...");
+		else printf("the evil panda is lying again");
+	return 0;
+}
+\end{lstlisting}
+
+\section{数据结构}
+
+\subsection{哈希表}
+\begin{lstlisting}
+const int H=(1<<20)-1;
+struct hash_map {
+	int la[1<<20],top;
+	struct E { LL key; int da,ne; } e[int(1e6+5)];
+	IL void clear(){
+		memset(la,0,sizeof(la)); top=0;
+	}
+	IL bool count(LL k){
+		static int i; i=la[k&H];
+		while (i&&e[i].key!=k) i=e[i].ne;
+		return i;
+	}
+	IL int& OP[] (LL k){
+		static int h,i; i=la[h=k&H];
+		while (i&&e[i].key!=k) i=e[i].ne;
+		if (!i) { e[i=++top]=(E){k,0,la[h]}; la[h]=top; }
+		return e[i].da;
+	}
+};
+\end{lstlisting}
+
+\subsection{树链剖分}
+\begin{lstlisting}
+void find(int x, int father, int depth){
+    size[x]=1; dep[x]=depth; son[x]=0; fa[x]=father;
+    int maxsize=0;
+    for (int i=0; i<g[x].size(); i++)
+    if (g[x][i]!=father){
+        int y=g[x][i];
+        find(y,x,depth+1);
+        size[x]+=size[y];
+        if (size[y]>maxsize){
+            maxsize=size[y];
+            son[x]=y;
+        }
+    }
+}
+void connect(int x, int anc){
+    tid[x]=++label; top[x]=anc;
+    if (son[x]) connect(son[x], anc);
+    for (int i=0; i<g[x].size(); i++){
+        int y=g[x][i];
+        if (y!=son[x] && y!=fa[x]) connect(y,y);
+    }
+}
+int getsum(int x, int y){
+    int sumnum=0;
+    while (top[x]!=top[y]){
+        if (dep[top[x]]<dep[top[y]]) { int z=x; x=y; y=z; }
+        sumnum+=seq.getsum(tid[top[x]],tid[x]);
+        x=fa[top[x]];
+    }
+    if (dep[x]<dep[y]) sumnum+=seq.getsum(tid[x],tid[y]);
+        sumnum+=seq.getsum(tid[y],tid[x]);
+    return sumnum;
+}
+\end{lstlisting}
+
+\subsection{LCT}
+\begin{lstlisting}
+int n,fa[maxn],ch[maxn][2];
+IL void ir(int x){ return ch[fa[x]][0]!=x && ch[fa[x]][1]!=x; }
+IL void nt(int x){ return ch[fa[x]][1]==x; }
+IL void ud(int x){ ... }
+IL void pd(int x){ ... }
+IL void rtt(int x){
+	int y=fa[x], z=fa[y], bool p=nt(x);
+	if (!ir(y)) ch[z][nt(y)]=x;
+	fa[ch[x][!p]]=y; fa[y]=x; fa[x]=z;
+	ch[y][p]=ch[x][!p]; ch[x][!p]=y;
+	ud(y);
+}
+IL void splay(int x){
+	static int sta[maxn],top;
+	sta[top=1]=x;
+	for(int y=x;!ir(y);y=fa[y]) sta[++top]=fa[y];
+	while (top) pd(sta[top--]);
+	while (!ir(x)){
+		int y=fa[x];
+		if (!ir(y)) rtt(nt(x)^nt(y)?x:y);
+		rtt(x);
+	}
+	ud(x);
+}
+IL void access(int x){
+	int t=0,y=x;
+	while(x){
+		splay(x); ch[x][1]=t;
+		t=x; x=fa[x];
+	}
+	splay(y);
+}
+IL void link(int c, int f){ access(c); fa[c]=f; }
+IL void cut(int x){ access(x); fa[ch[x][0]]=0; ch[x][0]=0; ud(x); }
+IL void makeroot(int x){ access(x); rev[x]^=1; }
+IL int find(int x){
+	access(x);
+	int y=x; while (ch[y][0]) y=ch[y][0];
+	return y;
+}
+\end{lstlisting}
+
+\subsection{LCT 不换根}
+\begin{lstlisting}
+//bzoj2002
+int fa[N],ch[N][2],size[N];
+IL bool ir(int x){ return ch[fa[x]][0]!=x&&ch[fa[x]][1]!=x; }
+IL bool nt(int x){ return ch[fa[x]][1]==x; }
+IL void ud(int x){ size[x]=size[ch[x][0]]+size[ch[x][1]]+1; }
+void rtt(int x){
+	int y=fa[x], z=fa[y]; bool p=nt(x);
+	if (!ir(y)) ch[z][nt(y)]=x;
+	fa[y]=x; fa[x]=z; fa[ch[x][!p]]=y;
+	ch[y][p]=ch[x][!p]; ch[x][!p]=y;
+	ud(y);
+}
+void splay(int x){
+	while (!ir(x)){
+		int y=fa[x];
+		if (!ir(y)) rtt(nt(x)^nt(y)?x:y);
+		rtt(x);
+	}
+	ud(x);
+}
+void access(int x){
+	int y=x, t=0;
+	while (x){
+		splay(x); ch[x][1]=t;
+		t=x; x=fa[x];
+	}
+	splay(y);
+}	
+void link(int c, int f){ access(c); fa[c]=f; }
+void cut(int x){ access(x); fa[ch[x][0]]=0; ch[x][0]=0; }
+
+int main(){
+	int n; scanf("%d",&n);
+	for (int i=1;i<=n;i++) size[i]=1;
+	for (int i=1;i<=n;i++){
+		int k; scanf("%d",&k);
+		if (i+k<=n) link(i,i+k);
+	}
+	int m; scanf("%d",&m);
+	while (m--){
+		int i,j,k; scanf("%d%d",&i,&j); j++;
+		if (i==1){
+			access(j);
+			printf("%d\n",size[j]);
+		}
+		if (i==2){
+			scanf("%d",&k);
+			cut(j);
+			if (j+k<=n) link(j,j+k);
+		}
+	}
+	return 0;
+}
+\end{lstlisting}
+
+\subsection{LCT 换根}
+\begin{lstlisting}
+//bzoj2049
+int n,m,fa[maxn],ch[maxn][2],sta[maxn],top;
+bool rev[maxn];
+IL bool ir(int x){ return ch[fa[x]][0]!=x && ch[fa[x]][1]!=x; }
+IL bool nt(int x){ return ch[fa[x]][1]==x; }
+IL void pd(int x){
+	if (rev[x]){
+		rev[ch[x][0]]^=1; rev[ch[x][1]]^=1;
+		swap(ch[x][0],ch[x][1]); rev[x]=false;
+	}
+}
+IL void rtt(int x){
+	int y=fa[x], z=fa[y]; bool p=nt(x);
+	if (!ir(y)) ch[z][nt(y)]=x;
+	fa[ch[x][!p]]=y; fa[y]=x; fa[x]=z;
+	ch[y][p]=ch[x][!p]; ch[x][!p]=y;
+}
+IL void splay(int x){
+	top=0; sta[++top]=x;
+	for (int y=x;!ir(y);y=fa[y]) sta[++top]=fa[y];
+	while (top) pd(sta[top--]);
+	while (!ir(x)){
+		int y=fa[x];
+		if (!ir(y)) rtt(nt(x)^nt(y)?x:y);
+		rtt(x);
+	}
+}
+IL void access(int x){
+	int t=0;
+	while (x){
+		splay(x); ch[x][1]=t;
+		t=x; x=fa[x];
+	}
+}
+IL void makeroot(int x){ access(x); splay(x); x[rev]^=1; }
+IL void link(int x, int y){ makeroot(x); fa[x]=y; }
+IL void cut(int x, int y){
+	makeroot(x); access(y); splay(y); ch[y][0]=fa[x]=0;
+}
+IL int find(int x){
+	access(x); splay(x);
+	int y=x; while (ch[y][0]) y=ch[y][0];
+	return y;
+};	
+
+int main(){
+	readint(n); readint(m);
+	while (m--){
+		char s[10]; scanf("%s",s);
+		int x,y; readint(x); readint(y);
+		if (s[0]=='Q'){
+			printf(find(x)==find(y)?"Yes\n":"No\n");
+		}
+		if (s[0]=='C') link(x,y);
+		if (s[0]=='D') cut(x,y);
+	}
+	return 0;
+}
+\end{lstlisting}
+
+\subsection{左偏树}
+\begin{lstlisting}
+int a[N],lc[N],rc[N],d[N],size[N];
+int merge(int x, int y){
+	if (x==0) return y;
+	if (y==0) return x;
+	if (a[x]<a[y]) swap(x,y);
+	rc[x]=merge(rc[x],y);
+	if (d[rc[x]]>d[lc[x]]) swap(lc[x],rc[x]);
+	d[x]=d[rc[x]+1];
+	size[x]=size[lc[x]]+size[rc[x]]+1;
+	return x;
+}
+int pop(int x){
+	return merge(lc[x],rc[x]);
+}
+\end{lstlisting}
+
+\subsection{可持久化并查集}
+\begin{lstlisting}
+const int N=10000000;
+int lc[N],rc[N],f[N],top;
+int get(int x, int l, int r, int t){
+	if (l==r) return f[x];
+	int m=(l+r)>>1;
+	if (t<=m) return get(lc[x],l,m,t);
+	return get(rc[x],m+1,r,t);
+}
+int change(int x, int l, int r, int t, int d){
+	if (l==r){
+		f[++top]=d;
+		return top;
+	}
+	int y=++top; lc[y]=lc[x]; rc[y]=rc[x];
+	int m=(l+r)>>1;
+	if (t<=m) lc[y]=change(lc[y],l,m,t,d);
+		else rc[y]=change(rc[y],m+1,r,t,d);
+	return y;
+}
+void build(int x, int l, int r){
+	if (l==r){ f[x]=l; return; }
+	int m=(l+r)>>1;
+	build(lc[x]=++top,l,m);
+	build(rc[x]=++top,m+1,r);
+}	
+int a[200100],n,m;
+int find(int i, int x){
+	int fx=get(a[i],1,n,x);
+	if (x==fx) return x;
+	fx=find(i,fx);
+	a[i]=change(a[i],1,n,x,fx);
+	return fx;
+}
+\end{lstlisting}
+
+\subsection{可持久化treap}
+\begin{lstlisting}
+struct treap{
+	int data,fix,size,add,min;
+	bool flip;
+	treap *l,*r;
+	treap(int _data){
+		data=min=_data;
+		fix=rand();
+		size=1; add=0;
+		flip=0; l=r=0;
+	}
+	void update(){
+		size=(l?l->size:0)+(r?r->size:0)+1;
+		min=data;
+		if (l) min=MIN(min,l->min);
+		if (r) min=MIN(min,r->min);
+		min+=add;
+	}
+	void pushdown(){
+		if (add){
+			if (l) l->add+=add;
+			if (r) r->add+=add;
+			data+=add;
+			add=0;
+		}
+		if (flip){
+			flip=false;
+			treap *t;
+			t=l; l=r; r=t;
+			if (l) l->flip=!l->flip;
+			if (r) r->flip=!r->flip;
+		}
+		if (l) l->update();
+		if (r) r->update();
+	}
+};
+
+inline int size(treap *a) { return a?a->size:0; }
+
+treap *merge(treap *a, treap *b){
+	if (a==NULL) return b;
+	if (b==NULL) return a;
+	if (a->fix > b->fix){
+		a->pushdown();
+		a->r=merge(a->r,b);
+		a->update();
+		return a;
+	} else {
+		b->pushdown();
+		b->l=merge(a,b->l);
+		b->update();
+		return b;
+	}
+}
+void split(treap *x, int s, treap *&a, treap *&b){
+	if (s<=0) { a=NULL; b=x; return; }
+	if (s>=size(x)) { a=x; b=NULL; return; }
+	x->pushdown();
+	if (s<=size(x->l)) {
+		split(x->l,s,a,b);
+		x->l=b; b=x;
+	} else {
+		split(x->r,s-size(x->l)-1,a,b);
+		x->r=a; a=x;
+	}
+	x->update();
+	return;
+}
+treap *newnode(int data){
+	treap *t=new treap(data);
+	return t;
+}
+\end{lstlisting}
+
+\subsection{线段树(camp)}
+\begin{lstlisting}
+#include <bits/stdc++.h>
+#define forto(i,a,b) for(int i=(a);i<=(b);i++)
+using namespace std;
+typedef long long LL;
+const int N=600000;
+const LL inf=N*1000;
+
+struct flag{
+	LL a,b,c;
+	flag(LL a=0, LL b=1, LL c=0):a(a),b(b),c(c){}
+	void operator+= (const flag &f){
+		a+=b*(c+f.a); b*=f.b; c=f.c; c+=a/b; a%=b;
+		if (b>=inf){
+			a-=(b-inf); b-=(b-inf); if (a<0) a=0;
+		}
+	}
+};
+struct data{
+	LL mx;
+	data(int mx=0):mx(mx){}
+
+	void operator+= (const flag &f){
+		mx=(mx+f.a)/f.b+f.c;
+	}
+};
+data operator+ (const data &x, const data &y){
+	return data(max(x.mx,y.mx));
+}
+
+struct seg_tree{
+	int n; flag f[N]; data d[N];
+	
+	void update(int x, int l, int r){
+		if (l==r){
+			d[x]+=f[x];
+			f[x]=flag();
+			return;
+		}
+		d[x]=d[x<<1]+d[x<<1|1];
+		d[x]+=f[x];
+	}
+	void pushdown(int x, int l, int r){
+		f[x<<1]+=f[x];
+		f[x<<1|1]+=f[x];
+		f[x]=flag();
+		int m=(l+r)>>1;
+		update(x<<1,l,m);
+		update(x<<1|1,m+1,r);
+	}
+	
+	int ll,rr; flag t; data q;
+	
+	void modify2(int x, int l, int r){
+		if (ll<=l && r<=rr){
+			f[x]+=t;
+			update(x,l,r);
+			return;
+		}
+		pushdown(x,l,r);
+		int m=(l+r)>>1;
+		if (ll<=m) modify2(x<<1,l,m);
+		if (rr>m) modify2(x<<1|1,m+1,r);
+		update(x,l,r);
+	}
+	void modify(int l, int r, flag f){
+		ll=l; rr=r; t=f;
+		modify2(1,1,n);
+	}
+	
+	void query2(int x, int l, int r){
+		if (ll<=l && r<=rr){
+			q=q+d[x];
+			return;
+		}
+		pushdown(x,l,r);
+		int m=(l+r)>>1;
+		if (ll<=m) query2(x<<1,l,m);
+		if (rr>m) query2(x<<1|1,m+1,r);
+	}
+	data query(int l, int r){
+		ll=l; rr=r; q=data();
+		query2(1,1,n);
+		return q;
+	}
+} tr;
+
+int main(){
+	int n,m; scanf("%d%d",&n,&m);
+	tr.n=n;
+	forto(i,1,n){
+		int x; scanf("%d",&x);
+		tr.modify(i,i,flag(x));
+	}
+	while (m--){
+		int t,l,r,x; scanf("%d%d%d%d",&t,&l,&r,&x);
+		l++; r++;
+		if (t==0) tr.modify(l,r,flag(x));
+		if (t==1) tr.modify(l,r,flag(0,x));
+		if (t==2) printf("%lld\n",tr.query(l,r).mx);
+	}
+	return 0;
+}
+
+// 另一种写法
+void pushdown(int x, int l, int r){
+	d[x]+=f[x];
+	if (l<r){
+		f[x<<1]+=f[x];
+		f[x<<1|1]+=f[x];
+	}
+	f[x]=flag();
+}
+void update(int x, int l, int r){
+	int m=(l+r)>>1;
+	pushdown(x<<1,l,m);
+	pushdown(x<<1|1,m+1,r);
+	d[x]=d[x<<1]+d[x<<1|1];
+}
+void modify2(int x, int l, int r){
+	if (ll<=l && r<=rr) { f[x]+=t; return; }
+	pushdown(x,l,r);
+	int m=(l+r)>>1;
+	if (ll<=m) modify2(x<<1,l,m);
+	if (rr>m) modify2(x<<1|1,m+1,r);
+	update(x,l,r);
+}
+void query2(int x, int l, int r){
+	pushdown(x,l,r);
+	if (ll<=l && r<=rr) { q=q+d[x]; return; }
+	int m=(l+r)>>1;
+	if (ll<=m) query2(x<<1,l,m);
+	if (rr>m) query2(x<<1|1,m+1,r);
+}
+\end{lstlisting}
+
+\section{其他内容}
+
+\subsection{矩形面积并}
+\begin{lstlisting}
+//POJ-1151
+输入格式：
+第一行数据组数t
+接下来t行：x1 y1 x2 y2 (x1<x2) (y1<y2)
+
+#include <...>
+#define N 1024
+#define ld double
+int n,m,i,j,t,cnt[N],tot;ld ans,len[N],L[N],R[N],dx[N],dy[N],x1,x2,y1,y2;
+struct D{ld x1,x2,y;int p;}d[N];
+bool operator<(const D&i,const D&j){return i.y<j.y||i.y==j.y&&i.p>j.p;}
+void mt(int o){
+    if(cnt[o])len[o]=R[o]-L[o];
+    else len[o]=len[o<<1]+len[o<<1|1];
+}
+void bt(int o,int l,int r){
+    L[o]=dx[l],R[o]=dx[r],len[o]=cnt[o]=0;
+    int mid=l+r>>1;
+    if(l+1<r)bt(o<<1,l,mid),bt(o<<1|1,mid,r);
+    else len[o<<1]=len[o<<1|1]=0,L[o<<1]=R[o<<1]=L[o],L[o<<1|1]=R[o<<1|1]=R[o];
+}
+void upd(int o,ld l,ld r,int p){
+    if(l<=L[o]&&R[o]<=r){
+        cnt[o]+=p,mt(o);return;
+    }
+    if(l<R[o<<1])upd(o<<1,l,r,p);
+    if(r>L[o<<1|1])upd(o<<1|1,l,r,p);
+    mt(o);
+}
+int main(){
+    while(scanf("%d",&n),n){
+        for(tot=m=0,i=1;i<=n;i++)
+        scanf("%lf%lf%lf%lf",&x1,&y1,&x2,&y2),
+        dy[++tot]=x1,d[tot]=(D){x1,x2,y1,1},
+        dy[++tot]=x2,d[tot]=(D){x1,x2,y2,-1};
+        std::sort(dy+1,dy+1+tot);
+        std::sort(d+1,d+1+tot);
+        for(i=1,m=0;i<=tot;i++)
+        if(dy[i]!=dy[i+1])dx[++m]=dy[i];
+        bt(1,1,m);
+        for(ans=0,i=1;i<=tot;i++){
+            upd(1,d[i].x1,d[i].x2,d[i].p);
+            ans+=len[1]*(d[i+1].y-d[i].y);
+        }
+        printf("Test case #%d\nTotal explored area: %.2lf\n\n",++t,ans);
+    }
+}
+\end{lstlisting}
+
+\subsection{曼哈顿距离MST}
+\begin{lstlisting}
+//BZOJ-2177
+#include <...>
+... // fast input
+#define N 100010
+int n,cnt,z[N]; long long ans;
+#define cmax(x) (ans<x?ans=x:1)
+struct P { int x,y,id,nx,ny; } p[N];
+bool operator< (const P&a, const P&b){
+	return a.nx<b.nx || a.nx==b.nx && a.ny<b.ny;
+}
+class Graph {
+private:
+    int et,la[N],ufs[N],tot;
+    struct D {
+        int x,y,v;
+        bool operator< (const D &a) const { return v<a.v; }
+    } d[N<<2];
+    struct E { int to,v,nxt; } e[N<<1];
+    int gf(int x) { return ufs[x]==x?x:ufs[x]=gf(ufs[x]); }
+    void adde(int x,int y,int v){
+        e[++et]=(E){y,v,la[x]},la[x]=et;
+        e[++et]=(E){x,v,la[y]},la[y]=et;
+    }
+public:
+    Graph() { et=1; }
+    void add(int x,int y,int v) { d[++tot]=(D){x,y,v}; }
+    void make(){
+        std::sort(d+1,d+1+tot); cnt=n;
+        ft(i,1,n) ufs[i]=i;
+        for(int i=1,x,y; i<=tot; i++)
+        if ((x=gf(d[i].x))!=(y=gf(d[i].y))){
+            ufs[x]=y, cnt--, ans+=d[i].v,
+            adde(d[i].x,d[i].y,d[i].v);
+        }
+    }
+} G;
+struct D { int x,n; } d[N];
+bool operator< (const D&a, const D&b) { return a.x<b.x; }
+#define dis(i,j) (abs(p[i].x-p[j].x)+abs(p[i].y-p[j].y))
+void ins(int i){
+    for(int t=p[i].ny; t<=cnt; t+=t&-t)
+    if (z[t]==0||p[z[t]].x+p[z[t]].y<p[i].x+p[i].y) z[t]=i;
+}
+int query(int i){ int f=0;
+    for(int t=p[i].ny; t>0; t-=t&-t)
+    if (z[t]&&(f==0||p[z[t]].x+p[z[t]].y>p[f].x+p[f].y)) f=z[t];
+    return f;
+}
+void work(){
+    ft(i,1,n) p[i].nx=p[i].x-p[i].y, p[i].ny=p[i].y;
+    std::sort(p+1,p+1+n);
+    ft(i,1,n) d[i]=(D){p[i].ny,i};
+    std::sort(d+1,d+1+n); d[n+1].x=d[n].x; cnt=1;
+    ft(i,1,n){
+        p[d[i].n].ny=cnt;
+        if (d[i].x!=d[i+1].x) cnt++;
+    }
+    memset(z,0,sizeof(z));
+    for(int i=1,j; i<=n; ins(i++))
+    if (j=query(i)) G.add(p[i].id,p[j].id,dis(i,j));
+}
+int main(){
+    n=F();
+    ft(i,1,n) p[i]=(P){F(),F(),i}; work();
+    ft(i,1,n) swap(p[i].x,p[i].y); work();
+    ft(i,1,n) p[i].y=-p[i].y; work();
+    ft(i,1,n) swap(p[i].x,p[i].y); work(); G.make();
+    printf("%lld\n",ans);
+}
+\end{lstlisting}
+
+\subsection{欧几里德距离MST}
+\begin{lstlisting}
+//BZOJ-3911
+#include <...>
+#define N 100010
+#define sqr(x) ((x)*(x))
+int F() { ... } // fast input 
+typedef double ld;
+struct P{
+    ld x,y;
+#define PP const P&
+    bool operator<(PP a)const {return x<a.x||x==a.x&&y<a.y;}
+    P operator-(PP a)const {return (P){x-a.x,y-a.y};}
+    ld operator&(PP a)const {return x*a.y-y*a.x;}
+    ld operator|(PP a)const {return x*a.x+y*a.y;}
+}p[N];
+#define check(a,b,c) ((b-a)&(c-a))
+ld dis2(PP a){return a.x*a.x+a.y*a.y;}
+#define cross(a,b,c,d) (check(p[a],p[c],p[d])*check(p[b],p[c],p[d])<0&&check(p[c],p[a],p[b])*check(p[d],p[a],p[b])<0)
+struct P3{
+    ld x,y,z;
+    bool operator<(const P3&a)const {return x<a.x||x==a.x&&y<a.y;}
+    P3 operator-(const P3&a)const {return (P3){x-a.x,y-a.y,z-a.z};}
+    ld operator|(const P3&a)const {return x*a.x+y*a.y+z*a.z;}
+    P3 operator&(const P3&a)const {return (P3){y*a.z-z*a.y,z*a.x-x*a.z,x*a.y-y*a.x};}
+}ori[N];
+#define gp3(a) (P3){a.x,a.y,a.x*a.x+a.y*a.y}
+bool incir(int a,int b,int c,int d){
+    P3 aa=gp3(p[a]),bb=gp3(p[b]),cc=gp3(p[c]),dd=gp3(p[d]);
+    if(check(p[a],p[b],p[c])<0)std::swap(bb,cc);
+    return (check(aa,bb,cc)|(dd-aa))<0;
+}
+int n,m,i,j,et=1,la[N],ts,xx,yy,fa[N][20],tot,cnt,dep[N],l,r,q[N<<2],ufs[N];ld mx[N][20];
+struct E{int to,l,r;}e[N<<5];
+void add(int x,int y){
+    e[++et]=(E){y,la[x]},e[la[x]].r=et,la[x]=et;
+    e[++et]=(E){x,la[y]},e[la[y]].r=et,la[y]=et;
+}
+void del(int x){
+    e[e[x].r].l=e[x].l,e[e[x].l].r=e[x].r,la[e[x^1].to]==x?la[e[x^1].to]=e[x].l:1;
+}
+void delaunay(int l,int r){
+    if(r-l<=2){
+        for(int i=l;i<r;i++)
+        for(int j=i+1;j<=r;j++)add(i,j);
+        return;
+    }
+    int i,j,mid=l+r>>1,ld=0,rd=0,id,op;
+    delaunay(l,mid),delaunay(mid+1,r);
+    for(tot=0,i=l;i<=r;q[++tot]=i++)
+    while(tot>1&&check(p[q[tot-1]],p[q[tot]],p[i])<0)tot--;
+    for(i=1;i<tot&&!ld;i++)if(q[i]<=mid&&mid<q[i+1])ld=q[i],rd=q[i+1];
+    for(;add(ld,rd),1;){
+        id=op=0;
+        for(i=la[ld];i;i=e[i].l)if(check(p[ld],p[rd],p[e[i].to])>0)
+        if(!id||incir(ld,rd,id,e[i].to))op=-1,id=e[i].to;
+        for(i=la[rd];i;i=e[i].l)if(check(p[rd],p[ld],p[e[i].to])<0)
+        if(!id||incir(ld,rd,id,e[i].to))op=1,id=e[i].to;
+        if(op==0)break;
+        if(op==-1){
+            for(i=la[ld];i;i=e[i].l)
+            if(cross(rd,id,ld,e[i].to))del(i),del(i^1),i=e[i].r;
+            ld=id;
+        }else{
+            for(i=la[rd];i;i=e[i].l)
+            if(cross(ld,id,rd,e[i].to))del(i),del(i^1),i=e[i].r;
+            rd=id;
+        }
+    }
+}
+struct D{int x,y;ld v;}d[N<<3];
+bool operator<(const D&i,const D&j){return i.v<j.v;}
+int gf(int x){return ufs[x]==x?x:ufs[x]=gf(ufs[x]);}
+struct G{int to;double v;int nxt;}g[N<<3];
+#define addg(x,y,v) (g[++et]=(G){y,v,la[x]},la[x]=et)
+ld query(int x,int y){
+    int k,i;ld ans=0;
+    if(dep[x]<dep[y])k=x,x=y,y=k;
+    for(k=dep[x]-dep[y],i=0;k;k>>=1,i++)if(k&1)
+    ans=max(ans,mx[x][i]),x=fa[x][i];
+    if(x==y)return ans;
+     
+    for(i=0;fa[x][i]!=fa[y][i];i++);
+    for(i--;~i;i--)if(fa[x][i]!=fa[y][i])
+    ans=max(ans,max(mx[x][i],mx[y][i])),x=fa[x][i],y=fa[y][i];
+    ans=max(ans,max(mx[x][0],mx[y][0]));return ans;
+}
+int main(){
+    for(n=F(),i=1;i<=n;i++)xx=F(),yy=F(),p[i]=(P){xx,yy},ori[i]=(P3){xx,yy,i},ufs[i]=i;
+    std::sort(p+1,p+1+n);std::sort(ori+1,ori+1+n);delaunay(1,n);
+     
+    for(i=1;i<=n;i++)
+    for(j=la[i];j;j=e[j].l)xx=ori[i].z,yy=ori[e[j].to].z,
+    d[++tot]=(D){xx,yy,dis2(p[i]-p[e[j].to])};
+    std::sort(d+1,d+1+tot);
+     
+    memset(la,0,sizeof(la)),et=0;
+    for(i=1;i<=tot&&cnt<n-1;i++)if(gf(d[i].x)!=gf(d[i].y))
+    cnt++,ufs[ufs[d[i].x]]=ufs[d[i].y],
+    addg(d[i].x,d[i].y,d[i].v),addg(d[i].y,d[i].x,d[i].v);
+     
+    for(q[l=r=1]=dep[1]=1;l<=r;l++)
+    for(i=la[q[l]];i;i=g[i].nxt)if(!dep[g[i].to])
+    for(dep[q[++r]=g[i].to]=dep[q[l]]+1,fa[g[i].to][j=0]=q[l],mx[g[i].to][0]=g[i].v;fa[g[i].to][j];j++)
+    fa[g[i].to][j+1]=fa[fa[g[i].to][j]][j],mx[g[i].to][j+1]=max(mx[g[i].to][j],mx[fa[g[i].to][j]][j]);
+     
+    for(m=F();m--;printf("%.6lf\n",sqrt(query(F(),F()))));
+}
+\end{lstlisting}
+
+\subsection{十字链表}
+\begin{lstlisting}
+const int N=1050;
+char s[N][N];
+int a[N*N][4];
+int get(int x, int y, int z){
+	int i=0;
+	while (a[y][i]!=x) i++;
+	return a[y][(i+z)%4];
+}
+void move(int &x, int &y, int z){
+	z=get(x,y,z);
+	x=y; y=z;
+}
+void change(int x1, int y1, int y2){
+	int i=0;
+	while (a[x1][i]!=y1) i++;
+	a[x1][i]=y2;
+}
+int in[4][N],out[4][N];
+int ans[N][N];
+int main(){
+	int n,q; scanf("%d%d",&n,&q);
+	forto(i,1,n) scanf("%s",s[i]+1);
+	n+=2;
+	forto(i,1,n*n){
+		if (i>n) a[i][0]=i-n;
+		if (i%n) a[i][1]=i+1;
+		if (i+n<=n*n) a[i][2]=i+n;
+		if (i%n!=1) a[i][3]=i-1;
+	}
+	while (q--){
+		int I,J,S; scanf("%d%d%d",&I,&J,&S);
+		int x=1, y=2;
+		forto(i,2,J) move(x,y,2);
+		move(x,y,3);
+		forto(i,2,I) move(x,y,2);
+		forto(k,0,3){
+			in[k][1]=y;
+			out[k][1]=get(x,y,3);
+			forto(i,2,S){
+				move(x,y,2);
+				in[k][i]=y;
+				out[k][i]=get(x,y,3);
+			}
+			move(x,y,3);
+			swap(x,y);
+		}
+		forto(i,0,3) forto(j,1,S){
+			change(in[i][j],out[i][j],out[(i+1)&3][j]);
+			change(out[i][j],in[i][j],in[(i+3)&3][j]);
+		}
+	}
+	n-=2;
+	forto(j,1,n){
+		int x=1, y=2;
+		forto(jj,2,j) move(x,y,2);
+		move(x,y,3);
+		ans[1][j]=y;
+		forto(i,2,n){
+			move(x,y,2);
+			ans[i][j]=y;
+		}
+	}
+	forto(i,1,n) forto(j,1,n){
+		int t=ans[i][j]-1;
+		putchar(s[t/(n+2)][t%(n+2)]);
+		if (j==n) putchar('\n');
+	}
+	return 0;
+}
+\end{lstlisting}
+
+\end{document}
