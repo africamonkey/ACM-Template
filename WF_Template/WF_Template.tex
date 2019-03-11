@@ -795,13 +795,13 @@ void DFS(int x,int fa) {
 		if (!vis[next]) {
 			DFS(next,e[pt].id);
 			low[x]=min(low[x],low[next]);
-			if (low[next]>=dfn[x]) {
+			if (low[next]>=dfn[x]) { // ***
 				vec[++tot].clear();
 				while (tp) {
 					vec[tot].push_back(sk[tp--]);
 					if (sk[tp+1]==next) break;
 				}
-				vec[tot].push_back(x);
+				vec[tot].push_back(x); // ***
 			}
 		} else if (dfn[next]>last) low[x]=min(low[x],dfn[next]);
 	}
@@ -813,6 +813,133 @@ for (i=1;i<=n;i++) if (!vis[i]) {
 		for (i=1;i<=tp;i++) vec[tot].push_back(sk[i]);
 		tp=0;
 	}
+}
+\end{lstlisting}
+
+\subsection{欧拉回路}
+\begin{lstlisting}
+struct E { int to,ne; } e[M<<1];
+int t,n,m,la[N],e_top;
+int in[N],out[N];
+void add(int x, int y){
+	out[x]++; in[y]++;
+	e[++e_top]=(E){y,la[x]}; la[x]=e_top;
+}
+int sta[M],top;
+bool vis[M<<1];
+void dfs(int x){
+	for(int i=la[x]; i; i=la[x]){
+		la[x]=e[i].ne;
+		if (vis[i]) continue;
+		vis[i]=true; if (t==1) vis[i^1]=true;		
+		dfs(e[i].to);
+		if (t==2) sta[++top]=i;
+			else sta[++top]=(i&1)?(-(i>>1)):(i>>1);
+	}
+}
+int main(){
+	scanf("%d%d%d",&t,&n,&m);
+	if (m==0) YES(); if (t==1) e_top=1;
+	ft(i,1,m){ scanf("%d%d",&x,&y); add(x,y); if (t==1) add(y,x); }
+	if (t==1) ft(i,1,n) if (in[i]&1) NO();
+	if (t==2) ft(i,1,n) if (in[i]!=out[i]) NO();
+	dfs(e[3-t].to); if (top!=m) NO();
+	YES(); fd(i,top,1) printf("%d ",sta[i]);
+}
+\end{lstlisting}
+
+\subsection{带花树}
+\begin{lstlisting}
+const int N=550;
+struct E { int to,ne; } e[N*N];
+int n,m,la[N],e_top,f[N];
+int find(int x) { return f[x]=f[x]==x?x:find(f[x]); }
+int mat[N],pre[N],cond[N],q[N],l,r,vis[N],vt;
+int lca(int x, int y){
+	vt++; x=find(x); y=find(y);
+	while (vis[x]!=vt){ if(x){vis[x]=vt;x=find(pre[mat[x]]);} swap(x,y); }
+	return x;
+}
+void blossom(int x, int y, int g){
+	while (find(x)!=g){
+		pre[x]=y; if (cond[mat[x]]==1) cond[q[++r]=mat[x]]=0;
+		if (f[x]==x) f[x]=g; if (f[mat[x]]==mat[x]) f[mat[x]]=g;
+		y=mat[x]; x=pre[y];
+	}
+}
+int match(int s){
+	forto(i,1,n){ cond[i]=-1; pre[i]=0; f[i]=i; }
+	cond[q[l=r=1]=s]=0;
+	while (l<=r){ int x=q[l++];
+		forE(i,x){
+			int y=e[i].to;
+			if (cond[y]==-1){
+				if (mat[y]==0){
+					while (x){
+						int t=mat[x]; mat[x]=y; mat[y]=x; y=t; x=pre[y];
+					}
+					return true;
+				}
+				cond[y]=1; pre[y]=x; cond[q[++r]=mat[y]]=0;
+			} else if (find(x)!=find(y) && cond[y]==0){
+				int g=lca(x,y); blossom(x,y,g); blossom(y,x,g);
+			}
+		}
+	}
+	return false;
+}
+int main(){
+	scanf("%d%d",&n,&m); int ans=0;
+	while (m--){ scanf("%d%d",&x,&y); add(x,y); add(y,x); }
+	forto(i,1,n) if (!mat[i] && match(i)) ans++;
+	printf("%d\n",ans); forto(i,1,n) printf("%d ",mat[i]);
+}
+\end{lstlisting}
+
+\subsection{KM算法}
+\begin{lstlisting}
+const int N=500, inf=0x7fffffff;
+int n,fx[N],fy[N],pre[N];
+LL w[N][N],lx[N],ly[N],sla[N];
+bool vx[N],vy[N],a[N][N];
+int q[N],l,r;
+bool check(int x, int y){
+	if (!fy[y]){
+		while (x){ int t=fx[x]; fx[x]=y; fy[y]=x; y=t; x=pre[y]; }
+		return true;
+	}
+	vy[y]=true; pre[y]=x; vx[q[++r]=fy[y]]=true; return false;
+}
+void bfs(int s){
+	ft(i,1,n) { vx[i]=vy[i]=false; sla[i]=inf; }
+	vx[q[l=r=1]=s]=true;
+	while (true){
+		while (l<=r){
+			int x=q[l++];
+			ft(y,1,n) if (!vy[y]){
+				LL t=lx[x]+ly[y]-w[x][y];
+				if (t==0 && check(x,y)) return;
+				if (t && t<sla[y]) { sla[y]=t; pre[y]=x; }
+			}
+		}
+		int d=inf;
+		ft(y,1,n) if (!vy[y]) cmin(d,sla[y]);
+		ft(x,1,n) if (vx[x]) lx[x]-=d;
+		ft(y,1,n) if (vy[y]) ly[y]+=d; else sla[y]-=d;
+		ft(y,1,n) if (!vy[y] && !sla[y] && check(pre[y],y)) return;
+	}
+}
+void KM(){
+	ft(x,1,n) { lx[x]=w[x][1]; ft(y,2,n) cmax(lx[x],w[x][y]); }
+	ft(s,1,n) bfs(s);
+}
+int main(){
+	int nl,nr,m; scanf("%d%d%d",&nl,&nr,&m);
+	while (m--){ scanf("%d%d%d",&x,&y,&z); w[x][y]=z; a[x][y]=true; }
+	n=MAX(nl,nr); KM();
+	LL ans=0; ft(i,1,n) ans+=lx[i]; ft(j,1,n) ans+=ly[j];
+	printf("%lld\n",ans);
+	ft(i,1,nl) printf("%d ",a[i][fx[i]]?fx[i]:0);
 }
 \end{lstlisting}
 
@@ -914,75 +1041,296 @@ return ans;
 \end{lstlisting}
 
 \section{数学}
-\subsection{扩展欧几里得解同余方程}
-ans[] 保存的是循环节内所有的解
-\begin{lstlisting}[language=C++]
-int exgcd(int a,int b,int&x,int&y){
-	if(!b)return x=1,y=0,a;
-	int d=exgcd(b,a%b,x,y),t=x;
-	return x=y,y=t-a/b*y,d;
+
+\subsection{Miller Rabin}
+\begin{lstlisting}
+// 2,7,61 : < 4759123141
+// 2,3,5,7,11,13,17 : < 341550071728320
+// 2,3,7,61,24251 : < 10^16 only 46856248255981
+
+//BZOJ-3667
+#include<cstdio>
+#include<cstdlib>
+typedef long long ll;
+ll _,n,x,ans,st;
+ll gcd(ll x,ll y){return y==0?x:gcd(y,x%y);}
+#define abs(x) (x>0?x:-(x))
+#define cmax(a,b) (a<b?a=b:1)
+ll mul(ll a,ll b,ll p){
+    ll tmp=(a*b-(ll)((long double)a/p*b+1e-7)*p);
+    return tmp<0?tmp+p:tmp;
 }
-void cal(ll a,ll b,ll n){//ax=b(mod n)
-	ll x,y,d=exgcd(a,n,x,y);
-	if(b%d)return;
-	x=(x%n+n)%n;
-	ans[cnt=1]=x*(b/d)%(n/d);
-	for(ll i=1;i<d;i++)ans[++cnt]=(ans[1]+i*n/d)%n;
+ll power(ll t,ll k,ll p){
+    ll f=1;
+    for(;k;k>>=1,t=mul(t,t,p))if(k&1)f=mul(f,t,p);
+    return f;
+}
+bool check(ll a,int k,ll p,ll q){
+    ll t=power(a,q,p);
+    if(t==1||t==p-1)return 1;
+    for(;k--;){
+        t=mul(t,t,p);
+        if(t==p-1)return 1;
+    }
+    return 0;
+}
+bool mr(ll p){
+    if(p<=1)return 0;
+    if(p==2)return 1;
+    if(~p&1)return 0;
+    ll q=p-1;int i,k=0;
+    while(~q&1)q>>=1,k++;
+    for(i=0;i<5;i++)
+    if(!check(rand()%(p-1)+1,k,p,q))return 0;
+    return 1;
+}
+ll rho(ll n,ll c){
+    ll x=rand()%n,y=x,p=1;
+    while(p==1)
+        x=(mul(x,x,n)+c)%n,
+        y=(mul(y,y,n)+c)%n,
+        y=(mul(y,y,n)+c)%n,
+        p=gcd(n,abs(x-y));
+    return p;
+}
+void solve(ll n){
+    if(n==1)return;
+    if(mr(n)){cmax(ans,n);return;}
+    if(~n&1)cmax(ans,2),solve(n>>1);
+    else{
+        ll t=n;
+        while(t==n)t=rho(n,rand()%(n-1)+1);
+        solve(t),solve(n/t);
+    }
+}
+int main(){
+    for(srand(1626),scanf("%lld",&_);_--;){
+        scanf("%lld",&x),ans=0;solve(x);
+        if(ans==x)puts("Prime");
+        else printf("%lld\n",ans);
+    }
 }
 \end{lstlisting}
 
-\subsection{同余方程组}
-\begin{lstlisting} [language=C++]
-int n,flag,k,m,a,r,d,x,y;
-int main(){
-	scanf("%d",&n);
-	flag=k=1,m=0;
-	while(n--){
-		scanf("%d%d",&a,&r);//ans%a=r
-		if(flag){
-			d=exgcd(k,a,x,y);
-			if((r-m)%d){flag=0;continue;}
-			x=(x*((r-m)/d)+a/d)%(a/d),y=k/d*a,m=((x*k+m)%y)%y;
-			if(m<0)m+=y;
-			k=y;
+\subsection{同余方程}
+\begin{lstlisting}
+void gcd(LL a, LL b, LL &d, LL &x, LL &y){
+	if (!b){ d=a; x=1; y=0; return; }
+	gcd(b,a%b,d,y,x); y-=x*(a/b);
+}
+IL void sim(LL &a, LL n) { a%=n; if (a<0) a+=n; }
+IL LL solve(LL a, LL b, LL n){  // a*x==b (mod n)
+	sim(a,n); sim(b,n);  // optional
+	static LL d,x,y;
+	gcd(a,n,d,x,y);
+	if (b%d) return -1;
+	b/=d; n/=d;
+	if (x<0) x+=n;
+	return b*x%n;
+}
+// x==a1 (mod n1); x==a2 (mod n2);
+// passing gcd in solve can reduce time 
+void merge(LL a1, LL n1, LL a2, LL n2, LL &x, LL &n){
+	n=lcm(n1,n2);
+	LL k=solve(n1,a2-a1,n2);
+	if (k==-1) { x=-1; return; }
+	sim(x=n1*k+a1,n);
+}
+// getinv , gcd(a,n) must be 1
+IL LL getinv(LL a, LL n){
+	static LL d,x,y;
+	gcd(a,n,d,x,y);
+	// if (d!=1) return -1;
+	return x<0?x+n:x;
+}
+\end{lstlisting}
+
+\subsection{线性筛法}
+\begin{lstlisting}
+const int N=100050;
+int b[N],a[N],cnt,mx[N],phi[N],mu[N];
+
+void getprime(int n=100000){
+	memset(b+2,1,sizeof(b[0])*(n-1));
+	mu[1]=1;
+	ft(i,2,n){
+		if (b[i]){
+			a[mx[i]=++cnt]=i;
+			phi[i]=i-1; mu[i]=-1;
+		}
+		ft(j,1,mx[i]){
+			int k=i*a[j];
+			if (k>n) break;
+			b[k]=0; mx[k]=j;
+			phi[k]= phi[i]*(a[j]-(j!=mx[i]));
+			mu[k]= j==mx[i] ? 0 : -mu[i];
 		}
 	}
-	printf("%d",flag?m:-1);//若flag=1,说明有解,解为ki+m,i为任意整数
 }
 \end{lstlisting}
 
-\subsection{FFT}
+\subsection{离散对数}
+\begin{lstlisting}
+// BSGS , a^x==b (mod n) , n is a prime
+LL bsgs(LL a, LL b, LL n){
+	int m=sqrt(n+0.5);
+	LL p=power(a,m,n);
+	LL v=getinv(p,n);
+	static hash_map x;
+	x.clear();
+	LL e=1; x[e]=0;
+	ft(i,1,m){
+		e=e*a%n;
+		if (!x.count(e)) x[e]=i;
+	}
+	for(LL i=0;i<n;i+=m){
+		if (x.count(b)) return i+x[b];
+		b=b*v%n;
+	}
+	return -1;
+}
 
-\subsubsection{普通FFT}
+//BSGS
+//y^x==z (mod p) ->x=?
+scanf("%d%d%d",&y,&z,&p),y%=p,z%=p;j=z;
+if(y==0){puts("Cannot find x");continue;}
+for(k=s=1;k*k<=p;k++);
+std::map<int,int>hash;flag=0;
+for(int i=0;i<k;i++,s=1LL*s*y%p,j=1LL*j*y%p)hash[j]=i;
+for(int i=1,j=s;i<=k&&!flag;i++,j=1LL*j*s%p)
+if(hash.count(j))ans=i*k-hash[j],flag=1;
+if(flag==0)puts("Cannot find x");
+else printf("%d\n",ans);
+
+//exBSGS
+int bsgs(int a,ll b,int p){
+    if(a%=p,b%=p,b==1)return 0;
+    ll t=1;int f,g,delta=0,m=sqrt(p)+1,i;
+    for(g=gcd(a,p);g!=1;g=gcd(a,p)){
+        if(b%g)return -1;
+        b/=g,p/=g,t=t*(a/g)%p,delta++;
+        if(b==t)return delta;
+    }
+    std::map<int,int>hash;
+    for(i=0;i<m;i++,b=b*a%p)hash[b]=i;
+    for(i=1,f=power(a,m);i<=m+1;i++)
+    if(t=t*f%p,hash.count(t))return i*m-hash[t]+delta;
+    return -1;
+}
+\end{lstlisting}
+
+\subsection{Lucas}
+\begin{lstlisting}
+void init_Lucas(){
+	fac[0]=1; ft(i,1,P-1) fac[i]=fac[i-1]*i%P;
+	inv[1]=1; ft(i,2,P-1) inv[i]=(P-P/i)*inv[P%i]%P;
+	inv[0]=1; ft(i,1,P-1) inv[i]=inv[i-1]*inv[i]%P;
+}
+IL LL C(int n, int m){
+	LL ans=1;
+	while (n||m){
+		int a=n%P, b=m%P;
+		if (a<b) return 0;
+		n/=P; m/=P;
+		ans= ans *fac[a]%P *inv[b]%P *inv[a-b]%P;
+	}
+	return ans;
+}
+\end{lstlisting}
+
+\subsection{高斯消元}
+\begin{lstlisting}
+int i=1, j=1;
+while (i<=n && j<=m){
+	int k=i;
+	while (k<=n && a[k][j].x==0) k++;
+	if (k>n) { j++; continue; }
+	if (k!=i) ft(t,j,m) swap(a[i][t],a[k][t]);
+	
+	ft(p,j+1,m) a[i][p]=a[i][p]/a[i][j];
+	a[i][j]=(R){1,1};
+	
+	ft(t,1,n) if (t!=i && a[t][j].x){
+		ft(p,j+1,m) a[t][p]=a[t][p]-a[i][p]*a[t][j];
+		a[t][j]=(R){0,1};
+	}
+	i++; j++;
+}
+
+// xor equations
+int n,m;
+bitset<N> a[N];
+bool solve(){
+	int i=1, j=1;	
+	while (i<=n && j<=m){
+		int k=i;
+		while (k<=n && !a[k][j]) k++;
+		if (k>n) { j++; continue; }
+		if (j==m) return false;  // no solution
+		if (k!=i) swap(a[i],a[k]);
+		ft(t,1,n) if (t!=i && a[t][j]) a[t]^=a[i];
+		i++; j++;
+	}
+	return true; // have solution (but may have 0==0)
+}
+// no solution : have 1==0
+// have solution : no 1==0 (but may have 0==0)
+// have solution can be dependent or independent
+\end{lstlisting}
+
+\subsection{瀚之的莫比乌斯}
+\begin{lstlisting}
+void getprime(int n){
+	miu[1]=pre[1]=b[1]=1;
+	for(int i=2;i<=n;i++){
+		if(!b[i]) p[mx[i]=++cnt]=i, miu[i]=-1;
+		for(int j=1;j<=mx[i];j++){
+			int k=i*p[j]; if(k>n) break;
+			b[k]=1; mx[k]=j;
+			if(j==mx[i]) miu[k]=0;
+				else miu[k]=miu[i]*miu[p[j]];
+		}
+		pre[i]=pre[i-1]+i*miu[i];
+	}
+}
+ll f(int n,int m){return 1ll*n*m*(n+m+2)/2;} 
+ll calc(int n,int m){ // sigma{ i+j | i<=n,j<=m,gcd(i,j)==1 }
+	if(n>m) swap(n,m); ll ans=0;
+	for(int i=1,j=0,k=0;i<=n;i=min(j,k)+1)
+		ans+=(pre[min(j=n/(n/i),k=m/(m/i))]-pre[i-1])*f(n/i,m/i);
+	return ans;
+}
+\end{lstlisting}
+
+\subsection{FFT|NTT}
 
 \begin{lstlisting}[language=C++]
-struct comp {
-	double real , imag; comp() {}
-	comp(double real , double imag): real(real) , imag(imag) {}
-	friend inline comp operator+(const comp &a , const comp &b) { return comp(a.real + b.real , a.imag + b.imag); }
-	friend inline comp operator-(const comp &a , const comp &b) { return comp(a.real - b.real , a.imag - b.imag); }
-	friend inline comp operator*(const comp &a , const comp &b) { return comp(a.real * b.real - a.imag * b.imag , a.real * b.imag + a.imag * b.real); }
-};
-comp A[maxn] , B[maxn];
-int rev[maxn], m, len;
+typedef complex<double> comp;
+comp A[N], B[N];
+int rev[N], m, len;
 inline void init(int n) {
 	for (m = 1, len = 0; m < n + n; m <<= 1 , len ++);
-	for (int i = 0; i < m; ++i) rev[i] = (rev[i >> 1] >> 1) | ((i & 1) << (len - 1));
+	for (int i = 0; i < m; ++i) rev[i]=(rev[i>>1]>>1) | ((i&1)<<(len-1));
 	for (int i = 0; i < m; ++i) A[i] = B[i] = comp(0, 0);
 }
-inline void dft(comp *a , int v) {
+inline void dft(comp *a, int v) {
 	for (int i = 0; i < m; ++i) if (i < rev[i]) swap(a[i] , a[rev[i]]);
 	for (int s = 2; s <= m; s <<= 1) {
 		comp g(cos(2 * pi / s) , v * sin(2 * pi / s));
+		// NTT: int g = power(gg, (mod - 1) / s);
+		// NTT: if (v == -1) g = power(g, mod - 2);
 		for (int k = 0; k < m; k += s) {
-			comp w(1 , 0);
+			comp w(1, 0);
+			// NTT: int w = 1;
 			for (int j = 0; j < s / 2; ++j) {
 				comp &u = a[k + j + s / 2], &v = a[k + j];
 				comp t = w * u; u = v - t; v = v + t; w = w * g;
+				// NTT: be aware of "+-*"
 			}
 		}
 	}
-	if (v == -1) for (int i = 0; i < m; ++i) a[i].real /= m , a[i].imag /= m;
+	if (v == -1) for (int i = 0; i < m; ++i) a[i] /= m;
+	// NTT: be aware of "/"
 }
 \end{lstlisting}
 
@@ -996,31 +1344,6 @@ LL p_root(LL p) {
 		if (tmp % i == 0) { a.push_back(i); while (tmp % i == 0) tmp /= i; }
 	if (tmp != 1) a.push_back(tmp);
 	LL g = 1; while (1) { if (g_test(g, p)) return g; ++g; }
-}
-\end{lstlisting}
-\subsection{NTT}
-
-\begin{lstlisting}[language=C++]
-#define mod 998244353
-#define gg 3
-void NTT(int *x, int n, int reverse) {
-	static int rev[N];
-	int m = 1, len = 0; for (; m < n + n; m <<= 1, ++len);
-	for (int i = 0; i < m; ++i) rev[i] = (rev[i >> 1] >> 1) | ((i & 1) << (len - 1));
-	for (int i = 0; i < m; ++i) if (i < rev[i]) swap(x[i], x[rev[i]]);
-	for (int h = 2; h <= m; h <<= 1) {
-		int wn = power(gg, (mod - 1) / h);
-		if (reverse == -1) wn = power(wn, mod - 2);
-		for (int i = 0; i < m; i += h) {
-			int w = 1;
-			for (int j = i; j < i + h / 2; ++j) {
-				int u = x[j], v = 1ll * w * x[j + h / 2] % mod;
-				x[j] = (u + v) % mod; x[j + h / 2] = (u - v + mod) % mod;
-				w = 1ll * w * wn % mod;
-			}
-		}
-	}
-	if (reverse == -1) { int t = power(m, mod - 2); for (int i = 0; i < m; ++i) x[i] = 1ll * x[i] * t % mod; }
 }
 \end{lstlisting}
 
@@ -1535,6 +1858,59 @@ inoremap <C-l> <right>
 
 \section{Java}
 
+\begin{lstlisting}[language=java]
+头文件
+import java.math.*;
+import java.util.*;
+public class Main {
+	public static void main(String []args) {
+	}
+}
+输入输出
+Scanner cin = new Scanner(System.in);
+int a = cin.nextInt();
+BigDecimal a = cin.nextBigDecimal();
+while (cin.hasNext()) {} // 输入到 EOF 结束
+System.out.println(str); // 有换行
+System.out.print(str); // 无换行
+System.out.println("Hello, %s. Next year, you'll be %d", name, age); // C风格输出
+大数类
+BigInteger a = BigInteger.valueOf(12);
+BigInteger b = new BigInteger(String.valueOf(12));
+BigDecimal c = BigDecimal.valueOf(12.0);
+BigDecimal d = new BigDecimal("12.0"); // 字符串防止double精度误差
+大数比较
+c.compareTo(BigDecimal.ZERO)==0 //判断相等，c==0
+c.compareTo(BigDecimal.ZERO)>0 //判断大于，c>0
+c.compareTo(BigDecimal.ZERO)<0 //判断小于，c<0
+大数基本运算
+Big*** add(Big*** b) // 加上b
+Big*** subtract(Big*** b) // 减去b
+Big*** multiply(Big*** b) // 乘b
+Big*** divide(Big*** b) // 除以b
+BigDecimal divide(BigDecimal b, int 精确位数, BigDecimal.ROUND_HALF_UP); // 除以b，保留小数
+Big*** pow(int b) // this^b
+Big*** remainder(Big*** b) // mod b
+Big*** abs() // 绝对值
+Big*** negate() // 取负号
+Big*** max(Big*** b) // 返回this和b中的最大值
+Big*** min(Big*** b) // 返回this和b中的最小值
+BigInteger gcd(BigInteger val) // 返回abs(this)和abs(val)的最大公约数
+BigInteger mod(BigInteger val) // 求 this mod val
+BigInteger modInverse(BigInteger val) // 求逆元，返回 this^(-1) mod val
+大数格式控制
+toString()将BigDecimal转成字符串，然后配合一些字符串函数进行处理：
+str.startWith("0"); // 以0开始
+str.endWith("0"); // 以0结束
+str.subString(int x, int y); // 从x到y的str的子串
+str.subString(int x); // 从x到结尾的子串
+c.stripTrailingZeros().toPlainString(); // c去除末尾0，转成普通字符串
+setScale(int newScale, RoundingMode roundingMode) 返回BigDecimal。newScale表示保留位数。CEILING/DOWN/FLOOR/HALF_DOWN/HALF_UP。
+大数进制转换
+支持2～36进制（0-9 + 小写a-z）
+BigInteger a=cin.nextBigInteger(2); // 读入一个二进制数
+System.out.println(a.toString(2)); // 输出二进制
+\end{lstlisting}
 
 \end{document}
 

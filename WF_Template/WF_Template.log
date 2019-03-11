@@ -1,4 +1,4 @@
-This is XeTeX, Version 3.14159265-2.6-0.99996 (TeX Live 2016) (preloaded format=xelatex 2017.12.25)  5 MAR 2019 23:35
+This is XeTeX, Version 3.14159265-2.6-0.99996 (TeX Live 2016) (preloaded format=xelatex 2017.12.25)  11 MAR 2019 13:22
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -1582,18 +1582,22 @@ olSong-Regular(0)/m/n/10.53937 改 为 $\OML/cmm/m/it/10.53937 low\OT1/cmr/m/n/1
  []
 
 [18] [19] [20] [21] [22] [23] [24] [25] [26] [27] [28] [29] [30] [31] [32]
-[33] (./WF_Template.aux)
+[33] [34] [35] [36] [37] [38] [39]
+(/usr/local/texlive/2016/texmf-dist/tex/latex/listings/lstlang1.sty
+File: lstlang1.sty 2015/06/04 1.6 listings language file
+) [40]
+[41] (./WF_Template.aux)
 
 LaTeX Font Warning: Some font shapes were not available, defaults substituted.
 
  ) 
 Here is how much of TeX's memory you used:
- 26132 strings out of 493591
- 495050 string characters out of 6143545
- 959023 words of memory out of 5000000
- 29239 multiletter control sequences out of 15000+600000
+ 26517 strings out of 493591
+ 499804 string characters out of 6143545
+ 952240 words of memory out of 5000000
+ 29622 multiletter control sequences out of 15000+600000
  14374 words of font info for 86 fonts, out of 8000000 for 9000
  1347 hyphenation exceptions out of 8191
- 65i,6n,77p,10435b,1678s stack positions out of 5000i,500n,10000p,200000b,80000s
+ 65i,6n,77p,10435b,1698s stack positions out of 5000i,500n,10000p,200000b,80000s
 
-Output written on WF_Template.pdf (33 pages).
+Output written on WF_Template.pdf (41 pages).
