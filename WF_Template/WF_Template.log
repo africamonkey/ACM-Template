@@ -1,4 +1,4 @@
-This is XeTeX, Version 3.14159265-2.6-0.99996 (TeX Live 2016) (preloaded format=xelatex 2017.12.25)  11 MAR 2019 20:43
+This is XeTeX, Version 3.14159265-2.6-0.99996 (TeX Live 2016) (preloaded format=xelatex 2017.12.25)  11 MAR 2019 20:55
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -1550,14 +1550,14 @@ LaTeX Font Info:    Font shape `T1/pcr/m/it' in size <7.52812> not available
 (Font)              Font shape `T1/pcr/m/sl' tried instead on input line 61.
 LaTeX Font Info:    Font shape `T1/pcr/bx/n' in size <7.52812> not available
 (Font)              Font shape `T1/pcr/b/n' tried instead on input line 66.
- [2] [3] [4]
+ [2] [3]
 
 LaTeX Font Warning: Font shape `EU1/FandolFang-Regular(0)/m/it' undefined
 (Font)              using `EU1/FandolFang-Regular(0)/m/n' instead on input line
- 384.
+ 270.
 
-[5] [6] [7] [8] [9] [10] [11] [12] [13] [14] [15] [16] [17] [18]
-Overfull \hbox (11.51833pt too wide) in paragraph at lines 1533--1534
+[4] [5] [6] [7] [8] [9] [10] [11] [12] [13] [14] [15] [16] [17] [18]
+Overfull \hbox (11.51833pt too wide) in paragraph at lines 1514--1515
 []\EU1/FandolSong-Regular(0)/m/n/10.53937 构 建 出 虚 树 的 节 点 保 存 在 $\OML/cmm/m/it/
 10.53937 a$ \EU1/FandolSong-Regular(0)/m/n/10.53937 数 组 中，| $\OML/cmm/m/it/10.5
 3937 k$ \EU1/FandolSong-Regular(0)/m/n/10.53937 为 节 点 个 数。|  加 边 调 用 函 数 \EU1/l
@@ -1578,7 +1578,7 @@ LaTeX Font Warning: Some font shapes were not available, defaults substituted.
 Here is how much of TeX's memory you used:
  26065 strings out of 493591
  494242 string characters out of 6143545
- 1203253 words of memory out of 5000000
+ 1049936 words of memory out of 5000000
  29174 multiletter control sequences out of 15000+600000
  14374 words of font info for 86 fonts, out of 8000000 for 9000
  1347 hyphenation exceptions out of 8191

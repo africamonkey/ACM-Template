@@ -4,29 +4,29 @@
 \contentsline {subsection}{\numberline {1.3}线性筛法}{3}
 \contentsline {subsection}{\numberline {1.4}离散对数}{3}
 \contentsline {subsection}{\numberline {1.5}Lucas}{4}
-\contentsline {subsection}{\numberline {1.6}高斯消元}{4}
-\contentsline {subsection}{\numberline {1.7}瀚之的莫比乌斯}{5}
-\contentsline {subsection}{\numberline {1.8}FFT|NTT}{5}
-\contentsline {subsection}{\numberline {1.9}求原根}{5}
-\contentsline {subsection}{\numberline {1.10}线性基}{5}
-\contentsline {subsection}{\numberline {1.11}高斯消元法实数方程}{6}
-\contentsline {subsection}{\numberline {1.12}高斯消元法模方程}{6}
+\contentsline {subsection}{\numberline {1.6}高斯消元法实数方程}{4}
+\contentsline {subsection}{\numberline {1.7}高斯消元解异或方程}{4}
+\contentsline {subsection}{\numberline {1.8}高斯消元法模方程}{5}
+\contentsline {subsection}{\numberline {1.9}瀚之的莫比乌斯}{5}
+\contentsline {subsection}{\numberline {1.10}FFT|NTT}{5}
+\contentsline {subsection}{\numberline {1.11}求原根}{6}
+\contentsline {subsection}{\numberline {1.12}线性基}{6}
 \contentsline {subsection}{\numberline {1.13}蔡勒公式}{6}
 \contentsline {subsection}{\numberline {1.14}皮克定理}{6}
-\contentsline {section}{\numberline {2}计算几何}{7}
-\contentsline {subsection}{\numberline {2.1}凸包}{7}
+\contentsline {section}{\numberline {2}计算几何}{6}
+\contentsline {subsection}{\numberline {2.1}凸包}{6}
 \contentsline {subsection}{\numberline {2.2}定义}{7}
 \contentsline {subsection}{\numberline {2.3}半平面交}{8}
 \contentsline {subsection}{\numberline {2.4}圆与多边形交集}{8}
-\contentsline {subsection}{\numberline {2.5}三角形面积并}{9}
+\contentsline {subsection}{\numberline {2.5}三角形面积并}{8}
 \contentsline {subsection}{\numberline {2.6}K圆并}{9}
 \contentsline {subsection}{\numberline {2.7}三维计算几何}{10}
-\contentsline {section}{\numberline {3}字符串}{11}
-\contentsline {subsection}{\numberline {3.1}哈希}{11}
+\contentsline {section}{\numberline {3}字符串}{10}
+\contentsline {subsection}{\numberline {3.1}哈希}{10}
 \contentsline {subsection}{\numberline {3.2}KMP}{11}
 \contentsline {subsection}{\numberline {3.3}扩展KMP}{11}
 \contentsline {subsection}{\numberline {3.4}Manacher}{11}
-\contentsline {subsection}{\numberline {3.5}AC自动机}{12}
+\contentsline {subsection}{\numberline {3.5}AC自动机}{11}
 \contentsline {subsection}{\numberline {3.6}后缀数组}{12}
 \contentsline {subsection}{\numberline {3.7}后缀自动机}{12}
 \contentsline {subsection}{\numberline {3.8}回文树}{13}
@@ -35,11 +35,11 @@
 \contentsline {subsection}{\numberline {4.2}K-D Tree}{14}
 \contentsline {subsection}{\numberline {4.3}左偏树}{15}
 \contentsline {subsection}{\numberline {4.4}线段树小技巧}{15}
-\contentsline {subsection}{\numberline {4.5}Splay}{16}
+\contentsline {subsection}{\numberline {4.5}Splay}{15}
 \contentsline {subsection}{\numberline {4.6}可持久化Treap}{16}
 \contentsline {subsection}{\numberline {4.7}可持久化并查集}{17}
 \contentsline {subsection}{\numberline {4.8}普通莫队}{17}
-\contentsline {subsection}{\numberline {4.9}树上莫队}{18}
+\contentsline {subsection}{\numberline {4.9}树上莫队}{17}
 \contentsline {section}{\numberline {5}树}{18}
 \contentsline {subsection}{\numberline {5.1}点分治}{18}
 \contentsline {subsection}{\numberline {5.2}Link Cut Tree}{18}
@@ -48,13 +48,13 @@
 \contentsline {subsection}{\numberline {6.1}Tarjan 有向图强联通分量}{19}
 \contentsline {subsection}{\numberline {6.2}Tarjan 双联通分量}{20}
 \contentsline {subsection}{\numberline {6.3}欧拉回路}{20}
-\contentsline {subsection}{\numberline {6.4}带花树}{21}
+\contentsline {subsection}{\numberline {6.4}带花树}{20}
 \contentsline {subsection}{\numberline {6.5}KM算法}{21}
-\contentsline {subsection}{\numberline {6.6}2-SAT}{22}
+\contentsline {subsection}{\numberline {6.6}2-SAT}{21}
 \contentsline {subsection}{\numberline {6.7}网络流}{22}
 \contentsline {subsubsection}{\numberline {6.7.1}最大流}{22}
 \contentsline {subsubsection}{\numberline {6.7.2}上下界有源汇网络流}{22}
-\contentsline {subsubsection}{\numberline {6.7.3}费用流}{23}
+\contentsline {subsubsection}{\numberline {6.7.3}费用流}{22}
 \contentsline {section}{\numberline {7}杂项}{23}
 \contentsline {subsection}{\numberline {7.1}读入优化}{23}
 \contentsline {subsection}{\numberline {7.2}Vim}{23}

@@ -252,26 +252,34 @@ IL LL C(int n, int m){
 }
 \end{lstlisting}
 
-\subsection{高斯消元}
+\subsection{高斯消元法实数方程}
 \begin{lstlisting}[language=C++]
-int i=1, j=1;
-while (i<=n && j<=m){
-	int k=i;
-	while (k<=n && a[k][j].x==0) k++;
-	if (k>n) { j++; continue; }
-	if (k!=i) ft(t,j,m) swap(a[i][t],a[k][t]);
-	
-	ft(p,j+1,m) a[i][p]=a[i][p]/a[i][j];
-	a[i][j]=(R){1,1};
-	
-	ft(t,1,n) if (t!=i && a[t][j].x){
-		ft(p,j+1,m) a[t][p]=a[t][p]-a[i][p]*a[t][j];
-		a[t][j]=(R){0,1};
+void Gauss(int n,int m) {
+	int i,j,k,t;
+	double mul;
+	for (i=j=1;i<=n&&j<=m;i++,j++) {
+		for (k=i+1;k<=n;k++)
+			if (abs(mat[k][j])>abs(mat[i][j]))
+				for (t=1;t<=m+1;t++) swap(mat[i][t],mat[k][t]);
+		if (abs(mat[i][j])<eps) { i--; continue; }
+		for (k=i+1;k<=n;k++) {
+			mul=mat[k][j]/mat[i][j];
+			for (t=1;t<=m+1;t++) mat[k][t]-=mat[i][t]*mul;
+		}
 	}
-	i++; j++;
+	for (i=n;i>=1;i--) { //solved表示那个变量是否确定
+		for (j=1;j<=m;j++) if (abs(mat[i][j])>eps) break;
+		if  (j>m) continue; solved[j]=true; ans[j]=mat[i][m+1];
+		for (k=j+1;k<=m;k++)
+			if (abs(mat[i][k])>eps&&!solved[k]) solved[j]=false;
+		for (k=j+1;k<=m;k++) ans[j]-=ans[k]*mat[i][k];
+		ans[j]/=mat[i][j];
+	}
 }
+\end{lstlisting}
 
-// xor equations
+\subsection{高斯消元解异或方程}
+\begin{lstlisting}[language=C++]
 int n,m;
 bitset<N> a[N];
 bool solve(){
@@ -287,9 +295,34 @@ bool solve(){
 	}
 	return true; // have solution (but may have 0==0)
 }
-// no solution : have 1==0
-// have solution : no 1==0 (but may have 0==0)
-// have solution can be dependent or independent
+\end{lstlisting}
+
+\subsection{高斯消元法模方程}
+\begin{lstlisting}
+void Gauss(LL n,LL m) {
+	LL i,j,k,t,lcm,muli,mulk;
+	for (i=j=1;i<=n&&j<=m;i++,j++) {
+		for (k=i;k<=n;k++) if (mat[k][j]) {
+			for (t=1;t<=m+1;t++) swap(mat[k][t],mat[i][t]);
+			break;
+		}
+		if (mat[i][j]==0) { i--; continue; }
+		for (k=i+1;k<=n;k++) if (mat[k][j]) {
+			lcm=mat[k][j]*mat[i][j]/__gcd(mat[k][j],mat[i][j]);
+			muli=lcm/mat[i][j]; mulk=lcm/mat[k][j];
+			for (t=1;t<=m+1;t++) {
+				mat[k][t]=mat[k][t]*mulk-mat[i][t]*muli;
+				mat[k][t]=(mat[k][t]%mod+mod)%mod;
+			}
+		}
+	}
+	for (i=n;i>=1;i--) {
+		for (j=1;j<=m;j++) if (mat[i][j]) break;
+		if  (j>m) continue; ans[j]=mat[i][m+1];
+		for (k=j+1;k<=m;k++) ans[j]-=ans[k]*mat[i][k];
+		ans[j]=(ans[j]*power(mat[i][j],mod-2)%mod+mod)%mod;
+	}
+}
 \end{lstlisting}
 
 \subsection{瀚之的莫比乌斯}
@@ -398,58 +431,6 @@ struct LB {
 } tree[N*10];
 \end{lstlisting}
 
-\subsection{高斯消元法实数方程}
-\begin{lstlisting}[language=C++]
-void Gauss(int n,int m) {
-	int i,j,k,t;
-	double mul;
-	for (i=j=1;i<=n&&j<=m;i++,j++) {
-		for (k=i+1;k<=n;k++)
-			if (abs(mat[k][j])>abs(mat[i][j]))
-				for (t=1;t<=m+1;t++) swap(mat[i][t],mat[k][t]);
-		if (abs(mat[i][j])<eps) { i--; continue; }
-		for (k=i+1;k<=n;k++) {
-			mul=mat[k][j]/mat[i][j];
-			for (t=1;t<=m+1;t++) mat[k][t]-=mat[i][t]*mul;
-		}
-	}
-	for (i=n;i>=1;i--) { //solved表示那个变量是否确定
-		for (j=1;j<=m;j++) if (abs(mat[i][j])>eps) break;
-		if  (j>m) continue; solved[j]=true; ans[j]=mat[i][m+1];
-		for (k=j+1;k<=m;k++)
-			if (abs(mat[i][k])>eps&&!solved[k]) solved[j]=false;
-		for (k=j+1;k<=m;k++) ans[j]-=ans[k]*mat[i][k];
-		ans[j]/=mat[i][j];
-	}
-}
-\end{lstlisting}
-\subsection{高斯消元法模方程}
-\begin{lstlisting}
-void Gauss(LL n,LL m) {
-	LL i,j,k,t,lcm,muli,mulk;
-	for (i=j=1;i<=n&&j<=m;i++,j++) {
-		for (k=i;k<=n;k++) if (mat[k][j]) {
-			for (t=1;t<=m+1;t++) swap(mat[k][t],mat[i][t]);
-			break;
-		}
-		if (mat[i][j]==0) { i--; continue; }
-		for (k=i+1;k<=n;k++) if (mat[k][j]) {
-			lcm=mat[k][j]*mat[i][j]/__gcd(mat[k][j],mat[i][j]);
-			muli=lcm/mat[i][j]; mulk=lcm/mat[k][j];
-			for (t=1;t<=m+1;t++) {
-				mat[k][t]=mat[k][t]*mulk-mat[i][t]*muli;
-				mat[k][t]=(mat[k][t]%mod+mod)%mod;
-			}
-		}
-	}
-	for (i=n;i>=1;i--) {
-		for (j=1;j<=m;j++) if (mat[i][j]) break;
-		if  (j>m) continue; ans[j]=mat[i][m+1];
-		for (k=j+1;k<=m;k++) ans[j]-=ans[k]*mat[i][k];
-		ans[j]=(ans[j]*power(mat[i][j],mod-2)%mod+mod)%mod;
-	}
-}
-\end{lstlisting}
 
 \subsection{蔡勒公式}
 
