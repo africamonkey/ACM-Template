@@ -1556,7 +1556,7 @@ k = unique(a, a + k) - a;
 stk.push(a[0]);
 for (int j = 1; j < k; ++j) {
 	int u = lca(stk.top(), a[j]);
-	while (dep[stk.top()] > dep[u]) --top;
+	while (dep[stk.top()] > dep[u]) stk.pop();
 	assert(stk.top() == u);
 	stk.push(a[j]);
 	addedge(u, a[j], dis[a[j]] - dis[u]);
