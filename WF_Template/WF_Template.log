@@ -1,4 +1,4 @@
-This is XeTeX, Version 3.14159265-2.6-0.99996 (TeX Live 2016) (preloaded format=xelatex 2017.12.25)  12 MAR 2019 15:06
+This is XeTeX, Version 3.14159265-2.6-0.99996 (TeX Live 2016) (preloaded format=xelatex 2017.12.25)  16 MAR 2019 20:39
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -1367,7 +1367,16 @@ Package titlesec Warning: You are using an old interface for page styles
 (titlesec)                You could proceed but don't complain if you run
 (titlesec)                into errors.
 
-) (/usr/local/texlive/2016/texmf-dist/tex/xelatex/xecjk/xeCJK-listings.sty
+) (/usr/local/texlive/2016/texmf-dist/tex/latex/listings/lstlang1.sty
+File: lstlang1.sty 2015/06/04 1.6 listings language file
+)
+(/usr/local/texlive/2016/texmf-dist/tex/latex/listings/lstlang1.sty
+File: lstlang1.sty 2015/06/04 1.6 listings language file
+)
+(/usr/local/texlive/2016/texmf-dist/tex/latex/listings/lstmisc.sty
+File: lstmisc.sty 2015/06/04 1.6 (Carsten Heinz)
+)
+(/usr/local/texlive/2016/texmf-dist/tex/xelatex/xecjk/xeCJK-listings.sty
 Package: xeCJK-listings 2016/05/14 v3.4.0 xeCJK patch file for listings
 \l__xeCJK_listings_max_char_int=\count170
 \l__xeCJK_listings_flag_int=\count171
@@ -1515,15 +1524,6 @@ File: umsb.fd 2013/01/14 v3.01 AMS symbols B
 \openout4 = `WF_Template.toc'.
 
 
-(/usr/local/texlive/2016/texmf-dist/tex/latex/listings/lstlang1.sty
-File: lstlang1.sty 2015/06/04 1.6 listings language file
-)
-(/usr/local/texlive/2016/texmf-dist/tex/latex/listings/lstlang1.sty
-File: lstlang1.sty 2015/06/04 1.6 listings language file
-)
-(/usr/local/texlive/2016/texmf-dist/tex/latex/listings/lstmisc.sty
-File: lstmisc.sty 2015/06/04 1.6 (Carsten Heinz)
-)
 *************************************************
 * fontspec warning: "script-not-exist"
 * 
@@ -1569,10 +1569,10 @@ LaTeX Font Warning: Some font shapes were not available, defaults substituted.
 Here is how much of TeX's memory you used:
  26070 strings out of 493591
  494498 string characters out of 6143545
- 1107769 words of memory out of 5000000
+ 1069135 words of memory out of 5000000
  29179 multiletter control sequences out of 15000+600000
  14053 words of font info for 80 fonts, out of 8000000 for 9000
  1347 hyphenation exceptions out of 8191
- 65i,7n,77p,10435b,1745s stack positions out of 5000i,500n,10000p,200000b,80000s
+ 65i,7n,77p,10435b,1747s stack positions out of 5000i,500n,10000p,200000b,80000s
 
 Output written on WF_Template.pdf (23 pages).

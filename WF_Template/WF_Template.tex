@@ -39,7 +39,7 @@
 \makeatother
 
 \lstset{basicstyle=\footnotesize\fontencoding{T1}\ttfamily,breaklines=true}
-\lstset{numbers=left,frame=shadowbox,tabsize=4}
+\lstset{numbers=left,frame=single,tabsize=4,language=C++}
 %\lstset{extendedchars=false}
 \begin{document}
 
@@ -58,7 +58,7 @@
 \section{数学}
 
 \subsection{Miller Rabin}
-\begin{lstlisting}[language=C++]
+\begin{lstlisting}
 // 2,7,61 : < 4759123141
 // 2,3,5,7,11,13,17 : < 341550071728320
 // 2,3,7,61,24251 : < 10^16 only 46856248255981
@@ -161,7 +161,7 @@ IL LL getinv(LL a, LL n){
 \end{lstlisting}
 
 \subsection{线性筛法}
-\begin{lstlisting}[language=C++]
+\begin{lstlisting}
 const int N=100050;
 int b[N],a[N],cnt,mx[N],phi[N],mu[N];
 
@@ -185,7 +185,7 @@ void getprime(int n=100000){
 \end{lstlisting}
 
 \subsection{离散对数}
-\begin{lstlisting}[language=C++]
+\begin{lstlisting}
 // BSGS , a^x==b (mod n) , n is a prime
 LL bsgs(LL a, LL b, LL n){
 	int m=sqrt(n+0.5);
@@ -235,7 +235,7 @@ int bsgs(int a,ll b,int p){
 \end{lstlisting}
 
 \subsection{Lucas}
-\begin{lstlisting}[language=C++]
+\begin{lstlisting}
 void init_Lucas(){
 	fac[0]=1; ft(i,1,P-1) fac[i]=fac[i-1]*i%P;
 	inv[1]=1; ft(i,2,P-1) inv[i]=(P-P/i)*inv[P%i]%P;
@@ -254,7 +254,7 @@ IL LL C(int n, int m){
 \end{lstlisting}
 
 \subsection{高斯消元法实数方程}
-\begin{lstlisting}[language=C++]
+\begin{lstlisting}
 void Gauss(int n,int m) {
 	int i,j,k,t;
 	double mul;
@@ -280,7 +280,7 @@ void Gauss(int n,int m) {
 \end{lstlisting}
 
 \subsection{高斯消元解异或方程}
-\begin{lstlisting}[language=C++]
+\begin{lstlisting}
 int n,m;
 bitset<N> a[N];
 bool solve(){
@@ -327,7 +327,7 @@ void Gauss(LL n,LL m) {
 \end{lstlisting}
 
 \subsection{瀚之的莫比乌斯}
-\begin{lstlisting}[language=C++]
+\begin{lstlisting}
 void getprime(int n){
 	miu[1]=pre[1]=b[1]=1;
 	for(int i=2;i<=n;i++){
@@ -352,7 +352,7 @@ ll calc(int n,int m){ // sigma{ i+j | i<=n,j<=m,gcd(i,j)==1 }
 
 \subsection{FFT|NTT}
 
-\begin{lstlisting}[language=C++]
+\begin{lstlisting}
 typedef complex<double> comp;
 comp A[N], B[N];
 int rev[N], m, len;
@@ -383,7 +383,7 @@ inline void dft(comp *a, int v) {
 \end{lstlisting}
 
 \subsection{求原根}
-\begin{lstlisting}[language=C++]
+\begin{lstlisting}
 vector <LL> a;
 bool g_test(LL g, LL p) { for (LL i = 0; i < a.size(); ++i) if (pow_mod(g, (p-1)/a[i], p) == 1) return 0; return 1; }
 LL p_root(LL p) {
@@ -400,7 +400,7 @@ LL p_root(LL p) {
 \ding{172} $or$ 卷积： $C_k = \sum\limits_{i \ or \ j=k} A_iB_j$；
 \ding{173} $and$ 卷积： $C_k = \sum\limits_{i \ and \ j=k} A_iB_j$；
 \ding{174} $xor$ 卷积： $C_k = \sum\limits_{i \ xor \ j=k} A_iB_j$。
-\begin{lstlisting}[language=C++]
+\begin{lstlisting}
 void FWT(int *a, int n) {
     for (int d = 1; d < n; d <<= 1)
         for (int m = d << 1, i = 0; i < n; i += m)
@@ -427,7 +427,7 @@ void UFWT(int *a, int n) {
 
 \subsection{线性基}
 
-\begin{lstlisting}[language=C++]
+\begin{lstlisting}
 #define B 30
 const int allset=(1<<B)-1;
 struct LB {
@@ -481,7 +481,7 @@ $$w = (\lfloor \frac{c}{4} \rfloor - 2c + y + \lfloor \frac{y}{4} \rfloor + \lfl
 \section{计算几何}
 
 \subsection{凸包}
-\begin{lstlisting}[language=C++]
+\begin{lstlisting}
 bool cmp(const Point &a,const Point &b) {
 	return F(a.x-b.x)<0||F(a.x-b.x)==0&&a.y<b.y; }
 void Gram(int id[], int n) {
@@ -502,7 +502,7 @@ void Gram(int id[], int n) {
 \end{lstlisting}
 
 \subsection{定义}
-\begin{lstlisting}[language=C++]
+\begin{lstlisting}
 struct Point { double x,y; Point(){} Point(double _x,double _y):x(_x),y(_y){} };
 struct Seg { Point a,b; Seg(){} Seg(Point _a,Point _b):a(_a),b(_b){} };
 struct Circle { double x,y,r;
@@ -607,7 +607,7 @@ double Shan(Circle c,double a) { return c.r*c.r*a/2; }
 \end{lstlisting}
 
 \subsection{半平面交}
-\begin{lstlisting}[language=C++]
+\begin{lstlisting}
 bool Cmphp(Seg a,Seg b) {
 	Point va=a.b-a.a, vb=b.b-b.a;
     double dega=atan2(va.y,va.x), degb=atan2(vb.y,vb.x);
@@ -644,7 +644,7 @@ void HalfPlane(Seg hp[], int n, Point pol[], int &pols) {
 \end{lstlisting}
 
 \subsection{圆与多边形交集}
-\begin{lstlisting}[language=C++]
+\begin{lstlisting}
 double CT(Circle c,Point a,Point b) { // 圆与三角形交（多边形）
 	double da=Dist(a-c.pt()), db=Dist(b-c.pt());
 	if (da>db) { swap(a,b); swap(da,db); }
@@ -668,7 +668,7 @@ double CT(Circle c,Point a,Point b) { // 圆与三角形交（多边形）
 \end{lstlisting}
 
 \subsection{三角形面积并}
-\begin{lstlisting}[language=C++]
+\begin{lstlisting}
 #define pr pair<ld,ld>
 typedef long double ld;
 const ld EPS=1e-8, INF=1e100;
@@ -736,7 +736,7 @@ int main() {
 \end{lstlisting}
 
 \subsection{K圆并}
-\begin{lstlisting}[language=C++]
+\begin{lstlisting}
 #define sqr(x) ((x)*(x))
 const double eps = 1e-8;
 double area[N]; int n;
@@ -808,7 +808,7 @@ void solve() {
 \end{lstlisting}
 
 \subsection{三维计算几何}
-\begin{lstlisting}[language=C++]
+\begin{lstlisting}
 Point Cross(Point a,Point b) {
 	return Point(a.y*b.z-a.z*b.y,a.z*b.x-a.x*b.z,a.x*b.y-a.y*b.x); }
 double Crossxy(Point a,Point b) { return a.x*b.y-a.y*b.x; }
@@ -843,7 +843,7 @@ Point3 Getcenter(Point3 p[],int n,Plane pp[],int nn) {
 
 \section{字符串}
 \subsection{哈希}
-\begin{lstlisting}[language=C++]
+\begin{lstlisting}
 const int P=31,D=1000173169;
 int hash(int l, int r) { return (LL)(f[r]-(LL)f[l-1]*pow[r-l+1]%D+D)%D; }
 pow[0] = 1;	for (int i=1;i<=n;i++) pow[i] = (LL)pow[i-1]*P%D;
@@ -852,7 +852,7 @@ for (int i=1;i<=n;i++) f[i] = (LL)((LL)f[i-1]*P+a[i])%D;
 \subsection{KMP}
 输入：模式串长度 $n$ ，模式串 $a$ ，匹配串长度 $m$ ，匹配串 $b$；输出： 依次输出每个匹配成功的\emph{起始}位置；下标从 $0$ 开始。
 
-\begin{lstlisting}[language=C++]
+\begin{lstlisting}
 void kmp(int n, char* a, int m, char *b) {
     int i, j;
     for (nxt[0] = j = -1, i = 1; i < n; nxt[i++] = j) {
@@ -874,7 +874,7 @@ void kmp(int n, char* a, int m, char *b) {
 
 next:  a 关于自己每个后缀的最长公共前缀；ret: a 关于 b 的每个后缀的最长公共前缀；EXKMP的next[i]表示：从i到n-1的字符串st前缀和原串前缀的最长重叠长度。
 
-\begin{lstlisting}[language=C++]
+\begin{lstlisting}
 void get_next(char *a, int *next) {
 	int i, j, k, n = strlen(a);
 	for (j = 0; j+1<n && a[j]==a[j+1];j++);
@@ -912,7 +912,7 @@ void ExtendedKMP(char *a, char *b, int *next, int *ret) {
 
 \subsection{Manacher}
 p[i] 表示以 i 为对称轴的最长回文串长度
-\begin{lstlisting}[language=C++]
+\begin{lstlisting}
 char st[N*2], s[N];
 int len, p[N*2];
 while (scanf("%s", s) != EOF) {
@@ -934,7 +934,7 @@ while (scanf("%s", s) != EOF) {
 \end{lstlisting}
 
 \subsection{AC自动机}
-\begin{lstlisting}[language=C++]
+\begin{lstlisting}
 struct Node { int next[26]; int terminal, fail; };
 void build() {
 	head = 0, tail = 1; q[1] = 1;
@@ -960,7 +960,7 @@ void build() {
 
 \subsection{后缀数组}
 参数 m 表示字符集的大小，即 $0 \leq r_i < m$ 
-\begin{lstlisting}[language=C++]
+\begin{lstlisting}
 int n, r[N], wa[N], wb[N], ws[N], sa[N], rank[N], height[N];
 int cmp(int *r, int a, int b, int l, int n) { return r[a]==r[b] && a+l<n && b+l<n && r[a+l]==r[b+l]; }
 void suffix_array(int m) {
@@ -986,7 +986,7 @@ void suffix_array(int m) {
 \end{lstlisting}
 \subsection{后缀自动机}
 下面的代码是求两个串的LCS（最长公共子串）。
-\begin{lstlisting}[language=C++]
+\begin{lstlisting}
 #define M (N << 1)
 char st[N];
 int pre[M], son[26][M], step[M], refer[M], size[M], tmp[M], topo[M], last, total;
@@ -1078,7 +1078,7 @@ int main() {
 
 逐个添加字符串S里的字符 $S_1, S_2, ..., S_n$ 。每次添加字符后，他想知道添加字符后将出现多少个新的本质不同的回文子串。字符集为 $\{a, b\}$
 
-\begin{lstlisting}[language=C++]
+\begin{lstlisting}
 struct PAM {
 	int n, tot, last, len[N], fail[N], next[N][2], num[N], cnt[N];
 	void init() { n=0; tot=1; len[1]=-1; fail[1]=0; len[0]=+0; fail[0]=1; last=1; }
@@ -1100,7 +1100,7 @@ for (int i=1;i<=n;i++) pam.insert(st[i]-'a');
 
 \section{数据结构}
 \subsection{ST表}
-\begin{lstlisting}[language=C++]
+\begin{lstlisting}
 int Log[N],f[17][N];
 int ask(int x,int y){ int k=Log[y-x+1]; return max(f[k][x],f[k][y-(1<<k)+1]); }
 for (int i=2;i<=n;i++)Log[i]=Log[i>>1]+1; for (int j=1;j<K;j++) for (int i=1;i+(1<<j-1)<=n;i++) f[j][i]=max(f[j-1][i],f[j-1][i+(1<<j-1)]);
@@ -1117,7 +1117,7 @@ for (int i=2;i<=n;i++)Log[i]=Log[i>>1]+1; for (int j=1;j<K;j++) for (int i=1;i+(
 \ding{178} ask(p, X, Y, ans) 询问距离点 (X, Y) 最远的一个点的距离， ans 需传入无穷小；
 \ding{179} ask(p, x1, y1, x2, y2) 查询矩形范围内所有点的权值和。
 
-\begin{lstlisting}[language=C++]
+\begin{lstlisting}
 int n, cmp_d, root, id[N];
 struct node { int d[2], l, r, Max[2], Min[2], val, sum, f; } t[N];
 inline bool cmp(const node &a, const node &b) {
@@ -1203,7 +1203,7 @@ root = build(1, n, 0, 0);
 \ding{175} pop 删除堆顶元素；
 \ding{176} size 返回堆的大小。
 
-\begin{lstlisting}[language=C++]
+\begin{lstlisting}
 template <class T> class leftist { public:
 	struct node { T key; int dist; node *l, *r; };
 	leftist() : root(NULL), s(0) {}
@@ -1227,7 +1227,7 @@ private: node* root; int s;
 \end{lstlisting}
 \subsection{线段树小技巧}
 给定一个序列 $a$ ，寻找一个最大的 $i$ 使得 $i \leq y$ 且满足一些条件（如 $a[i] \geq w$ ，那么需要在线段树维护 $a$ 的区间最大值）
-\begin{lstlisting}[language=C++]
+\begin{lstlisting}
 int queryl(int p, int left, int right, int y, int w) {
 	if (right <= y) {
 		if (! __condition__ ) return -1;
@@ -1241,7 +1241,7 @@ int queryl(int p, int left, int right, int y, int w) {
 }
 \end{lstlisting}
 给定一个序列 $a$ ，寻找一个最小的 $i$ 使得 $i \geq x$ 且满足一些条件（如 $a[i] \geq w$ ，那么需要在线段树维护 $a$ 的区间最大值）
-\begin{lstlisting}[language=C++]
+\begin{lstlisting}
 int queryr(int p, int left, int right, int x, int w) {
 	if (left >= x) {
 		if (! __condition__ ) return -1;
@@ -1262,7 +1262,7 @@ int queryr(int p, int left, int right, int x, int w) {
 \ding{174} $\text{INSERT x p}$ 将 $p$ 插入到第 $x$ 个数的后面；
 \ding{175} $\text{DEL x}$ 将第 $x$ 个数删除。
 
-\begin{lstlisting}[language=C++]
+\begin{lstlisting}
 int w[N], Min[N], son[N][2], size[N], father[N], rev[N], lazy[N];
 int top, rt, q[N];
 void pushdown(int x) {
@@ -1325,7 +1325,7 @@ void del(int x) { // delete the x-th element in Splay
 \ding{175} reverse 翻转第 $x$ 个到第 $y$ 个字符 ；
 \ding{176} query 表示询问当前第 $x$ 个字符是什么 。
 
-\begin{lstlisting}[language=C++]
+\begin{lstlisting}
 char key[N];
 bool rev[N];
 int lc[N], rc[N], size[N]; // if size is long long, remember here
@@ -1380,7 +1380,7 @@ char query(int k) {
 \ding{172} merge 在 time 时刻将 x 和 y 连一条边，注意加边顺序必须按 time 从小到大加边
 \ding{173} GetFather 询问 time 时刻及以前的连边状态中，x所属的集合
 
-\begin{lstlisting}[language=C++]
+\begin{lstlisting}
 const int inf = 0x3f3f3f3f;
 int father[N], Father[N], Time[N];
 vector<int> e[N];
@@ -1399,7 +1399,7 @@ void merge(int x, int y, int time) {
 
 分块块数为 $\sqrt{n}$ 是最优的。记每次进行 add() 操作的复杂度为 $O(A)$ ，del() 操作的复杂度为 $O(D)$ ，查询答案 answer() 的复杂度为 $O(S)$ 。则总复杂度为 $O(n \sqrt{n} (A + D) + qS)$ 。 $S$ 可以大一点，但必须保证 $A, D$ 尽可能小。
 
-\begin{lstlisting}[language=C++]
+\begin{lstlisting}
 struct Q { int l, r, sqrtl, id; } q[N];
 int n, m, v[N], ans[N], nowans;
 bool cmp(const Q &a, const Q &b) { if (a.sqrtl != b.sqrtl) return a.sqrtl < b.sqrtl; return a.r < b.r; }
@@ -1419,7 +1419,7 @@ for (int i=1;i<=m;i++) {
 \end{lstlisting}
 \subsection{树上莫队}
 
-\begin{lstlisting}[language=C++]
+\begin{lstlisting}
 struct Query { int l, r, id, l_group; } query[N];
 int v[N], ans[N];
 bool cmp(const Query &a, const Query &b) { if (a.l_group != b.l_group) return a.l_group < b.l_group; return dfn[a.r] < dfn[b.r]; }
@@ -1449,7 +1449,7 @@ for (int i=1;i<=m;i++) {
 \section{树}
 
 \subsection{点分治}
-\begin{lstlisting}[language=C++]
+\begin{lstlisting}
 void getsize(int x, int root = 0) {
 	size[x] = 1; son[x] = 0; int dd = 0;
 	for (int p = gh[x]; p; p = edge[p].next) {
@@ -1480,7 +1480,7 @@ void dc(int x) {
 \ding{173} minval 维护的是\emph{链上} val 最小值。
 \ding{174} sumval2 维护的是\emph{子树} val2 的和。
 
-\begin{lstlisting}[language=C++]
+\begin{lstlisting}
 int f[N], son[N][2], sz[N], rev[N], tot;
 int val[N], minid[N], minval[N];
 int val2[N], sumval2[N]; // 记得开 long long 。注意两个都要开 long long ，因为 val2 还包含了虚儿子的子树和。
@@ -1544,7 +1544,7 @@ int getsumval2(int x, int y) { makeroot(x); access(y); return val2[y]; } // 令 
 
 构建出虚树的节点保存在 $a$ 数组中， $k$ 为节点个数。加边调用函数 addedge(int x, int y, int w) 。
 
-\begin{lstlisting}[language=C++]
+\begin{lstlisting}
 bool cmp(int x, int y) { return dfn[x] < dfn[y]; }
 stack<int> stk;
 sort(a, a + k, cmp);
@@ -1568,7 +1568,7 @@ for (int j = 1; j < k; ++j) {
 \subsection{Tarjan 有向图强联通分量}
 \ding{172} 割点的判断：一个顶点 $u$ 是割点，当且仅当满足 $(1)$ 或 $(2)$ ： $(1)$ $u$ 为树根，且 $u$ 有多于一个子树（即：存在一个儿子 $v$ 使得 $dfn[u] + 1 \neq dfn[v]$ ） ； $(2)$ $u$ 不为树根，且满足存在 $(u, v)$ 为树枝边（ $u$ 为 $v$ 的父亲），使得 $dfn[u] \leq low[v]$ 。
 \ding{173} 桥的判断：一条无向边 $(u, v)$ 是桥，当且仅当 $(u, v)$ 为树枝边，满足 $dfn[u] < low[v]$ 。
-\begin{lstlisting}[language=C++]
+\begin{lstlisting}
 struct EDGE { int adj, next; } edge[M];
 int n, m, top, gh[N];
 int dfn[N], low[N], cnt, ind, stop, instack[N], stack[N], belong[N];
@@ -1590,7 +1590,7 @@ void tarjan(int x) {
 
 以下代码为点双联通分量。若要更改为边双联通，在第 8 行将 $low[next] \geq dfn[x]$ 改为 $low[next] > dfn[x]$ ，并将 14 行 $vec[tot].push\_back(x)$ 删除。
 
-\begin{lstlisting}[language=C++]
+\begin{lstlisting}
 void DFS(int x,int fa) {
 	vis[x]=true; dfn[x]=low[x]=++times; sk[++tp]=x;
 	for (int pt=first[x];pt;pt=e[pt].next) {
@@ -1620,7 +1620,7 @@ for (i=1;i<=n;i++) if (!vis[i]) {
 \end{lstlisting}
 
 \subsection{欧拉回路}
-\begin{lstlisting}[language=C++]
+\begin{lstlisting}
 struct E { int to,ne; } e[M<<1];
 int t,n,m,la[N],e_top;
 int in[N],out[N];
@@ -1652,7 +1652,7 @@ int main(){
 \end{lstlisting}
 
 \subsection{带花树}
-\begin{lstlisting}[language=C++]
+\begin{lstlisting}
 const int N=550;
 struct E { int to,ne; } e[N*N];
 int n,m,la[N],e_top,f[N];
@@ -1700,7 +1700,7 @@ int main(){
 \end{lstlisting}
 
 \subsection{KM算法}
-\begin{lstlisting}[language=C++]
+\begin{lstlisting}
 const int N=500, inf=0x7fffffff;
 int n,fx[N],fy[N],pre[N];
 LL w[N][N],lx[N],ly[N],sla[N];
@@ -1750,7 +1750,7 @@ int main(){
 
 记 $x \rightarrow y$ 的有向边表示选了 $x$ 就要选 $y$ 。
 
-\begin{lstlisting}[language=C++]
+\begin{lstlisting}
 struct MergePoint {
 	struct EDGE { int adj, next; } edge[M];
 	int ex[M], ey[M]; bool instack[N];
@@ -1786,7 +1786,7 @@ puts("YES"); for (int i = 1; i <= n; ++i) select(ts.ans[merge.belong[U(i,1)] == 
 \subsection{网络流}
 \subsubsection{最大流}
 注意： \emph{top 要初始化为 1}
-\begin{lstlisting}[language=C++]
+\begin{lstlisting}
 struct EDGE { int adj, w, next; } edge[M];
 int n, top, gh[N], nrl[N], dist[N], q[N];
 void addedge(int x, int y, int w) { edge[++top].adj = y; edge[top].w = w; edge[top].next = gh[x]; gh[x] = top; edge[++top].adj = x; edge[top].w = 0; edge[top].next = gh[y]; gh[y] = top; }
@@ -1827,7 +1827,7 @@ int ans = 0; while (bfs()) { memcpy(nrl, gh, sizeof(gh)); int t; while (t = dini
 
 \subsubsection{费用流}
 注意： \emph{top 要初始化为 1}
-\begin{lstlisting}[language=C++]
+\begin{lstlisting}
 struct EDGE { int adj, w, cost, next; } edge[M*2];
 int gh[N], q[N], dist[N], v[N], pre[N], prev[N], top, S, T;
 void addedge(int x, int y, int w, int cost) {x->y(w,cost); y->x(0,-cost);}
@@ -1849,7 +1849,7 @@ return ans;
 
 int rd(int \&x); 读入一个整数，保存在变量 x 中。如正常读入，返回值为 1 ，否则返回 EOF (-1)
 
-\begin{lstlisting}[language=C++]
+\begin{lstlisting}
 #define rd RD<int>
 #define rdll RD<long long>
 const int S = 2000000; // 2MB
