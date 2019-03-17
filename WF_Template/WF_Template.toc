@@ -68,14 +68,17 @@
 \contentsline {subsection}{\numberline {6.1}Tarjan 有向图强联通分量}{20}
 \contentsline {subsection}{\numberline {6.2}Tarjan 双联通分量}{21}
 \contentsline {subsection}{\numberline {6.3}欧拉回路}{21}
-\contentsline {subsection}{\numberline {6.4}带花树}{21}
-\contentsline {subsection}{\numberline {6.5}KM算法}{22}
-\contentsline {subsection}{\numberline {6.6}2-SAT}{22}
-\contentsline {subsection}{\numberline {6.7}网络流}{23}
-\contentsline {subsubsection}{\numberline {6.7.1}最大流}{23}
-\contentsline {subsubsection}{\numberline {6.7.2}上下界有源汇网络流}{23}
-\contentsline {subsubsection}{\numberline {6.7.3}费用流}{23}
+\contentsline {subsection}{\numberline {6.4}最大团随机贪心}{21}
+\contentsline {subsection}{\numberline {6.5}最大独立集随机}{22}
+\contentsline {subsection}{\numberline {6.6}带花树}{22}
+\contentsline {subsection}{\numberline {6.7}匈牙利算法}{22}
+\contentsline {subsection}{\numberline {6.8}KM算法}{22}
+\contentsline {subsection}{\numberline {6.9}2-SAT}{23}
+\contentsline {subsection}{\numberline {6.10}网络流}{23}
+\contentsline {subsubsection}{\numberline {6.10.1}最大流}{23}
+\contentsline {subsubsection}{\numberline {6.10.2}上下界有源汇网络流}{24}
+\contentsline {subsubsection}{\numberline {6.10.3}费用流}{24}
 \contentsline {section}{\numberline {7}杂项}{24}
 \contentsline {subsection}{\numberline {7.1}读入优化}{24}
-\contentsline {subsection}{\numberline {7.2}Vim}{24}
-\contentsline {subsection}{\numberline {7.3}Java}{24}
+\contentsline {subsection}{\numberline {7.2}Vim}{25}
+\contentsline {subsection}{\numberline {7.3}Java}{25}

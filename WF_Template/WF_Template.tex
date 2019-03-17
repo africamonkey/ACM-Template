@@ -1790,6 +1790,41 @@ int main(){
 }
 \end{lstlisting}
 
+\subsection{最大团随机贪心}
+\begin{lstlisting}
+int T,n,m,i,j,k,g[N][N],a[N],del[N],ans,fin[N];
+void solve() {
+	for(i=0;i<n;++i) del[i]=0;
+	for(k=i=0;i<n;++i) if(!del[i]) for(k++,j=i+1;j<n;++j) if(!g[a[i]][a[j]])
+		del[j]=1;
+	if (k>ans) for(ans=k,i=j=0;i<n;++i) if(!del[i]) fin[j++]=a[i];
+}
+int main() {
+	scanf("%d%d", &n, &m);
+	for(i=0;i<n;++i) a[i]=i;
+	while (m--) scanf("%d%d", &i,&j), g[i][j]=g[j][i]=1;
+	for (T=100;T--;solve()) for (i=0;i<n;++i) swap(a[i], a[rand()%n]);
+	for(printf("%d\n",ans),i=0;i<ans;++i)printf("%d ",fin[i]+1);
+}
+\end{lstlisting}
+
+\subsection{最大独立集随机}
+\begin{lstlisting}
+int T,n,i,k,m,x,y,ans,q[N],t,loc[N],del[N],have;
+int main() {
+	for(T=1000;T;T--) {
+		for(have=0,t=n,i=1;i<=n;++i)q[i]=loc[i]=i,del[i]=0;
+		while (t) {
+			y=q[x=rand()%t+1],loc[q[x]=q[t--]]=x,have++;
+			for(p=g[y];p;p=p->nxt)
+				if (!del[p->v]) del[p->v]=1,x=loc[p->v],loc[q[x]=q[t--]]=x;
+		}
+		if(have>ans)ans=have;
+	}
+	printf("%d\n",ans);
+}
+\end{lstlisting}
+
 \subsection{带花树}
 \begin{lstlisting}
 const int N=550;
@@ -1835,6 +1870,24 @@ int main(){
 	while (m--){ scanf("%d%d",&x,&y); add(x,y); add(y,x); }
 	forto(i,1,n) if (!mat[i] && match(i)) ans++;
 	printf("%d\n",ans); forto(i,1,n) printf("%d ",mat[i]);
+}
+\end{lstlisting}
+
+\subsection{匈牙利算法}
+\begin{lstlisting}
+bool find(int x) {
+	for(int p=gh[x];p;p=edge[p].next) if(!vis[edge[p].adj]) {
+		vis[edge[p].adj]=1;
+		if (!f[edge[p].adj] || find(f[edge[p].adj])) return f[edge[p].adj]=x,1;
+	}
+	return 0;
+}
+int main() {
+	for(j=1;j<=m;++j)f[j]=0;
+	for(i=1;i<=n;++i) {
+		for(j=1;j<=m;++j)vis[j]=0;
+		if(find(i)) ans++;
+	}
 }
 \end{lstlisting}
 
