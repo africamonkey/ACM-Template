@@ -55,9 +55,6 @@
 \thispagestyle{main}
 \tableofcontents
 
-\setlength{\parskip}{-0.5em}
-\setlength{\lineskip}{-0.5em}
-
 \section{数学}
 
 \subsection{结论和定理}
@@ -143,6 +140,12 @@ $f(x) = 0 (\text{mod }m_0), m_0 = \Pi_{i=1}^{k}m_i$ . 用 $T_i$ 表示 $f(x) = 0
 \ding{174} $1 \cdots n$ 所组成杨氏矩阵的个数可以通过下面的递推式得到： $f[1] = 1, f[2] = 2, f[n] = f[n - 1] + (n - 1)f[n - 2]$.
 \ding{175} 钩子公式：对于给定形状，不同的杨氏矩阵的个数为： $n!$ 除以每个格子的钩子长度加 $1$ 的积，其中钩子长度定义为该格子右边的格子数和它上面的格子数之和.
 
+\paragraph{扩展 Cayley 公式}
+对于 $n$ 个点 $m$ 个联通块的图，假设每个联通块有 $a[i]$ 个点，那么用 $s-1$ 条边把它连通的方案数为 $n^{s-2}a[1]a[2]\cdots a[m]$.
+
+\paragraph{Matrix-Tree 定理}
+对于一张图，建立矩阵 $C$ ，$C[i][i]=i$的度数，若 $i, j$ 之间有边，则 $C[i][j] = -1$ ，否则为 $0$ 。这张图的生成树个数等于矩阵 $C$ 的 $n-1$ 阶行列式的值.
+
 \paragraph{蔡勒公式}
 $w = (\lfloor \frac{c}{4} \rfloor - 2c + y + \lfloor \frac{y}{4} \rfloor + \lfloor \frac{13(m+1)}{5} \rfloor + d - 1) \text{ mod } 7$ 。
 \ding{172} $w$ ： 0星期日，1星期一，$\cdots$，6星期六；
@@ -152,17 +155,30 @@ $w = (\lfloor \frac{c}{4} \rfloor - 2c + y + \lfloor \frac{y}{4} \rfloor + \lflo
 \ding{176} $d$ ： 日。
 
 \paragraph{皮克定理}
-给定顶点坐标均是整点（或正方形格点）的简单多边形（凸多边形），皮克定理说明了其面积 $S$ 和内部格点数目 $n$ 、边上格点数目 $s$ 的关系： $S = n + \frac{s}{2} + 1$ 。
+给定顶点坐标均是整点（或正方形格点）的简单多边形（凸多边形），皮克定理说明了其面积 $S$ 和内部格点数目 $n$ 、边上格点数目 $s$ 的关系： $S = n + \frac{s}{2} - 1$ 。
+
+\paragraph{平面图欧拉公式}
+对于联通的平面图，有区域数 $F =$ 点数 $E - $ 边数 $V + 1$ .
+
+\paragraph{自适应 Simpson}
+
+给定一个函数 $f(x)$ ，求 $[a, b]$ 区间内 $f(x)$ 到 $x$ 轴所形成区域的面积. 根据辛普森公式，有 $S$ 近似等于 $\frac{b-a}{6}[f(a) + 4f(\frac{a+b}{2}) + f(b)]$ .
+
+\begin{lstlisting}
+double simpson(double l, double r) { return (f(l)+f(r)+4*f((l+r)/2.0))*(r-l)/6.0; }
+double rsimpson(double l, double r) {
+	double mid=(l+r)/2.0;
+	if (fabs(simpson(l,r)-simpson(l,mid)-simpson(mid,r))<eps)
+		return simpson(l,mid)+simpson(mid,r);
+	return rsimpson(l,mid)+rsimpson(mid,r);
+}
+\end{lstlisting}
 
 \subsection{Miller Rabin}
 \begin{lstlisting}
 // 2,7,61 : < 4759123141
 // 2,3,5,7,11,13,17 : < 341550071728320
 // 2,3,7,61,24251 : < 10^16 only 46856248255981
-
-//BZOJ-3667
-#include<cstdio>
-#include<cstdlib>
 typedef long long ll;
 ll _,n,x,ans,st;
 ll gcd(ll x,ll y){return y==0?x:gcd(y,x%y);}
@@ -423,30 +439,6 @@ void Gauss(LL n,LL m) {
 }
 \end{lstlisting}
 
-\subsection{瀚之的莫比乌斯}
-\begin{lstlisting}
-void getprime(int n){
-	miu[1]=pre[1]=b[1]=1;
-	for(int i=2;i<=n;i++){
-		if(!b[i]) p[mx[i]=++cnt]=i, miu[i]=-1;
-		for(int j=1;j<=mx[i];j++){
-			int k=i*p[j]; if(k>n) break;
-			b[k]=1; mx[k]=j;
-			if(j==mx[i]) miu[k]=0;
-				else miu[k]=miu[i]*miu[p[j]];
-		}
-		pre[i]=pre[i-1]+i*miu[i];
-	}
-}
-ll f(int n,int m){return 1ll*n*m*(n+m+2)/2;} 
-ll calc(int n,int m){ // sigma{ i+j | i<=n,j<=m,gcd(i,j)==1 }
-	if(n>m) swap(n,m); ll ans=0;
-	for(int i=1,j=0,k=0;i<=n;i=min(j,k)+1)
-		ans+=(pre[min(j=n/(n/i),k=m/(m/i))]-pre[i-1])*f(n/i,m/i);
-	return ans;
-}
-\end{lstlisting}
-
 \subsection{FFT|NTT}
 
 \begin{lstlisting}
@@ -558,6 +550,71 @@ struct LB {
 	}
 } tree[N*10];
 \end{lstlisting}
+
+\subsection{线性规划单纯形法}
+
+\ding{172}单纯形法用于解决线性规划问题：$\max_{x_1, x_2, \cdots, x_n} x_0 = c_1x_1 + c_2x_2 + \cdots + c_nx_n$ ，满足 $A_{i1}x_1 + A_{i2}x_2 + \cdots + A_{in}x_n \leq b_i, 1 \leq i \leq m$ 且 $x_j \geq 0, 1 \leq j \leq n$ 。
+\ding{173}单纯形法通常能解决 $n \leq 500, m \leq 500$ 的数据规模的问题。若规模过大，可能导致精度爆炸。单纯形法只能解决一般线性规划问题，不能解决整数规划问题（NP Hard）。若要用单纯形法解决整数规划问题，必须先证明一般线性规划的解不比整数规划好。
+\ding{174} 若 $b_i \geq 0, i = 1, 2, \cdots, n$ ，则不需要执行 init ，因为至少有一组解 $x_1 = x_2 = \cdots = x_n = 0$ 。
+\ding{175} 输入：第一行n, m；第二行$c_1, \cdots, c_n$；接下来 $m$ 行，每行 $A_{i1}, \cdots, A_{in}, b_i$ ；
+输出：无解 Infeasible ； 答案 $x_0$ 无界 Unbounded；第一行输出答案 $x_0$ ，接下来一行输出 $n$ 个实数表示 $x_1, x_2, \cdots , x_n$ 。
+
+\begin{lstlisting}[language=C++]
+const double eps = 1e-8, INF = 1e15;
+int n, m, id[N + M];
+double a[M][N], ans[N + M];
+void pivot(int L, int e) {
+	swap(id[n + L], id[e]); double t = a[L][e]; a[L][e] = 1;
+	for (int j = 0; j <= n; ++j) a[L][j] /= t;
+	for (int i = 0; i <= m; ++i)
+		if (i != L && abs(a[i][e]) > eps) {
+			t = a[i][e]; a[i][e] = 0;
+			for (int j = 0; j <= n; ++j) a[i][j] -= a[L][j] * t;
+		}
+}
+
+bool init() {
+	while (1) {
+		int e = 0, L = 0;
+		for (int i = 1; i <= m; ++i) if (a[i][0] < -eps && (!L || (rand() & 1))) L = i;
+		if (!L) break;
+		for (int j = 1; j <= n; ++j) if (a[L][j] < -eps && (!e || (rand() & 1))) e = j;
+		if (!e) return false; else pivot(L, e);
+	}
+	return true;
+}
+
+bool simplex() {
+	while (1) {
+		int L = 0, e = 0; double mn = INF;
+		for (int j = 1; j <= n; ++j) if (a[0][j] > eps) { e = j; break; }
+		if (!e) break;
+		for (int i = 1; i <= m; ++i) if (a[i][e] > eps && a[i][0] / a[i][e] < mn) {
+			mn = a[i][0] / a[i][e]; L = i;
+		}
+		if (!L) return false; else pivot(L, e);
+	}
+	return true;
+}
+
+int main() {
+	scanf("%d%d", &n, &m);
+	for (int i = 1; i <= n; ++i) scanf("%lf", &a[0][i]);
+	for (int i=1;i<=m;++i){ for (int j=1;j<=n;++j) scanf("%lf",&a[i][j]); scanf("%lf",&a[i][0]); }
+	for (int i = 0; i <= n + m; ++i) id[i] = 0;
+	for (int i = 1; i <= n; ++i) id[i] = i;
+	if (!init()) { puts("Infeasible"); return 0; }
+	if (!simplex()) { puts("Unbounded"); return 0; }
+	printf("%.10lf\n", -a[0][0]);
+	for (int i=0;i<=n+m;++i)ans[i]=0; for (int i=1;i<=m;++i)ans[id[n+i]]=a[i][0];
+	for (int i=1;i<=n;++i) printf("%.10lf ",ans[i]); puts("");
+}
+\end{lstlisting}
+
+\subsection{对偶理论}
+
+\ding{172} 原始问题：$\max_{x_1, x_2, \cdots, x_n} x_0 = c_1x_1 + c_2x_2 + \cdots + c_nx_n$ ，满足 $A_{i1}x_1 + A_{i2}x_2 + \cdots + A_{in}x_n \leq b_i, 1 \leq i \leq m$ 且 $x_j \geq 0, 1 \leq j \leq n$.
+\ding{173} 对偶问题：$\min_{w_1, w_2, \cdots, w_m} w_0 = b_1x_1 + b_2x_2 + \cdots + b_mx_m$ ，满足 $A^T_{i1}w_1 + A^T_{i2}w_2 + \cdots A^T_{im}w_m \geq c_i, 1 \leq i \leq n$ 且 $w_j \geq 0, 1 \leq j \leq m$.
 
 \section{计算几何}
 
