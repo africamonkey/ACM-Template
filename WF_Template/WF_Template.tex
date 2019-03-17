@@ -55,7 +55,85 @@
 \thispagestyle{main}
 \tableofcontents
 
+\setlength{\parskip}{-0.5em}
+\setlength{\lineskip}{-0.5em}
+
 \section{数学}
+
+\subsection{结论和定理}
+
+\paragraph{五边形定理} 五边形数 $n(3n \pm 1)/2$ 。$(1-x)(1-x^2)(1-x^3)\cdots = \Sigma{(-1)^kx^{n(3n \pm 1)/2}}$ ，即 $f(n) = f(n - 1) + f(n - 2) - f(n - 5) - f(n - 7) + f(n - 12) + f(n - 15) - \cdots$ 。
+
+\paragraph{斐波那契数性质} 
+\ding{172} $f[n] = f[n - 1] + f[n - 2]$ ; 
+\ding{173} $f[n + m + 1] = f[n]f[m] + f[n+1]f[m+1]$; 
+\ding{174} $\gcd{(f[n], f[n+1])}=1$; 
+\ding{175} $\gcd{(f[n], f[n+2])}=1$; 
+\ding{176} $\gcd{(f[n], f[m])}=f[\gcd{(n, m)}]$ ; 
+\ding{177} $f[n+1]^2-f[n]f[n+2]=(-1)^n$; 
+\ding{178} $\Sigma_{i=1}^{n} f[i]^2=f[n]f[n+1]$; 
+\ding{179} $\Sigma_{i=0}^{n} f[i]=f[n+2]-1$; 
+\ding{180} $\Sigma_{i=1}^{n} f[2i-1]=f[2n]$; 
+\ding{181} $\Sigma_{i=1}^{n} f[2i]=f[2n+1]-1$; 
+\ding{182} $\Sigma_{i=0}^{n}(-1)^if[i]=(-1)^n(f[n+1]-f[n])+1$; 
+\ding{183} $f[2n-1]=f[n]^2-f[n-2]^2$; 
+\ding{184} $f[2n+1]=f[n]^2+f[n+1]^2$; 
+\ding{185} $3f[n] = f[n+2] + f[n-2]$; 
+\ding{186} $f[n]=\Sigma_{i=0}^{m} \binom{n-1-i}{i} (m\leq n-1-m)$; 
+\ding{187} $\Sigma_{i=1}^{n}if[i]=nf[n+2]-f[n+3]+2$ .
+
+\paragraph{卡特兰数性质} 
+\ding{172} 凸多边形三角剖分数;
+\ding{173} 简单有序根树的计数;
+\ding{174} $(0, 0)$ 走到 $(n, n)$ 经过的点 $(a, b)$ 满足 $a \leq b$ 的方案数;
+\ding{175} $h_1 = 1, h_n = \frac{h_{n-1}(4n-2)}{n+1} = \frac{C(2n, n)}{n+1} = C(2n, n) - C(2n, n-1)$ ;
+\ding{176} 在一个格点阵列中，从 $(0, 0)$ 点走到 $(n, m)$ 点且不经过/穿过对角线 $x = y$ 的方案数 ： $\binom{n+m-1}{m} - \binom{n+m-1}{m-1} (x > y)$ ;  $\binom{n+m}{m} - \binom{n+m}{m-1} (x \geq y)$ 
+
+\paragraph{第一类斯特林数性质}
+\ding{172} 有正有负，其绝对值是 $n$ 个元素的项目分作 $k$ 个非空循环排列的数量 $s[n][k]$ ;
+\ding{173} $s[n][0] = 0 (n \geq 1), s[n][n] = 1 (n \geq 0)$ ;
+\ding{174} $s[n][k] = (n-1)s[n-1][k] + s[n - 1][k - 1] (1 \leq k \leq n - 1)$ ;
+\ding{175} $|s[n][1]| = (n-1)!$ ;
+\ding{176} $s[n][k] = (-1)^{n+k}|s[n][k]|$ ;
+\ding{177} $s[n][n-1] = -\binom{n}{2}$;
+\ding{178} $x(x-1)(x-2) \cdots (x-n+1) = \Sigma{s[n][k]x^k}$.
+
+\paragraph{第二类斯特林数性质}
+\ding{172} 将 $n$ 个物体划分为 $k$ 个非空的不可辨别（可理解为盒子没有编号）集合的方法数;
+\ding{173} $s[n][0] = 0 (n \geq 1), s[n][n] = 1 (n \leq 0)$ ;
+\ding{174} $s[n][k] = ks[n-1][k] + s[n-1][k-1]$;
+\ding{175} $s[n][n - 1] = \binom{n}{2}$
+\ding{176} $s[n][2] = 2^{n-1}-1$
+\ding{177} $s[n][k] = \frac{1}{k!}\Sigma_{i=0}^{k} (-1)^i\binom{k}{i} (k-i)^n$ .
+
+\paragraph{Bell 数性质}
+\ding{172} $n$ 个元素的集合划分数目;
+\ding{173} $B[n] = \Sigma_{k=1}^{n} s[n][k]$;
+\ding{174} $B[n+1] = \Sigma_{k=0}^{n} \binom{n}{k}B[k]$;
+\ding{175} $B[n+p]=B[n]+B[n+1] (\text{mod }p)$.
+
+\paragraph{多项式性质}
+\ding{172} $f(x)$ 不存在重根 $\Leftrightarrow \gcd{(f(x), f'(x))}$ 的次数小于1次;
+\ding{173} 多项式 $\gcd$ 可以用来判断两多项式是否有公共根.
+
+\paragraph{多项式取模}
+$f(x) = 0 (\text{mod }m_0), m_0 = \Pi_{i=1}^{k}m_i$ . 用 $T_i$ 表示 $f(x) = 0 (\text{mod }m_i)$ 的解数，则 $T_0 = \Pi_{i=1}^{k}T_i$ .
+
+\paragraph{数论}
+\ding{172} $a^n \text{mod }b = a^{n \text{mod }\phi{(b)}+\phi{(b)}} \text{mod }b (n \geq \phi{(b)})$;
+\ding{173} lucas 定理 $\binom{n}{m} = \binom{n\%p}{m\%p}\binom{n/p}{m/p} (\text{mod }p)$;
+\ding{174} lucas 函数 $f(n, m) = f(n\%p,m\%p)f(n/p, m/p) (\text{mod }p)$，可以猜测满足.
+
+\paragraph{蔡勒公式}
+$w = (\lfloor \frac{c}{4} \rfloor - 2c + y + \lfloor \frac{y}{4} \rfloor + \lfloor \frac{13(m+1)}{5} \rfloor + d - 1) \text{ mod } 7$ 。
+\ding{172} $w$ ： 0星期日，1星期一，$\cdots$，6星期六；
+\ding{173} $c$ ： 年份前两位数；
+\ding{174} $y$ ： 年份后两位数；
+\ding{175} $m$ ： 月（ $3 \leq m \leq 14$ ，即在蔡勒公式中，1、2月要看作上一年的13、14月来计算 ）；
+\ding{176} $d$ ： 日。
+
+\paragraph{皮克定理}
+给定顶点坐标均是整点（或正方形格点）的简单多边形（凸多边形），皮克定理说明了其面积 $S$ 和内部格点数目 $n$ 、边上格点数目 $s$ 的关系： $S = n + \frac{s}{2} + 1$ 。
 
 \subsection{Miller Rabin}
 \begin{lstlisting}
@@ -461,22 +539,6 @@ struct LB {
 	}
 } tree[N*10];
 \end{lstlisting}
-
-
-\subsection{蔡勒公式}
-
-$$w = (\lfloor \frac{c}{4} \rfloor - 2c + y + \lfloor \frac{y}{4} \rfloor + \lfloor \frac{13(m+1)}{5} \rfloor + d - 1) \text{ mod } 7$$
-
-\ding{172} $w$ ： 0星期日，1星期一，$\cdots$，6星期六；
-\ding{173} $c$ ： 年份前两位数；
-\ding{174} $y$ ： 年份后两位数；
-\ding{175} $m$ ： 月（ $3 \leq m \leq 14$ ，即在蔡勒公式中，1、2月要看作上一年的13、14月来计算 ）；
-\ding{176} $d$ ： 日。
-
-\subsection{皮克定理}
-
-给定顶点坐标均是整点（或正方形格点）的简单多边形（凸多边形），皮克定理说明了其面积 $S$ 和内部格点数目 $n$ 、边上格点数目 $s$ 的关系： $S = n + \frac{s}{2} + 1$ 。
-
 
 \section{计算几何}
 
