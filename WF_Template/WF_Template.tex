@@ -1516,7 +1516,8 @@ void getsize(int x, int root = 0) {
 	size[x] = 1; son[x] = 0; int dd = 0;
 	for (int p = gh[x]; p; p = edge[p].next) {
 		int y = edge[p].adj;
-		if (y == root || !vis[y]) continue;
+		if (y == root || vis[y]) continue;
+		getsize(y, x);
 		size[x] += size[y];
 		if (size[y] > dd) dd = size[y], son[x] = y;
 	}
