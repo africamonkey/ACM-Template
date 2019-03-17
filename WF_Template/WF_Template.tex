@@ -124,6 +124,25 @@ $f(x) = 0 (\text{mod }m_0), m_0 = \Pi_{i=1}^{k}m_i$ . 用 $T_i$ 表示 $f(x) = 0
 \ding{173} lucas 定理 $\binom{n}{m} = \binom{n\%p}{m\%p}\binom{n/p}{m/p} (\text{mod }p)$;
 \ding{174} lucas 函数 $f(n, m) = f(n\%p,m\%p)f(n/p, m/p) (\text{mod }p)$，可以猜测满足.
 
+\paragraph{原根}
+\ding{172} 2, 4, $p^k$, $2p^k$ 存在原根，存在原根则原根数量为 $\phi(\phi(n))$ ;
+\ding{173} 验证原根 $x = \phi{(n)}, x = p_1^{a_1}p_2^{a_2}\cdots p_k^{a_k}$，原根满足 $t^{x/p_i} \neq 1 (\text{mod }n)$
+
+\paragraph{$x^2+y^2=n$ 的整数解}
+解的个数为 $4\Sigma_{d|n}H(d)$. $H(d)=d\%2 ? (-1)^{(d-1)/2} : 0$ .
+
+\paragraph{平方和定理}
+\ding{172} 奇质数能表示为两个平方数之和的充分必要条件是该质数被4除余1.
+\ding{173} 正整数能表示为两个平方数之和的充要条件是在它的标准分解式中，形如素因子的指数是偶数.
+\ding{174} 如果两个整数都能表示为两个平方数之和，则它们的积也能表示为两个平方数之和： $(a^2+b^2)(c^2+d^2)=(ac-bd)^2+(ad+bc)^2=(ac+bd)^2+(ad-bc)^2$.
+\ding{175} 每个正整数都可以表示成4个整数的平方数之和.
+
+\paragraph{杨氏矩阵}
+\ding{172} 如果格子 $(i, j)$ 没有元素，则它右边和上面的相邻格子也一定没有元素;
+\ding{173} 如果格子 $(i, j)$ 有元素 $a[i][j]$ ，则它右边和上面的相邻格子要么没有元素，要么有元素且比 $a[i][j]$ 大.
+\ding{174} $1 \cdots n$ 所组成杨氏矩阵的个数可以通过下面的递推式得到： $f[1] = 1, f[2] = 2, f[n] = f[n - 1] + (n - 1)f[n - 2]$.
+\ding{175} 钩子公式：对于给定形状，不同的杨氏矩阵的个数为： $n!$ 除以每个格子的钩子长度加 $1$ 的积，其中钩子长度定义为该格子右边的格子数和它上面的格子数之和.
+
 \paragraph{蔡勒公式}
 $w = (\lfloor \frac{c}{4} \rfloor - 2c + y + \lfloor \frac{y}{4} \rfloor + \lfloor \frac{13(m+1)}{5} \rfloor + d - 1) \text{ mod } 7$ 。
 \ding{172} $w$ ： 0星期日，1星期一，$\cdots$，6星期六；
@@ -1057,7 +1076,7 @@ int apply(int x, int now) {
 	refer[total] = now;
 	return total;
 }
-void extend(char x, int now) {
+void extend(int x, int now) {
 	int p = last, np = apply(step[last]+1, now);
 	size[np] = 1;
 	for (; p && !son[x][p]; p=pre[p]) son[x][p] = np;
@@ -1895,7 +1914,23 @@ struct EDGE { int adj, w, cost, next; } edge[M*2];
 int gh[N], q[N], dist[N], v[N], pre[N], prev[N], top, S, T;
 void addedge(int x, int y, int w, int cost) {x->y(w,cost); y->x(0,-cost);}
 void clear() { top = 1; memset(gh, 0, sizeof(gh)); }
-bool spfa() {} // 从S出发，返回dist[T] != inf
+bool spfa() {
+	memset(dist, 63, sizeof(dist)); memset(v, 0, sizeof(v));
+	int head = 0, tail = 1; q[1] = S; v[S] = 1; dist[S] = 0;
+	while (head != tail) {
+		(head += 1) %= N; int x = q[head]; v[x] = 0;
+		for (int p=gh[x]; p; p=edge[p].next)
+			if (edge[p].w && dist[x] + edge[p].cost < dist[edge[p].adj]) {
+				dist[edge[p].adj] = dist[x] + edge[p].cost;
+				pre[edge[p].adj] = x; prev[edge[p].adj] = p;
+				if (!v[edge[p].adj]) {
+					v[edge[p].adj] = 1;
+					(tail += 1) %= N; q[tail] = edge[p].adj;
+				}
+			}
+	}
+	return dist[T] != inf;
+}
 int ans = 0;
 while (spfa()) {
 	int mx = inf;

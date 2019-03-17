@@ -9,18 +9,22 @@
 \contentsline {paragraph}{多项式性质}{2}
 \contentsline {paragraph}{多项式取模}{2}
 \contentsline {paragraph}{数论}{2}
+\contentsline {paragraph}{原根}{2}
+\contentsline {paragraph}{$x^2+y^2=n$ 的整数解}{2}
+\contentsline {paragraph}{平方和定理}{2}
+\contentsline {paragraph}{杨氏矩阵}{2}
 \contentsline {paragraph}{蔡勒公式}{2}
 \contentsline {paragraph}{皮克定理}{2}
 \contentsline {subsection}{\numberline {1.2}Miller Rabin}{2}
 \contentsline {subsection}{\numberline {1.3}同余方程}{3}
-\contentsline {subsection}{\numberline {1.4}线性筛法}{3}
+\contentsline {subsection}{\numberline {1.4}线性筛法}{4}
 \contentsline {subsection}{\numberline {1.5}离散对数}{4}
 \contentsline {subsection}{\numberline {1.6}Lucas}{4}
-\contentsline {subsection}{\numberline {1.7}高斯消元法实数方程}{4}
+\contentsline {subsection}{\numberline {1.7}高斯消元法实数方程}{5}
 \contentsline {subsection}{\numberline {1.8}高斯消元解异或方程}{5}
 \contentsline {subsection}{\numberline {1.9}高斯消元法模方程}{5}
 \contentsline {subsection}{\numberline {1.10}瀚之的莫比乌斯}{5}
-\contentsline {subsection}{\numberline {1.11}FFT|NTT}{5}
+\contentsline {subsection}{\numberline {1.11}FFT|NTT}{6}
 \contentsline {subsection}{\numberline {1.12}求原根}{6}
 \contentsline {subsection}{\numberline {1.13}FWT}{6}
 \contentsline {subsection}{\numberline {1.14}线性基}{6}
@@ -28,21 +32,21 @@
 \contentsline {subsection}{\numberline {2.1}凸包}{7}
 \contentsline {subsection}{\numberline {2.2}定义}{7}
 \contentsline {subsection}{\numberline {2.3}半平面交}{8}
-\contentsline {subsection}{\numberline {2.4}圆与多边形交集}{8}
+\contentsline {subsection}{\numberline {2.4}圆与多边形交集}{9}
 \contentsline {subsection}{\numberline {2.5}三角形面积并}{9}
-\contentsline {subsection}{\numberline {2.6}K圆并}{9}
+\contentsline {subsection}{\numberline {2.6}K圆并}{10}
 \contentsline {subsection}{\numberline {2.7}三维计算几何}{10}
 \contentsline {section}{\numberline {3}字符串}{11}
 \contentsline {subsection}{\numberline {3.1}哈希}{11}
 \contentsline {subsection}{\numberline {3.2}KMP}{11}
 \contentsline {subsection}{\numberline {3.3}扩展KMP}{11}
-\contentsline {subsection}{\numberline {3.4}Manacher}{11}
+\contentsline {subsection}{\numberline {3.4}Manacher}{12}
 \contentsline {subsection}{\numberline {3.5}AC自动机}{12}
 \contentsline {subsection}{\numberline {3.6}后缀数组}{12}
 \contentsline {subsection}{\numberline {3.7}后缀自动机}{12}
 \contentsline {subsection}{\numberline {3.8}回文树}{13}
-\contentsline {section}{\numberline {4}数据结构}{13}
-\contentsline {subsection}{\numberline {4.1}ST表}{13}
+\contentsline {section}{\numberline {4}数据结构}{14}
+\contentsline {subsection}{\numberline {4.1}ST表}{14}
 \contentsline {subsection}{\numberline {4.2}K-D Tree}{14}
 \contentsline {subsection}{\numberline {4.3}左偏树}{15}
 \contentsline {subsection}{\numberline {4.4}线段树小技巧}{15}
@@ -51,22 +55,22 @@
 \contentsline {subsection}{\numberline {4.7}可持久化并查集}{17}
 \contentsline {subsection}{\numberline {4.8}普通莫队}{17}
 \contentsline {subsection}{\numberline {4.9}树上莫队}{17}
-\contentsline {section}{\numberline {5}树}{17}
-\contentsline {subsection}{\numberline {5.1}点分治}{17}
+\contentsline {section}{\numberline {5}树}{18}
+\contentsline {subsection}{\numberline {5.1}点分治}{18}
 \contentsline {subsection}{\numberline {5.2}Link Cut Tree}{18}
 \contentsline {subsection}{\numberline {5.3}虚树}{19}
 \contentsline {section}{\numberline {6}图}{19}
 \contentsline {subsection}{\numberline {6.1}Tarjan 有向图强联通分量}{19}
 \contentsline {subsection}{\numberline {6.2}Tarjan 双联通分量}{19}
-\contentsline {subsection}{\numberline {6.3}欧拉回路}{19}
+\contentsline {subsection}{\numberline {6.3}欧拉回路}{20}
 \contentsline {subsection}{\numberline {6.4}带花树}{20}
-\contentsline {subsection}{\numberline {6.5}KM算法}{20}
+\contentsline {subsection}{\numberline {6.5}KM算法}{21}
 \contentsline {subsection}{\numberline {6.6}2-SAT}{21}
-\contentsline {subsection}{\numberline {6.7}网络流}{21}
-\contentsline {subsubsection}{\numberline {6.7.1}最大流}{21}
+\contentsline {subsection}{\numberline {6.7}网络流}{22}
+\contentsline {subsubsection}{\numberline {6.7.1}最大流}{22}
 \contentsline {subsubsection}{\numberline {6.7.2}上下界有源汇网络流}{22}
 \contentsline {subsubsection}{\numberline {6.7.3}费用流}{22}
 \contentsline {section}{\numberline {7}杂项}{22}
 \contentsline {subsection}{\numberline {7.1}读入优化}{22}
-\contentsline {subsection}{\numberline {7.2}Vim}{22}
-\contentsline {subsection}{\numberline {7.3}Java}{22}
+\contentsline {subsection}{\numberline {7.2}Vim}{23}
+\contentsline {subsection}{\numberline {7.3}Java}{23}
