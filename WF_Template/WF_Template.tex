@@ -185,7 +185,7 @@ ll gcd(ll x,ll y){return y==0?x:gcd(y,x%y);}
 #define abs(x) (x>0?x:-(x))
 #define cmax(a,b) (a<b?a=b:1)
 ll mul(ll a,ll b,ll p){
-    ll tmp=(a*b-(ll)((long double)a/p*b+1e-7)*p);
+    ll tmp=(a*b-(ll)((long double)a*b/p+1e-7)*p);
     return tmp<0?tmp+p:tmp;
 }
 ll power(ll t,ll k,ll p){
