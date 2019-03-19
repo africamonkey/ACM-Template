@@ -14,13 +14,13 @@
 \contentsline {paragraph}{平方和定理}{2}
 \contentsline {paragraph}{杨氏矩阵}{2}
 \contentsline {paragraph}{扩展 Cayley 公式}{2}
-\contentsline {paragraph}{Matrix-Tree 定理}{3}
-\contentsline {paragraph}{蔡勒公式}{3}
-\contentsline {paragraph}{皮克定理}{3}
+\contentsline {paragraph}{Matrix-Tree 定理}{2}
+\contentsline {paragraph}{蔡勒公式}{2}
+\contentsline {paragraph}{皮克定理}{2}
 \contentsline {paragraph}{平面图欧拉公式}{3}
 \contentsline {paragraph}{自适应 Simpson}{3}
 \contentsline {subsection}{\numberline {1.2}Miller Rabin}{3}
-\contentsline {subsection}{\numberline {1.3}同余方程}{4}
+\contentsline {subsection}{\numberline {1.3}同余方程}{3}
 \contentsline {subsection}{\numberline {1.4}线性筛法}{4}
 \contentsline {subsection}{\numberline {1.5}离散对数}{4}
 \contentsline {subsection}{\numberline {1.6}Lucas}{5}
@@ -30,55 +30,61 @@
 \contentsline {subsection}{\numberline {1.10}FFT|NTT}{6}
 \contentsline {subsection}{\numberline {1.11}求原根}{6}
 \contentsline {subsection}{\numberline {1.12}FWT}{6}
-\contentsline {subsection}{\numberline {1.13}线性基}{7}
+\contentsline {subsection}{\numberline {1.13}线性基}{6}
 \contentsline {subsection}{\numberline {1.14}线性规划单纯形法}{7}
-\contentsline {subsection}{\numberline {1.15}对偶理论}{8}
+\contentsline {subsection}{\numberline {1.15}对偶理论}{7}
 \contentsline {section}{\numberline {2}计算几何}{8}
 \contentsline {subsection}{\numberline {2.1}凸包}{8}
 \contentsline {subsection}{\numberline {2.2}定义}{8}
 \contentsline {subsection}{\numberline {2.3}半平面交}{9}
-\contentsline {subsection}{\numberline {2.4}圆与多边形交集}{10}
+\contentsline {subsection}{\numberline {2.4}圆与多边形交集}{9}
 \contentsline {subsection}{\numberline {2.5}三角形面积并}{10}
-\contentsline {subsection}{\numberline {2.6}K圆并}{11}
-\contentsline {subsection}{\numberline {2.7}三维计算几何}{12}
+\contentsline {subsection}{\numberline {2.6}K圆并}{10}
+\contentsline {subsection}{\numberline {2.7}三维计算几何}{11}
 \contentsline {section}{\numberline {3}字符串}{12}
 \contentsline {subsection}{\numberline {3.1}哈希}{12}
 \contentsline {subsection}{\numberline {3.2}KMP}{12}
 \contentsline {subsection}{\numberline {3.3}扩展KMP}{12}
-\contentsline {subsection}{\numberline {3.4}Manacher}{13}
+\contentsline {subsection}{\numberline {3.4}Manacher}{12}
 \contentsline {subsection}{\numberline {3.5}AC自动机}{13}
 \contentsline {subsection}{\numberline {3.6}后缀数组}{13}
-\contentsline {subsection}{\numberline {3.7}后缀自动机}{14}
+\contentsline {subsection}{\numberline {3.7}后缀自动机}{13}
+\contentsline {paragraph}{一些定义和性质}{14}
+\contentsline {paragraph}{代码中变量名含义}{14}
 \contentsline {subsection}{\numberline {3.8}回文树}{14}
-\contentsline {section}{\numberline {4}数据结构}{15}
-\contentsline {subsection}{\numberline {4.1}ST表}{15}
-\contentsline {subsection}{\numberline {4.2}K-D Tree}{15}
-\contentsline {subsection}{\numberline {4.3}左偏树}{16}
+\contentsline {paragraph}{代码中变量名含义}{14}
+\contentsline {paragraph}{【URAL2040】Palindromes and Super Abilities 2}{14}
+\contentsline {section}{\numberline {4}数据结构}{14}
+\contentsline {subsection}{\numberline {4.1}ST表}{14}
+\contentsline {subsection}{\numberline {4.2}K-D Tree}{14}
+\contentsline {subsection}{\numberline {4.3}左偏树}{15}
 \contentsline {subsection}{\numberline {4.4}线段树小技巧}{16}
-\contentsline {subsection}{\numberline {4.5}Splay}{17}
+\contentsline {subsection}{\numberline {4.5}Splay}{16}
 \contentsline {subsection}{\numberline {4.6}可持久化Treap}{17}
-\contentsline {subsection}{\numberline {4.7}可持久化并查集}{18}
+\contentsline {subsection}{\numberline {4.7}可持久化并查集}{17}
 \contentsline {subsection}{\numberline {4.8}普通莫队}{18}
 \contentsline {subsection}{\numberline {4.9}树上莫队}{18}
-\contentsline {section}{\numberline {5}树}{19}
-\contentsline {subsection}{\numberline {5.1}点分治}{19}
+\contentsline {section}{\numberline {5}树}{18}
+\contentsline {subsection}{\numberline {5.1}点分治}{18}
 \contentsline {subsection}{\numberline {5.2}Link Cut Tree}{19}
-\contentsline {subsection}{\numberline {5.3}虚树}{20}
+\contentsline {subsection}{\numberline {5.3}虚树}{19}
 \contentsline {section}{\numberline {6}图}{20}
 \contentsline {subsection}{\numberline {6.1}Tarjan 有向图强联通分量}{20}
-\contentsline {subsection}{\numberline {6.2}Tarjan 双联通分量}{21}
-\contentsline {subsection}{\numberline {6.3}欧拉回路}{21}
-\contentsline {subsection}{\numberline {6.4}最大团随机贪心}{21}
-\contentsline {subsection}{\numberline {6.5}最大独立集随机}{22}
-\contentsline {subsection}{\numberline {6.6}带花树}{22}
-\contentsline {subsection}{\numberline {6.7}匈牙利算法}{22}
-\contentsline {subsection}{\numberline {6.8}KM算法}{22}
-\contentsline {subsection}{\numberline {6.9}2-SAT}{23}
-\contentsline {subsection}{\numberline {6.10}网络流}{23}
-\contentsline {subsubsection}{\numberline {6.10.1}最大流}{23}
-\contentsline {subsubsection}{\numberline {6.10.2}上下界有源汇网络流}{24}
-\contentsline {subsubsection}{\numberline {6.10.3}费用流}{24}
+\contentsline {subsection}{\numberline {6.2}Tarjan 双联通分量}{20}
+\contentsline {subsection}{\numberline {6.3}三元环}{20}
+\contentsline {subsection}{\numberline {6.4}欧拉回路}{21}
+\contentsline {subsection}{\numberline {6.5}最大团随机贪心}{21}
+\contentsline {subsection}{\numberline {6.6}最大独立集随机}{22}
+\contentsline {subsection}{\numberline {6.7}带花树}{22}
+\contentsline {subsection}{\numberline {6.8}匈牙利算法}{22}
+\contentsline {subsection}{\numberline {6.9}KM算法}{22}
+\contentsline {subsection}{\numberline {6.10}2-SAT}{23}
+\contentsline {subsection}{\numberline {6.11}网络流}{23}
+\contentsline {subsubsection}{\numberline {6.11.1}最大流}{23}
+\contentsline {subsubsection}{\numberline {6.11.2}上下界有源汇网络流}{24}
+\contentsline {subsubsection}{\numberline {6.11.3}费用流}{24}
 \contentsline {section}{\numberline {7}杂项}{24}
-\contentsline {subsection}{\numberline {7.1}读入优化}{24}
-\contentsline {subsection}{\numberline {7.2}Vim}{25}
-\contentsline {subsection}{\numberline {7.3}Java}{25}
+\contentsline {subsection}{\numberline {7.1}Unordered\_set}{24}
+\contentsline {subsection}{\numberline {7.2}读入优化}{24}
+\contentsline {subsection}{\numberline {7.3}Vim}{25}
+\contentsline {subsection}{\numberline {7.4}Java}{25}

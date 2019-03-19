@@ -55,6 +55,9 @@
 \thispagestyle{main}
 \tableofcontents
 
+\setlength{\parskip}{-1em}
+\setlength{\lineskip}{-1.5em}
+
 \section{数学}
 
 \subsection{结论和定理}
@@ -1183,7 +1186,7 @@ int main() {
 }
 \end{lstlisting}
 
-一些定义和性质：
+\paragraph{一些定义和性质}
 \ding{172} Right(str) 表示 str 在母串 S 中所有出现的结束位置集合；
 \ding{173} 一个状态 s 表示的所有子串 Right 集合相同，为 Right(s)；
 \ding{174} Parent(s) 满足 Right(s) 是 Right(Parent(s)) 的真子集，并且 Right(Parent(s)) 的大小最小；
@@ -1193,7 +1196,7 @@ int main() {
 \ding{178} max(Parent(s)) = min(s) - 1；
 \ding{179} 令 refer(s) 表示产生 s 状态的字符所在位置。则 Right(s) 的合法子串的起始位置为 [refer(s) - max(s) + 1, refer(s) - min(s) + 1] ，即 [refer(s) - max(s) + 1, refer(s) - max(Parent(s))] 。
 
-代码中变量名含义：
+\paragraph{代码中变量名含义}
 \ding{172} pre[s] 为上述定义中的 Parent(s)；
 \ding{173} step[s] 为从初始状态走到 s 状态最多需要多少步；
 \ding{174} refer[s] 为上述定义中的 refer(s)；
@@ -1202,6 +1205,7 @@ int main() {
 
 \subsection{回文树}
 
+\paragraph{代码中变量名含义}
 \ding{172} len[i]表示编号为i的节点表示的回文串的长度（一个节点表示一个回文串）
 \ding{173} next[i][c]表示编号为i的节点表示的回文串在两边添加字符c以后变成的回文串的编号（和字典树类似）。
 \ding{174} fail[i]表示节点i失配以后跳转不等于自身的节点i表示的回文串的最长后缀回文串（和AC自动机类似）。
@@ -1212,8 +1216,7 @@ int main() {
 \ding{179} tot 表示添加的节点个数。
 \ding{180} n 表示添加的字符个数。
 
-【URAL2040】Palindromes and Super Abilities 2
-
+\paragraph{【URAL2040】Palindromes and Super Abilities 2}
 逐个添加字符串S里的字符 $S_1, S_2, ..., S_n$ 。每次添加字符后，他想知道添加字符后将出现多少个新的本质不同的回文子串。字符集为 $\{a, b\}$
 
 \begin{lstlisting}
@@ -1680,7 +1683,6 @@ int getsumval2(int x, int y) { makeroot(x); access(y); return val2[y]; } // 令 
 \subsection{虚树}
 
 设 $a[0 \cdots k - 1]$ 为需要构建虚树的点。
-
 构建出虚树的节点保存在 $a$ 数组中， $k$ 为节点个数。加边调用函数 addedge(int x, int y, int w) 。
 
 \begin{lstlisting}
@@ -1755,6 +1757,71 @@ for (i=1;i<=n;i++) if (!vis[i]) {
 		for (i=1;i<=tp;i++) vec[tot].push_back(sk[i]);
 		tp=0;
 	}
+}
+\end{lstlisting}
+
+\subsection{三元环}
+\begin{lstlisting}
+int deg[N],orideg[N],arr[N];
+bool vis[N];
+LL delta[N],cnt1[N],cnt2[N],pass3[N],pass4[N],in4[N],in3[N],out3[N],ans[N],all[N];
+vector<int> e[N],orie[N];
+priority_queue<pair<int,int> > q;
+int main() {
+    int n,m,i,x,y,sum,root,arrs; pair<int,int> pa;
+    vector<int>::iterator it,itr,itx; scanf("%d%d",&n,&m);
+    for (i=1;i<=m;i++)scanf("%d%d",&x,&y),deg[x]++,deg[y]++,e[x].PB(y),e[y].PB(x);
+    memcpy(orideg,deg,sizeof(orideg)); for (i=1;i<=n;i++) orie[i]=e[i];
+    for (i=1;i<=n;i++) {
+    	sum=0; for (it=e[i].begin();it!=e[i].end();it++) sum+=deg[*it]-1;
+    	for (it=e[i].begin();it!=e[i].end();it++)
+    		delta[*it]+=sum-(deg[*it]-1),all[i]-=sum-(deg[*it]-1);
+    }
+    for (i=1;i<=n;i++)
+    	for (it=e[i].begin();it!=e[i].end();it++) all[i]+=delta[*it];
+    for (;!q.empty();q.pop());
+    for (i=1;i<=n;i++) q.push(MP(deg[i],i));
+    memset(delta,0,sizeof(delta));
+    while (!q.empty()) {
+    	pa=q.top(); q.pop(); root=pa.Y; arrs=0;
+    	if (deg[root]!=pa.X||deg[root]==0) continue;
+    	for (itr=e[root].begin();itr!=e[root].end();itr++) {
+    		x=*itr;
+    		if (vis[x]) continue;
+    		arr[++arrs]=x;
+    		for (itx=e[x].begin();itx!=e[x].end();itx++)
+    			if (*itx!=root&&!vis[*itx]) {
+pass4[root]+=cnt2[*itx],pass4[x]+=cnt2[*itx],pass4[*itx]+=cnt2[*itx];
+pass3[root]+=cnt1[*itx],pass3[x]+=cnt1[*itx],pass3[*itx]+=cnt1[*itx];
+delta[root]+=cnt1[*itx],out3[x]-=cnt1[*itx],out3[*itx]-=cnt1[*itx];
+delta[x]+=cnt1[*itx],out3[root]-=cnt1[*itx],out3[*itx]-=cnt1[*itx];
+delta[*itx]+=cnt1[*itx],out3[root]-=cnt1[*itx],out3[x]-=cnt1[*itx];
+				}
+    		for (itx=e[x].begin();itx!=e[x].end();itx++)
+				if (*itx!=root&&!vis[*itx]) cnt2[*itx]++;
+    		cnt1[x]++;
+    	}    	
+    	for (itr=e[root].begin();itr!=e[root].end();itr++) {
+    		x=*itr; if (vis[x]) continue;
+    		for (itx=e[x].begin();itx!=e[x].end();itx++)
+				if (*itx!=root&&!vis[*itx]) cnt2[*itx]--;
+    		cnt1[x]--;
+    	}    	
+    	for (i=arrs;i>=1;i--)
+    		for (x=arr[i],itx=e[x].begin();itx!=e[x].end();itx++)
+				if (*itx!=root&&!vis[*itx]) pass4[x]+=cnt2[*itx]++;
+    	for (i=arrs;i>=1;i--)
+    		for (x=arr[i],itx=e[x].begin();itx!=e[x].end();itx++)
+				if (*itx!=root&&!vis[*itx]) cnt2[*itx]--;
+    	for (i=1;i<=arrs;i++) { x=arr[i]; deg[x]--; q.push(MP(deg[x],x)); }
+    	deg[root]=0; vis[root]=true;    	
+    }
+    for (i=1;i<=n;i++) {
+    	in4[i]=pass4[i]; in3[i]=pass3[i]*(orideg[i]-2);
+    	for (it=orie[i].begin();it!=orie[i].end();it++) out3[i]+=delta[*it];
+    	ans[i]=all[i]-in4[i]*2-in3[i]*2-out3[i]*2-pass3[i]*2;
+    }
+    for (i=1;i<=n;i++) printf("%lld\n",ans[i]);
 }
 \end{lstlisting}
 
@@ -2052,6 +2119,22 @@ return ans;
 \end{lstlisting}
 
 \section{杂项}
+
+\subsection{Unordered\_set}
+
+\begin{lstlisting}
+struct Hash {
+	size_t operator()(const int &x) const {
+		return (size_t)(x);
+	}
+};
+struct Equal {
+	bool operator()(const int &x,const int &y) const {
+		return x==y;
+	}
+};
+typedef unordered_set<int,Hash,Equal> S;
+\end{lstlisting}
 
 \subsection{读入优化}
 

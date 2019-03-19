@@ -1,4 +1,4 @@
-This is XeTeX, Version 3.14159265-2.6-0.99996 (TeX Live 2016) (preloaded format=xelatex 2017.12.25)  18 MAR 2019 19:24
+This is XeTeX, Version 3.14159265-2.6-0.99996 (TeX Live 2016) (preloaded format=xelatex 2017.12.25)  19 MAR 2019 17:52
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -1524,7 +1524,7 @@ File: umsb.fd 2013/01/14 v3.01 AMS symbols B
 \openout4 = `WF_Template.toc'.
 
 
-Overfull \hbox (8.69789pt too wide) in paragraph at lines 107--111
+Overfull \hbox (8.69789pt too wide) in paragraph at lines 110--114
 [] \EU1/lmr/bx/n/10.53937 Bell \EU1/FandolSong-Regular(0)/bx/n/10.53937 数 性 质 \
 U/pzd/m/n/9.03374 ¬ $\OML/cmm/m/it/9.03374 n$ \EU1/FandolSong-Regular(0)/m/n/9.
 03374 个 元 素 的 集 合 划 分 数 目\EU1/lmr/m/n/9.03374 ; \U/pzd/m/n/9.03374 ­ $\OML/cmm/
@@ -1538,7 +1538,7 @@ n/9.03374 ; \U/pzd/m/n/9.03374 ® $\OML/cmm/m/it/9.03374 B\OT1/cmr/m/n/9.03374 [
  []
 
 
-Overfull \hbox (15.25833pt too wide) in paragraph at lines 120--123
+Overfull \hbox (15.25833pt too wide) in paragraph at lines 123--126
 [] \EU1/FandolSong-Regular(0)/bx/n/10.53937 数 论 \U/pzd/m/n/9.03374 ¬ $\OML/cmm/
 m/it/9.03374 a[][]b \OT1/cmr/m/n/9.03374 = \OML/cmm/m/it/9.03374 a[][]b\OT1/cmr
 /m/n/9.03374 (\OML/cmm/m/it/9.03374 n \OMS/cmsy/m/n/9.03374 ^^U \OML/cmm/m/it/9
@@ -1555,7 +1555,7 @@ cmr/m/n/9.03374 = [][]([]\OML/cmm/m/it/9.03374 p\OT1/cmr/m/n/9.03374 )$\EU1/lmr
 * Font 'FandolFang-Regular' does not contain script 'CJK'.
 *************************************************
 \g__fontspec_family_FandolFang-Regular_int=\count173
-LaTeX Font Info:    Try loading font information for T1+pcr on input line 167.
+LaTeX Font Info:    Try loading font information for T1+pcr on input line 170.
 (/usr/local/texlive/2016/texmf-dist/tex/latex/psnfss/t1pcr.fd
 File: t1pcr.fd 2001/06/04 font definitions for T1/pcr.
 )
@@ -1572,14 +1572,14 @@ File: t1pcr.fd 2001/06/04 font definitions for T1/pcr.
 . - 'bold small caps'  (bx/sc) with NFSS spec.: 
 .................................................
 LaTeX Font Info:    Font shape `T1/pcr/bx/n' in size <7.52812> not available
-(Font)              Font shape `T1/pcr/b/n' tried instead on input line 168.
+(Font)              Font shape `T1/pcr/b/n' tried instead on input line 171.
 LaTeX Font Info:    Font shape `T1/pcr/m/it' in size <7.52812> not available
-(Font)              Font shape `T1/pcr/m/sl' tried instead on input line 179.
+(Font)              Font shape `T1/pcr/m/sl' tried instead on input line 182.
  [3] [4]
 
 LaTeX Font Warning: Font shape `EU1/FandolFang-Regular(0)/m/it' undefined
 (Font)              using `EU1/FandolFang-Regular(0)/m/n' instead on input line
- 384.
+ 387.
 
 [5] [6] [7] [8] [9] [10] [11] [12] [13] [14] [15] [16] [17] [18] [19] [20]
 [21] [22] [23] [24]
@@ -1592,12 +1592,12 @@ LaTeX Font Warning: Some font shapes were not available, defaults substituted.
 
  ) 
 Here is how much of TeX's memory you used:
- 26098 strings out of 493591
- 494914 string characters out of 6143545
- 1051135 words of memory out of 5000000
- 29205 multiletter control sequences out of 15000+600000
+ 26140 strings out of 493591
+ 495364 string characters out of 6143545
+ 1120135 words of memory out of 5000000
+ 29247 multiletter control sequences out of 15000+600000
  16255 words of font info for 90 fonts, out of 8000000 for 9000
  1347 hyphenation exceptions out of 8191
- 65i,7n,77p,10435b,1743s stack positions out of 5000i,500n,10000p,200000b,80000s
+ 65i,7n,77p,10435b,1747s stack positions out of 5000i,500n,10000p,200000b,80000s
 
 Output written on WF_Template.pdf (25 pages).
